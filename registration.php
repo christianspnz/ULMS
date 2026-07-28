@@ -27,27 +27,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/output.css">
-    <link rel="icon" type="image/png" href="./assets/uaagi-icon.png" class="w-24">
-    <title>U-LMS</title>
+    <link rel="icon" type="image/png" href="./assets/online-library-logo.png" class="w-24">
+    <title>UEH</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
-<body class="justify-center p-0">
-    <form action="./php/register_process.php" method="POST" class="login-register-form">
-        <div class="main-card flex-row justify-between w-[70%]">
+<body class="m-0 p-0 lg:min-h-screen h-auto flex items-center justify-center">
+    <form id="registerForm" action="./php/register_process.php" method="POST" class="login-register-form">
+        <div class="main-card lg:flex-row justify-between w-full lg:w-[70%]">
             <div class="main-card-col">
                 <img src="./assets/Logo.png" alt="UAAGI LMS Logo" class="w-52">
                 <span class="login-register-title">Registration</span>
                 <div class="label-inputs-col w-[90%]">
                     <span class="label-inputs">Email</span>
-                    <input type="email" name="email" placeholder="sample@gmail.com" class="text-inputs" required>
+                    <input type="email" name="email" placeholder="sample@gmail.com" class="text-inputs" >
                 </div>
                 <div class="label-inputs-col w-[90%]">
                     <span class="label-inputs">Last Name</span>
-                    <input type="text" name="lastname" placeholder="cruz" class="text-inputs uppercase" required>
+                    <input type="text" name="lastname" placeholder="cruz" class="text-inputs uppercase" >
                 </div>
                 <div class="label-inputs-col w-[90%]">
                     <span class="label-inputs">First Name</span>
-                    <input type="text" name="firstname" placeholder="juan" class="text-inputs uppercase" required>
+                    <input type="text" name="firstname" placeholder="juan" class="text-inputs uppercase" >
                 </div>
                 <div class="label-inputs-col w-[90%]">
                     <span class="label-inputs">Middle Name</span>
@@ -56,13 +58,13 @@
             </div>
             <div class="line-separator"></div>
             <div class="main-card-col">
-                <div class="flex flex-row w-[90%] justify-between gap-x-5">
+                <div class="flex flex-col lg:flex-row w-full lg:w-[90%] items-center justify-between gap-x-5">
                     <!-- Designation -->
                     <div class="label-inputs-col w-[90%]">
                         <span class="label-inputs">Designation</span>
                         <div class="dropdown relative inline-block w-full">
                             <!-- Button -->
-                            <button type="button" class="dropdown-button dropdown-select" aria-required="true">
+                            <button type="button" class="dropdown-button dropdown-select" aria-="true">
                                 <span class="selected-option uppercase">Select Role</span>
                                 <svg class="arrow w-5 h-5 transition-transform duration-200"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -146,13 +148,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-row w-[90%] justify-between gap-x-5">
+                <div class="flex flex-col lg:flex-row w-full lg:w-[90%] items-center justify-between gap-x-5">
                     <!-- Dealership -->
                     <div class="label-inputs-col w-[90%]">
                         <span class="label-inputs">Dealership</span>
                         <div class="dropdown relative inline-block w-full">
                             <!-- Button -->
-                            <button type="button" class="dropdown-button dropdown-select" aria-required="true">
+                            <button type="button" class="dropdown-button dropdown-select" aria-="true">
                                 <span class="selected-option uppercase flex-1 min-w-0 truncate text-left">Select Dealership</span>
                                 <svg class="arrow w-5 h-5 transition-transform duration-200 flex-shrink-0"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -166,7 +168,7 @@
                                 </svg>
                             </button>
     
-                            <input type="hidden" name="brand_dealership_id" class="selected-id">
+                            <input type="hidden" name="dealership_id" class="selected-id">
     
                             <!-- Menu -->
                             <div id="dealershipMenu" class="dropdown-menu absolute left-0 z-50 hidden w-full mt-2 overflow-hidden bg-white border border-[#234CA1] rounded-md shadow-lg overflow-y-auto max-h-60 custom-scrollbar">
@@ -178,20 +180,24 @@
                     </div>
                     <div class="label-inputs-col w-[90%]">
                         <span class="label-inputs">Contact Number</span>
-                        <input type="tel" name="contactnumber" placeholder="09222222222" class="text-inputs" required>
+                        <input type="tel" id="contactnumber" name="contactnumber" placeholder="09222222222" class="text-inputs" maxlength="11" pattern="^09\d{9}$" >
                     </div>
                 </div>
-                <div class="flex flex-row w-[90%] justify-between gap-x-5">
+                <div class="flex flex-col lg:flex-row w-full lg:w-[90%] items-center justify-between gap-x-5">
                     <div class="label-inputs-col w-[90%]">
                         <span class="label-inputs">Date of Birth</span>
-                        <input type="date" name="dateofbirth" placeholder="05/01/2002" class="text-inputs" required>
+                        <input type="date" id="dateofbirth" name="dateofbirth" placeholder="05/01/2002" class="text-inputs" >
                     </div>
                     <div class="label-inputs-col w-[90%]">
                         <span class="label-inputs">Date Hired</span>
-                        <input type="date" name="datehired" placeholder="05/01/2023" class="text-inputs" required>
+                        <input type="date" name="datehired" placeholder="05/01/2023" class="text-inputs" >
                     </div>
                 </div>
-                <div class="login-register-btn-col mt-5">
+                <div class="flex flex-row w-full lg:w-[90%] items-center justify-center py-2 px-6 gap-x-3">
+                    <input type="checkbox" >
+                    <span class="checkbox-text">I have read and agree to the <a href="#" class="anchor-checkbox">privacy policy</a>, <a href="#" class="anchor-checkbox">terms of service</a>, and <a href="#" class="anchor-checkbox">community guidelines</a>.</span>
+                </div>
+                <div class="login-register-btn-col">
                     <button class="login-register-btn" type="submit">Sign Up</button>
                     <span class="asking-text">Already have an account? <a href="login.php" class="text-[#D02027] font-eurostile-bold text-[14px] hover:underline">Login here</a></span>
                 </div>
@@ -350,7 +356,7 @@
                             <button
                                 type="button"
                                 class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white"
-                                data-id="${dealer.id}"
+                                data-id="${dealer.dealership_id}"
                                 data-value="${dealer.dealership_name}">
                                 ${dealer.dealership_name}
                             </button>
@@ -383,6 +389,145 @@
             });
         }
 
+        document.getElementById("registerForm").addEventListener("submit", function(e){
+
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch("./php/registration/register_process.php",{
+                method:"POST",
+                body:formData
+            })
+            .then(res => res.json())
+            .then(data=>{
+
+                if(data.success){
+
+                    Swal.fire({
+                        html: `
+                            <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
+                                <div class="flex flex-col lg:flex-row items-center justify-center gap-x-5 p-5">
+                                    <i class="fa-solid fa-circle-check text-[#234CA1] text-6xl"></i>
+
+                                    <div class="flex flex-col justify-center items-center lg:items-start">
+                                        <h2 class="text-2xl font-bold text-[#234CA1] uppercase">
+                                            Registration Successful!
+                                        </h2>
+
+                                        <p class="text-sm text-gray-500 text-center lg:text-left">
+                                            Your account has been created successfully.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <button
+                                    id="proceedBtn"
+                                    class="w-full h-12 bg-[#234CA1] text-white rounded-xl font-bold hover:bg-[#1B3D82] transition">
+                                    Proceed to Login
+                                </button>
+                            </div>
+                        `,
+                        customClass: {
+                            popup: "my-popup popup-blue",
+                            htmlContainer: "!p-0 !m-0"
+                        },
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        didOpen: () => {
+                            document.getElementById("proceedBtn").onclick = () => {
+                                window.location.href = "login.php";
+                            };
+                        }
+                    });
+
+                }else{
+
+                    Swal.fire({
+                        html: `
+                            <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
+                                <div class="flex flex-col lg:flex-row items-center justify-center gap-x-5 p-5">
+                                    <i class="fa-solid fa-circle-xmark text-[#D02027] text-6xl"></i>
+
+                                    <div class="flex flex-col justify-center items-center lg:items-start">
+                                        <h2 class="text-2xl font-bold text-[#D02027] uppercase">
+                                            Registration Failed!
+                                        </h2>
+
+                                        <p class="text-sm text-gray-500 text-center lg:text-left">
+                                            ${data.message}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <button
+                                    id="retryBtn"
+                                    class="w-full h-12 bg-[#D02027] text-white rounded-xl font-bold">
+                                    Try Again
+                                </button>
+                            </div>
+                        `,
+                        customClass: {
+                            popup: "my-popup popup-red",
+                            htmlContainer: "!p-0 !m-0"
+                        },
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            document.getElementById("retryBtn").onclick = () => Swal.close();
+                        }
+                    });
+
+                }
+
+            })
+            .catch(error=>{
+
+                Swal.fire({
+                    html: `
+                        <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
+                            <div class="flex flex-col lg:flex-row items-center justify-center gap-x-5 p-5">
+                                <i class="fa-solid fa-circle-xmark text-[#D02027] text-6xl"></i>
+
+                                <div class="flex flex-col justify-center items-center lg:items-start">
+                                    <h2 class="text-2xl font-bold text-[#D02027] uppercase">
+                                        Registration Failed!
+                                    </h2>
+
+                                    <p class="text-sm text-gray-500 text-center lg:text-left">
+                                        Something went wrong!
+                                    </p>
+                                </div>
+                            </div>
+
+                            <button
+                                id="retryBtn"
+                                class="w-full h-12 bg-[#D02027] text-white rounded-xl font-bold">
+                                Try Again
+                            </button>
+                        </div>
+                    `,
+                    customClass: {
+                        popup: "my-popup popup-red",
+                        htmlContainer: "!p-0 !m-0"
+                    },
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        document.getElementById("retryBtn").onclick = () => Swal.close();
+                    }
+                });
+
+                console.error(error);
+
+            });
+
+        });
+
+        const contact = document.getElementById("contactnumber");
+
+        contact.addEventListener("input", function () {
+            this.value = this.value.replace(/\D/g, "").slice(0, 11);
+        });
     </script>
 </body>
 

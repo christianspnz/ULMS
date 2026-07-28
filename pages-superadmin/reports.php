@@ -1,7 +1,7 @@
 <?php
 include ('../config/config.php');
 
-require "../php/auth.php";
+require "../php/auth-logout/auth.php";
 requireRole(4);
 
 ?>
@@ -12,8 +12,10 @@ requireRole(4);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
-    <link rel="icon" type="image/png" href="../assets/uaagi-icon.png" class="w-40">
-    <title>U-LMS Manager</title>
+    <link rel="icon" type="image/png" href="../assets/online-library-logo.png" class="w-24">
+    <title>UEH - Super Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <?php include '../sidebar-superadmin.php'; ?>
@@ -26,7 +28,7 @@ requireRole(4);
             </svg>
             Sample -->
         </span>
-        <form action="../php/export_reports.php" method="GET">
+        <form action="../php/report/export_reports.php" method="GET">
             <button
                 type="submit"
                 class="bg-[#234CA1] text-white px-6 py-3 rounded-xl hover:bg-[#193a80]">

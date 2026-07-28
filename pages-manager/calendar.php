@@ -1,5 +1,5 @@
 <?php
-require "../php/auth.php";
+require "../php/auth-logout/auth.php";
 requireRole(2)
 ?>
 
@@ -10,8 +10,10 @@ requireRole(2)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
-    <link rel="icon" type="image/png" href="../assets/uaagi-icon.png" class="w-40">
-    <title>U-LMS Learners</title>
+    <link rel="icon" type="image/png" href="../assets/online-library-logo.png" class="w-24">
+    <title>UEH - Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <?php include '../sidebar-manager.php'; ?>

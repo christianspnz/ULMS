@@ -14,12 +14,13 @@ $placeholders = implode(',', array_fill(0, count($brands), '?'));
 
 $sql = "
 SELECT
-    bd.id,
+    d.dealership_id,
     d.dealership_name
-FROM brand_dealerships bd
-INNER JOIN dealerships d
-ON bd.dealership_id = d.dealership_id
+FROM dealerships d
+INNER JOIN brand_dealerships bd
+    ON d.dealership_id = bd.dealership_id
 WHERE bd.brand_id IN ($placeholders)
+GROUP BY d.dealership_id, d.dealership_name
 ORDER BY d.dealership_name ASC
 ";
 

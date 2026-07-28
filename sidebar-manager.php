@@ -4,10 +4,11 @@
 
     $currentPage = basename($_SERVER['PHP_SELF']);
 
-    include "../php/user_info.php";
+    include "../php/login/user_info.php";
     
+    include "hamburger-btn.php";  
 ?>
-<aside class="sidebar">
+<aside id="sidebar" class="sidebar hidden lg:flex fixed lg:top-0 lg:left-0 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 lg:translate-y-0 lg:translate-x-0 z-40 lg:m-5">
     <img src="../assets/Logo.png" alt="UAAGI LMS Logo" class="w-40">
     <nav class="sidebar-nav">
         <a href="courses.php" class="sidebar-text 
@@ -76,7 +77,7 @@
                 </span>
             </div>
         </div>
-        <a href="../php/logout.php" class="logout-btn">
+        <a href="#" id="logoutBtn" class="logout-btn">
             <span class="logout-icon">
                 <svg height="20" width="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 21q-.825 0-1.413-.588T3 19V5q0-.825.588-1.413T5 3h7v2H5v14h7v2H5Zm11-4l-1.375-1.45l2.55-2.55H9v-2h8.175l-2.55-2.55L16 7l5 5l-5 5Z" fill="currentColor"/>
@@ -86,3 +87,61 @@
         </a>
     </div>
 </aside>
+
+<script>
+    document.getElementById("logoutBtn").addEventListener("click", function (e) {
+    e.preventDefault();
+
+        Swal.fire({
+            html: `
+                <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
+                    <div class="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-x-5 p-5">
+                        <i class="fa-solid fa-right-from-bracket text-[#234CA1] text-6xl"></i>
+
+                        <div class="flex flex-col justify-center items-start">
+                            <h2 class="text-2xl font-bold text-[#234CA1] uppercase">
+                                Logout?
+                            </h2>
+
+                            <p class="text-sm text-gray-500">
+                                Are you sure you want to logout?
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex w-full gap-3 px-5 pb-5">
+                        <button
+                            id="cancelBtn"
+                            class="w-1/2 h-12 border border-[#234CA1] text-[#234CA1] rounded-xl font-bold">
+                            Cancel
+                        </button>
+
+                        <button
+                            id="logoutConfirmBtn"
+                            class="w-1/2 h-12 bg-[#234CA1] text-white rounded-xl font-bold">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            `,
+            customClass: {
+                popup: "my-popup popup-blue",
+                htmlContainer: "!p-0 !m-0"
+            },
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: true,
+            backdrop: true,
+            heightAuto: false,
+            didOpen: () => {
+                document.getElementById("cancelBtn").onclick = () => {
+                    Swal.close();
+                };
+
+                document.getElementById("logoutConfirmBtn").onclick = () => {
+                    window.location.href = "../php/auth-logout/logout.php";
+                };
+            }
+        });
+    });
+</script>

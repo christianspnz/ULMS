@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+@plugin "daisyui";
 
 /* Scrollbar */
 
@@ -20,20 +20,12 @@
 }
 
 /* Sweet Alert */
-
-.swal2-success-ring {
-    border-color: #234CA1 !important;
+.popup-red{
+    border: 3px solid #D02027;
 }
 
-.swal2-success-line-tip,
-.swal2-success-line-long {
-    background-color: #234CA1 !important;
-}
-
-.swal2-success-circular-line-left,
-.swal2-success-circular-line-right,
-.swal2-success-fix {
-    background-color: #fff !important;
+.popup-blue{
+    border: 3px solid #234CA1;
 }
 
 .my-progress {
@@ -49,6 +41,7 @@
     height: 100%;
     background: #D02027;
 }
+
 
 @keyframes fillBar {
     from {
@@ -121,16 +114,15 @@
 @layer base{
     
     body{
-        @apply flex flex-row justify-between bg-gradient-to-b from-white to-[#EDEDED] w-screen h-screen p-5;
+        @apply flex flex-row justify-between bg-gradient-to-b from-white to-[#EDEDED] w-screen h-auto min-h-screen p-5;
     }
     
-    
-    main, header{
+    header{
         @apply p-10 w-full h-auto;
     }
     
     main{
-        @apply flex flex-col gap-y-3 py-10 w-[80%];
+        @apply flex flex-col gap-y-3 p-10 w-full h-auto lg:ml-80;
     }
     
     footer{
@@ -146,23 +138,33 @@
     }
 
     .page-breadcrumbs{
-        @apply text-[20px] text-[#234CA1] font-eurostile-bold uppercase mb-5 flex flex-row gap-x-3 items-center;
+        @apply text-[12px] lg:text-[20px] text-[#234CA1] font-eurostile-bold uppercase lg:mb-5 flex flex-row gap-x-3 items-center;
     }
 
     .breadcrumbs-icon{
-        @apply size-4
+        @apply size-2 lg:size-4
     }
 
     /* Sweet Alert */
 
     .my-popup{
-        @apply rounded-lg p-2 border-2 border-[#234CA1]
+        @apply rounded-lg p-2;
+    }
+
+    /* Hamburger */
+
+    .hamburger-btn{
+        @apply lg:hidden fixed top-4 left-4 z-50 flex flex-col justify-center items-center gap-y-1.5 w-8 h-8;
+    }
+
+    .hamburger-line{
+        @apply block w-6 h-0.5 bg-[#234CA1] transition-all duration-300
     }
 
     /* Sidebar */
 
     .sidebar{
-        @apply flex flex-col justify-between items-center w-[20%] h-full bg-white border border-[#234CA1] rounded-3xl pt-16 pb-8 px-5 gap-y-10;
+        @apply flex flex-col justify-between items-center w-[90%] lg:max-w-[20%] h-[90%] lg:h-[95%] bg-white border border-[#234CA1] rounded-3xl pt-16 pb-8 px-5 gap-y-10;
     }
 
     .sidebar-nav{
@@ -208,11 +210,11 @@
     /* Login/Registration */
     
     .login-register-form{
-        @apply flex justify-center items-center h-full w-full;
+        @apply flex justify-center items-center h-full w-full p-10;
     }
 
     .header-logo{
-        @apply flex flex-row justify-between items-center;
+        @apply flex relative flex-row justify-between items-center;
     }
 
     .footer-marquee{
@@ -220,15 +222,23 @@
     }
 
     .landing-title-text{
-        @apply uppercase font-eurostile-extd font-bold text-[88px] -mt-14;
+        @apply font-eurostile-black text-[72px] lg:text-[100px] bg-gradient-to-r from-[#00c9d4] to-[#234CA1] text-center leading-none lg:leading-normal bg-clip-text text-transparent;
+    }
+
+    .landing-title-subtext{
+        @apply font-eurostile-medium text-[28px] lg:text-[40px] text-[#D02027] uppercase -mt-4 lg:-mt-12;
+    }
+
+    .landing-title-description{
+        @apply font-eurostile text-[18px] lg:text-[24px] text-[#234CA1] text-center w-[80%] lg:w-[70%];
     }
 
     .landing-buttons{
-        @apply flex flex-row gap-x-1 justify-center items-center px-10 py-3 text-[24px] font-eurostile-medium rounded-2xl hover:scale-105 hover:bg-[#9A9A9A] hover:border-[#9A9A9A] hover:text-white transition-colors transition-transform duration-300;
+        @apply flex flex-row gap-x-1 justify-center items-center px-7 lg:px-10 py-3 text-[16px] lg:text-[24px] font-eurostile-medium rounded-2xl hover:scale-105 hover:bg-[#234CA1]/60 hover:text-white transition-colors transition-transform duration-300;
     }
 
     .sign-up-btn{
-        @apply bg-white text-[#234CA1] border border-[#234CA1];
+        @apply bg-white text-[#234CA1] shadow;
     }
 
     .sign-in-btn{
@@ -236,11 +246,15 @@
     }
 
     .main-card{
-        @apply w-[30%] bg-white shadow-lg shadow-[inset_0_10px_6px_#234CA1] rounded-3xl p-10 flex flex-col gap-y-5 justify-between items-center border border-[#234CA1];
+        @apply w-[90%] md:w-[60%] lg:w-[30%] bg-white shadow-lg shadow-[inset_0_10px_6px_#234CA1] rounded-3xl p-10 flex flex-col gap-y-5 justify-between items-center border border-[#234CA1];
     }
 
     .label-inputs-col{
         @apply flex flex-col gap-y-1 items-start w-full;
+    }
+
+    .label-inputs-row{
+        @apply flex flex-row gap-x-10 items-start justify-start w-full;
     }
 
     .checkbox-row{
@@ -248,7 +262,7 @@
     }
 
     .login-register-btn-col{
-        @apply flex flex-col gap-y-1 items-center w-[90%];
+        @apply flex flex-col gap-y-1 items-center w-full lg:w-[90%];
     }
 
     .login-register-title{
@@ -263,6 +277,10 @@
         @apply text-[24px] font-eurostile-heavy text-[#234CA1];
     }
 
+    .label-inputs-add-course{
+        @apply text-[20px] font-eurostile-heavy text-[#234CA1];
+    }
+
     .text-inputs{
         @apply w-full h-12 border border-[#234CA1] rounded-2xl px-3 focus:outline-none focus:ring-1 focus:ring-[#234CA1] focus:border-transparent;
     }
@@ -272,7 +290,7 @@
     }
 
     .asking-text{
-        @apply text-[14px] font-eurostile;
+        @apply flex flex-col items-center justify-center lg:flex-row text-[14px] gap-x-2 font-eurostile;
     }
 
     .login-register-btn{
@@ -280,15 +298,23 @@
     }
 
     .main-card-col{
-        @apply w-[50%] flex flex-col justify-between items-center gap-y-2;
+        @apply w-full lg:w-[50%] flex flex-col justify-between items-center gap-y-2;
     }
 
     .line-separator{
-        @apply border-2 h-[150px] rounded-xl border-[#234CA1];
+        @apply hidden lg:flex border-2 h-[150px] rounded-xl border-[#234CA1];
     }
 
     .dropdown-select{
         @apply flex items-center justify-between w-full px-4 py-3 bg-white border border-[#234CA1] rounded-2xl shadow-sm hover:border-[#234CA1] focus:outline-none;
+    }
+
+    .checkbox-text{
+        @apply font-eurostile-bold text-[12px] text-[#787878] text-justify
+    }
+
+    .anchor-checkbox{
+        @apply hover:text-[#234CA1] underline;
     }
 
     /* Contact Us */
@@ -298,35 +324,48 @@
     }
 
     .contacts-card-text{
-        @apply text-[14px] font-eurostile-bold text-[#234CA1] group-hover:text-white;
+        @apply text-[20px] font-eurostile-bold text-[#234CA1] group-hover:text-white;
     }
 
     .contacts-card-subtext{
-        @apply text-[14px] font-eurostile-extd text-[#234CA1];
+        @apply text-xl font-eurostile-heavy text-[#234CA1] text-center;
     }
 
     .contacts-container{
-        @apply flex flex-col items-start justify-center px-10 py-7 rounded-md border border-[#234CA1] w-[100%] gap-y-5; 
+        @apply flex flex-col items-center lg:items-start justify-center px-10 py-7 rounded-md border border-[#234CA1] w-[100%] gap-y-5; 
     }
 
     .contacts-row{
-        @apply flex flex-row justify-center items-center w-full gap-x-5;
+        @apply flex flex-col lg:flex-row justify-center items-center w-full gap-y-5 gap-x-5;
     }
 
     .contacts-row-card{
-        @apply flex flex-col gap-y-3 w-[50%] h-auto p-10 rounded-xl justify-center items-center shadow-md shadow-[#234CA1];
+        @apply flex flex-col gap-y-3 w-full lg:w-[50%] h-auto p-10 rounded-xl justify-center items-center shadow-md shadow-[#234CA1];
     }
 
     .card-name{
-        @apply text-[#234CA1] text-xl font-eurostile-bold uppercase;
+        @apply text-center text-[#234CA1] text-xl font-eurostile-bold uppercase;
     }
 
     .card-position{
-        @apply text-[#D02027] text-sm -mt-4 font-eurostile uppercase;
+        @apply text-center text-[#D02027] text-xs -mt-4 font-eurostile uppercase;
     }
 
     .card-viber-email{
-        @apply text-[#234CA1] text-lg font-eurostile;
+        @apply text-center text-[#234CA1] text-lg font-eurostile flex flex-wrap gap-x-1 justify-center items-center;
+    }
+
+    .copy-text{
+        @apply cursor-pointer select-none hover:underline hover:text-[#234CA1] transition-colors transition-transform duration-300;
+    }
+
+    .copy-icon{
+        @apply text-[#787878] ml-2;
     }
     
+    /* Add Course */
+
+    .add-course-form{
+        @apply flex flex-col gap-y-5 justify-center items-start lg:py-10
+    }
 }   
