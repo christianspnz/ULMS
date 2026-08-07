@@ -72,12 +72,12 @@ requireRole(2)
     <script>
         function openGmail() {
 
-            const to = "ulmssuperadmin@gmail.com";
-            const cc = "kgmalate@uaagi.com";
+            const to = "UAAGITrainingDepartment@gmail.com";
+            const cc = "kgmalate@uaagi.com, cespinoza@uaagi.com, ulmssuperadmin@gmail.com";
 
-            const subject = "Inquiry regarding UAAGI Learning Management System";
+            const subject = "Inquiry regarding UAAGI Learning Hub";
 
-            const body = `Dear UAAGI LMS Administrator,
+            const body = `Dear UAAGI Learning Hub Administrator,
 
             Please describe your concern below.
 

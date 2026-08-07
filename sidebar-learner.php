@@ -17,8 +17,8 @@
                 ? 'bg-[#234CA1] text-white'
                 : 'text-[#234CA1] hover:bg-[#828282] hover:text-white transition-colors duration-100'
             ?> ">
-            <svg height="18" width="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M24 4a3 3 0 0 0-3-3h-.77a.52.52 0 0 1-.44-.25A1.49 1.49 0 0 0 18.5 0H4a1.5 1.5 0 0 0-1.5 1.5v.75a.25.25 0 0 0 .25.25H4a1 1 0 0 1 0 2H1a1 1 0 0 0 0 2h1.29a.25.25 0 0 1 .25.25v3a.25.25 0 0 0 .25.25H4a1 1 0 0 1 0 2H1a1 1 0 0 0 0 2h1.29a.25.25 0 0 1 .25.25v3a.25.25 0 0 0 .25.25H4a1 1 0 0 1 0 2H1a1 1 0 0 0 0 2h1.29a.25.25 0 0 1 .25.25v.75A1.5 1.5 0 0 0 4 24h14.5a1.49 1.49 0 0 0 1.29-.75a.52.52 0 0 1 .44-.25H21a3 3 0 0 0 3-3zm-8.79 4a1.5 1.5 0 0 1-1.5 1.5H9.5A1.5 1.5 0 0 1 8 8V5.5A1.5 1.5 0 0 1 9.5 4h4.21a1.5 1.5 0 0 1 1.5 1.5ZM22 10.75a.25.25 0 0 1-.25.25h-1.5a.25.25 0 0 1-.25-.25v-2.5a.25.25 0 0 1 .25-.25h1.5a.25.25 0 0 1 .25.25Zm-2 2.5a.25.25 0 0 1 .25-.25h1.5a.25.25 0 0 1 .25.25v2.5a.25.25 0 0 1-.25.25h-1.5a.25.25 0 0 1-.25-.25ZM22 4v1.75a.25.25 0 0 1-.25.25h-1.5a.25.25 0 0 1-.25-.25v-2.5a.25.25 0 0 1 .25-.25H21a1 1 0 0 1 1 1m0 16a1 1 0 0 1-1 1h-.75a.25.25 0 0 1-.25-.25v-2.5a.25.25 0 0 1 .25-.25h1.5a.25.25 0 0 1 .25.25Z" fill="currentColor"/>
+            <svg height="18" width="18" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                <path d="M512 124.7L256 18L0 124.7l256 106.7l256-106.7zM256 274l-144.9-67.6L0 252.7l256 106.7l256-106.7l-111.1-46.3L256 274zm0 128l-139.6-69.8L0 380.7l256 106.7l256-106.7l-116.4-48.5L256 402z" fill="currentColor" />
             </svg>
             Courses
         </a>
@@ -86,7 +86,7 @@
         Swal.fire({
             html: `
                 <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
-                    <div class="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-x-5 p-5">
+                    <div class="flex flex-row items-center lg:items-start justify-center gap-x-5 p-5">
                         <i class="fa-solid fa-right-from-bracket text-[#234CA1] text-6xl"></i>
 
                         <div class="flex flex-col justify-center items-start">

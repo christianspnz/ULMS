@@ -3,6 +3,131 @@
 @tailwind utilities;
 @plugin "daisyui";
 
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* Firefox */
+html {
+    scrollbar-width: none;
+}
+
+/* IE and old Edge */
+body {
+    -ms-overflow-style: none;
+}  
+
+/* ---------- Uniform system colors (all screen sizes) ---------- */
+
+.fc-event {
+    background-color: #234CA1 !important;
+    border-color: #234CA1 !important;
+    color: #ffffff !important;
+}
+
+.fc-button-primary {
+    background-color: #234CA1 !important;
+    border-color: #234CA1 !important;
+}
+
+.fc-button-primary:hover {
+    background-color: #1a3a80 !important;
+    border-color: #1a3a80 !important;
+}
+
+.fc-button-primary:not(:disabled).fc-button-active {
+    background-color: #1a3a80 !important;
+    border-color: #1a3a80 !important;
+}
+
+.fc-today-cell,
+.fc-day-today {
+    background-color: #eff4fc !important;
+}
+
+.fc-daygrid-day-number {
+    color: #234CA1;
+    font-weight: 600;
+}
+
+/* ---------- Hover polish + professional event pills ---------- */
+
+.fc-daygrid-event {
+    border-radius: 6px;
+    padding: 2px 6px;
+    margin-top: 2px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fc-daygrid-event:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(35, 76, 161, 0.3);
+}
+
+.fc-daygrid-day:hover {
+    background-color: #f8fafc;
+    cursor: pointer;
+}
+
+/* ---------- Mobile responsive ---------- */
+
+@media (max-width: 640px) {
+
+    .fc .fc-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        row-gap: 0.5rem;
+    }
+
+    /* First chunk = prev/next/today buttons */
+    .fc .fc-toolbar-chunk:nth-child(1) {
+        order: 1;
+    }
+
+    /* Third chunk = view-switcher buttons (dayGridMonth/listWeek) */
+    .fc .fc-toolbar-chunk:nth-child(3) {
+        order: 2;
+    }
+
+    /* Second chunk = title/date — pushed to its own full-width row, centered */
+    .fc .fc-toolbar-chunk:nth-child(2) {
+        order: 3;
+        flex-basis: 100%;
+        text-align: center;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1rem;
+    }
+
+    .fc .fc-button {
+        padding: 0.4rem 0.7rem;
+        font-size: 0.75rem;
+    }
+
+    .fc-daygrid-day-number {
+        font-size: 0.75rem;
+    }
+
+    .fc-daygrid-day-frame {
+        min-height: 45px;
+    }
+
+    .fc-daygrid-event {
+        font-size: 0.7rem;
+    }
+
+    .my-popup {
+        width: 90% !important;
+        margin: 0 auto;
+    }
+
+}
+
 /* Scrollbar */
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -118,15 +243,15 @@
     }
     
     header{
-        @apply p-10 w-full h-auto;
+        @apply py-5 w-full h-auto;
     }
     
     main{
-        @apply flex flex-col gap-y-3 p-10 w-full h-auto lg:ml-80;
+        @apply flex flex-col gap-y-3 px-10 py-10 w-full h-auto lg:ml-80;
     }
     
     footer{
-        @apply w-full h-auto overflow-hidden z-10 pb-10;
+        @apply w-full h-auto overflow-hidden z-10 pb-5;
     }
 
 }
@@ -222,19 +347,19 @@
     }
 
     .landing-title-text{
-        @apply font-eurostile-black text-[72px] lg:text-[100px] bg-gradient-to-r from-[#00c9d4] to-[#234CA1] text-center leading-none lg:leading-normal bg-clip-text text-transparent;
+        @apply flex font-eurostile-black text-[32px] lg:text-[80px] text-[#234CA1];
     }
 
     .landing-title-subtext{
-        @apply font-eurostile-medium text-[28px] lg:text-[40px] text-[#D02027] uppercase -mt-4 lg:-mt-12;
+        @apply font-eurostile-medium text-[28px] lg:text-[36px] text-[#D02027] uppercase -mt-4 ml-1;
     }
 
     .landing-title-description{
-        @apply font-eurostile text-[18px] lg:text-[24px] text-[#234CA1] text-center w-[80%] lg:w-[70%];
+        @apply font-eurostile text-[14px] lg:text-[18px] text-[#234CA1] w-[80%] lg:w-[60%] ml-1;
     }
 
     .landing-buttons{
-        @apply flex flex-row gap-x-1 justify-center items-center px-7 lg:px-10 py-3 text-[16px] lg:text-[24px] font-eurostile-medium rounded-2xl hover:scale-105 hover:bg-[#234CA1]/60 hover:text-white transition-colors transition-transform duration-300;
+        @apply flex flex-row gap-x-1 justify-center items-center px-7 lg:px-10 py-3 text-[16px] lg:text-[24px] font-eurostile-medium rounded-2xl hover:scale-105 hover:bg-[#234CA1]/60 hover:text-white transition-colors transition-transform duration-300 ml-1;
     }
 
     .sign-up-btn{

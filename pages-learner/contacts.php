@@ -6,6 +6,7 @@ requireRole(1)
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@ requireRole(1)
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body class="h-auto lg:h-screen">
     <?php include '../sidebar-learner.php'; ?>
     <main>
@@ -31,32 +33,32 @@ requireRole(1)
                 <div class="contacts-row-card">
                     <span class="card-name">Karla Grace A. Malate</span>
                     <span class="card-position">Sales Training Supervisor</span>
-                    <span class="card-viber-email"><b>Viber -</b> 
+                    <span class="card-viber-email"><b>Viber -</b>
                         <p class="copy-text">09766445725</p>
                         <svg height="14" width="14" class="copy-icon" viewBox="0 0 408 480" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M299 5v43H43v299H0V48q0-18 12.5-30.5T43 5h256zm64 86q17 0 29.5 12.5T405 133v299q0 18-12.5 30.5T363 475H128q-18 0-30.5-12.5T85 432V133q0-17 12.5-29.5T128 91h235zm0 341V133H128v299h235z" fill="currentColor"/>
+                            <path d="M299 5v43H43v299H0V48q0-18 12.5-30.5T43 5h256zm64 86q17 0 29.5 12.5T405 133v299q0 18-12.5 30.5T363 475H128q-18 0-30.5-12.5T85 432V133q0-17 12.5-29.5T128 91h235zm0 341V133H128v299h235z" fill="currentColor" />
                         </svg>
                     </span>
-                    <span class="card-viber-email"><b>Email -</b> 
+                    <span class="card-viber-email"><b>Email -</b>
                         <p class="copy-text">kgmalate@uaagi.com</p>
                         <svg height="14" width="14" class="copy-icon" viewBox="0 0 408 480" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M299 5v43H43v299H0V48q0-18 12.5-30.5T43 5h256zm64 86q17 0 29.5 12.5T405 133v299q0 18-12.5 30.5T363 475H128q-18 0-30.5-12.5T85 432V133q0-17 12.5-29.5T128 91h235zm0 341V133H128v299h235z" fill="currentColor"/>
+                            <path d="M299 5v43H43v299H0V48q0-18 12.5-30.5T43 5h256zm64 86q17 0 29.5 12.5T405 133v299q0 18-12.5 30.5T363 475H128q-18 0-30.5-12.5T85 432V133q0-17 12.5-29.5T128 91h235zm0 341V133H128v299h235z" fill="currentColor" />
                         </svg>
                     </span>
                 </div>
                 <div class="contacts-row-card">
                     <span class="card-name">Christian B. Espinoza</span>
                     <span class="card-position">Sales Training Admin Assistant</span>
-                    <span class="card-viber-email"><b>Viber -</b> 
+                    <span class="card-viber-email"><b>Viber -</b>
                         <p class="copy-text">09926870934</p>
                         <svg height="14" width="14" class="copy-icon" viewBox="0 0 408 480" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M299 5v43H43v299H0V48q0-18 12.5-30.5T43 5h256zm64 86q17 0 29.5 12.5T405 133v299q0 18-12.5 30.5T363 475H128q-18 0-30.5-12.5T85 432V133q0-17 12.5-29.5T128 91h235zm0 341V133H128v299h235z" fill="currentColor"/>
+                            <path d="M299 5v43H43v299H0V48q0-18 12.5-30.5T43 5h256zm64 86q17 0 29.5 12.5T405 133v299q0 18-12.5 30.5T363 475H128q-18 0-30.5-12.5T85 432V133q0-17 12.5-29.5T128 91h235zm0 341V133H128v299h235z" fill="currentColor" />
                         </svg>
                     </span>
-                    <span class="card-viber-email"><b>Email -</b> 
+                    <span class="card-viber-email"><b>Email -</b>
                         <p class="copy-text">cespinoza@uaagi.com</p>
                         <svg height="14" width="14" class="copy-icon" viewBox="0 0 408 480" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M299 5v43H43v299H0V48q0-18 12.5-30.5T43 5h256zm64 86q17 0 29.5 12.5T405 133v299q0 18-12.5 30.5T363 475H128q-18 0-30.5-12.5T85 432V133q0-17 12.5-29.5T128 91h235zm0 341V133H128v299h235z" fill="currentColor"/>
+                            <path d="M299 5v43H43v299H0V48q0-18 12.5-30.5T43 5h256zm64 86q17 0 29.5 12.5T405 133v299q0 18-12.5 30.5T363 475H128q-18 0-30.5-12.5T85 432V133q0-17 12.5-29.5T128 91h235zm0 341V133H128v299h235z" fill="currentColor" />
                         </svg>
                     </span>
                 </div>
@@ -72,12 +74,12 @@ requireRole(1)
     <script>
         function openGmail() {
 
-            const to = "ulmssuperadmin@gmail.com";
-            const cc = "kgmalate@uaagi.com";
+            const to = "UAAGITrainingDepartment@gmail.com";
+            const cc = "kgmalate@uaagi.com, cespinoza@uaagi.com, ulmssuperadmin@gmail.com";
 
-            const subject = "Inquiry regarding UAAGI Learning Management System";
+            const subject = "Inquiry regarding UAAGI Learning Hub";
 
-            const body = `Dear UAAGI LMS Administrator,
+            const body = `Dear UAAGI Learning Hub Administrator,
 
             Please describe your concern below.
 
@@ -101,11 +103,11 @@ requireRole(1)
             `;
 
             const gmailURL =
-                "https://mail.google.com/mail/?view=cm&fs=1"
-                + "&to=" + encodeURIComponent(to)
-                + "&cc=" + encodeURIComponent(cc)
-                + "&su=" + encodeURIComponent(subject)
-                + "&body=" + encodeURIComponent(body);
+                "https://mail.google.com/mail/?view=cm&fs=1" +
+                "&to=" + encodeURIComponent(to) +
+                "&cc=" + encodeURIComponent(cc) +
+                "&su=" + encodeURIComponent(subject) +
+                "&body=" + encodeURIComponent(body);
 
             window.open(gmailURL, "_blank");
         }
@@ -126,4 +128,5 @@ requireRole(1)
         });
     </script>
 </body>
+
 </html>

@@ -1,12 +1,12 @@
 <?php
 
-    include "../config/config.php";
+include "../config/config.php";
 
-    $currentPage = basename($_SERVER['PHP_SELF']);
+$currentPage = basename($_SERVER['PHP_SELF']);
 
-    include "../php/login/user_info.php";
+include "../php/login/user_info.php";
 
-    include "hamburger-btn.php";    
+include "hamburger-btn.php";
 ?>
 
 <aside id="sidebar" class="sidebar hidden lg:flex fixed lg:top-0 lg:left-0 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 lg:translate-y-0 lg:translate-x-0 z-40 lg:m-5">
@@ -17,8 +17,8 @@
                 ? 'bg-[#234CA1] text-white'
                 : 'text-[#234CA1] hover:bg-[#828282] hover:text-white transition-colors duration-100'
             ?> ">
-            <svg height="18" width="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M24 4a3 3 0 0 0-3-3h-.77a.52.52 0 0 1-.44-.25A1.49 1.49 0 0 0 18.5 0H4a1.5 1.5 0 0 0-1.5 1.5v.75a.25.25 0 0 0 .25.25H4a1 1 0 0 1 0 2H1a1 1 0 0 0 0 2h1.29a.25.25 0 0 1 .25.25v3a.25.25 0 0 0 .25.25H4a1 1 0 0 1 0 2H1a1 1 0 0 0 0 2h1.29a.25.25 0 0 1 .25.25v3a.25.25 0 0 0 .25.25H4a1 1 0 0 1 0 2H1a1 1 0 0 0 0 2h1.29a.25.25 0 0 1 .25.25v.75A1.5 1.5 0 0 0 4 24h14.5a1.49 1.49 0 0 0 1.29-.75a.52.52 0 0 1 .44-.25H21a3 3 0 0 0 3-3zm-8.79 4a1.5 1.5 0 0 1-1.5 1.5H9.5A1.5 1.5 0 0 1 8 8V5.5A1.5 1.5 0 0 1 9.5 4h4.21a1.5 1.5 0 0 1 1.5 1.5ZM22 10.75a.25.25 0 0 1-.25.25h-1.5a.25.25 0 0 1-.25-.25v-2.5a.25.25 0 0 1 .25-.25h1.5a.25.25 0 0 1 .25.25Zm-2 2.5a.25.25 0 0 1 .25-.25h1.5a.25.25 0 0 1 .25.25v2.5a.25.25 0 0 1-.25.25h-1.5a.25.25 0 0 1-.25-.25ZM22 4v1.75a.25.25 0 0 1-.25.25h-1.5a.25.25 0 0 1-.25-.25v-2.5a.25.25 0 0 1 .25-.25H21a1 1 0 0 1 1 1m0 16a1 1 0 0 1-1 1h-.75a.25.25 0 0 1-.25-.25v-2.5a.25.25 0 0 1 .25-.25h1.5a.25.25 0 0 1 .25.25Z" fill="currentColor"/>
+            <svg height="18" width="18" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                <path d="M512 124.7L256 18L0 124.7l256 106.7l256-106.7zM256 274l-144.9-67.6L0 252.7l256 106.7l256-106.7l-111.1-46.3L256 274zm0 128l-139.6-69.8L0 380.7l256 106.7l256-106.7l-116.4-48.5L256 402z" fill="currentColor" />
             </svg>
             Courses
         </a>
@@ -27,10 +27,20 @@
                 ? 'bg-[#234CA1] text-white'
                 : 'text-[#234CA1] hover:bg-[#828282] hover:text-white transition-colors duration-100'
             ?> ">
-            <svg height="18" width="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M24 4a3 3 0 0 0-3-3h-.77a.52.52 0 0 1-.44-.25A1.49 1.49 0 0 0 18.5 0H4a1.5 1.5 0 0 0-1.5 1.5v.75a.25.25 0 0 0 .25.25H4a1 1 0 0 1 0 2H1a1 1 0 0 0 0 2h1.29a.25.25 0 0 1 .25.25v3a.25.25 0 0 0 .25.25H4a1 1 0 0 1 0 2H1a1 1 0 0 0 0 2h1.29a.25.25 0 0 1 .25.25v3a.25.25 0 0 0 .25.25H4a1 1 0 0 1 0 2H1a1 1 0 0 0 0 2h1.29a.25.25 0 0 1 .25.25v.75A1.5 1.5 0 0 0 4 24h14.5a1.49 1.49 0 0 0 1.29-.75a.52.52 0 0 1 .44-.25H21a3 3 0 0 0 3-3zm-8.79 4a1.5 1.5 0 0 1-1.5 1.5H9.5A1.5 1.5 0 0 1 8 8V5.5A1.5 1.5 0 0 1 9.5 4h4.21a1.5 1.5 0 0 1 1.5 1.5ZM22 10.75a.25.25 0 0 1-.25.25h-1.5a.25.25 0 0 1-.25-.25v-2.5a.25.25 0 0 1 .25-.25h1.5a.25.25 0 0 1 .25.25Zm-2 2.5a.25.25 0 0 1 .25-.25h1.5a.25.25 0 0 1 .25.25v2.5a.25.25 0 0 1-.25.25h-1.5a.25.25 0 0 1-.25-.25ZM22 4v1.75a.25.25 0 0 1-.25.25h-1.5a.25.25 0 0 1-.25-.25v-2.5a.25.25 0 0 1 .25-.25H21a1 1 0 0 1 1 1m0 16a1 1 0 0 1-1 1h-.75a.25.25 0 0 1-.25-.25v-2.5a.25.25 0 0 1 .25-.25h1.5a.25.25 0 0 1 .25.25Z" fill="currentColor"/>
+            <svg height="18" width="18" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zm149.3 277.3c0 11.8-9.5 21.3-21.3 21.3h-85.3V384c0 11.8-9.5 21.3-21.3 21.3h-42.7c-11.8 0-21.3-9.6-21.3-21.3v-85.3H128c-11.8 0-21.3-9.6-21.3-21.3v-42.7c0-11.8 9.5-21.3 21.3-21.3h85.3V128c0-11.8 9.5-21.3 21.3-21.3h42.7c11.8 0 21.3 9.6 21.3 21.3v85.3H384c11.8 0 21.3 9.6 21.3 21.3v42.7z" fill="currentColor" />
             </svg>
             Add Courses
+        </a>
+        <a href="schedule.php" class="sidebar-text 
+            <?= $currentPage === 'schedule.php'
+                ? 'bg-[#234CA1] text-white'
+                : 'text-[#234CA1] hover:bg-[#828282] hover:text-white transition-colors duration-100'
+            ?> ">
+            <svg height="18" width="18" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 4c0-1.1.9-2 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4zm2 2v12h14V6H3zm2-6h2v2H5V0zm8 0h2v2h-2V0zM5 9h2v2H5V9zm0 4h2v2H5v-2zm4-4h2v2H9V9zm0 4h2v2H9v-2zm4-4h2v2h-2V9zm0 4h2v2h-2v-2z" fill="currentColor" />
+            </svg>
+            Schedules
         </a>
         <a href="reports.php" class="sidebar-text 
             <?= $currentPage === 'reports.php'
@@ -38,21 +48,11 @@
                 : 'text-[#234CA1] hover:bg-[#828282] hover:text-white transition-colors duration-100'
             ?> ">
             <svg height="18" width="18" viewBox="0 0 897 1024" xmlns="http://www.w3.org/2000/svg">
-                <path d="M832.27 1024h-768q-26 0-45-18.5T.27 960V65q0-27 19-45.5t45-18.5h448v352q0 13 9.5 22.5t22.5 9.5h352v575q0 27-18.5 45.5t-45.5 18.5zm-96-192h-32V608q0-13-9.5-22.5t-22.5-9.5h-64q-13 0-22.5 9.5t-9.5 22.5v224h-64V480q0-13-9.5-22.5t-22.5-9.5h-64q-13 0-22.5 9.5t-9.5 22.5v352h-64V672q0-13-9.5-22.5t-22.5-9.5h-64q-13 0-22.5 9.5t-9.5 22.5v160h-32q-13 0-22.5 9.5t-9.5 22.5t9.5 22.5t22.5 9.5h576q14 0 23-9.5t9-22.5t-9.5-22.5t-22.5-9.5zm-160-832q26 0 44 18l257 257q19 19 19 46h-320V0z" fill="currentColor"/>
+                <path d="M832.27 1024h-768q-26 0-45-18.5T.27 960V65q0-27 19-45.5t45-18.5h448v352q0 13 9.5 22.5t22.5 9.5h352v575q0 27-18.5 45.5t-45.5 18.5zm-96-192h-32V608q0-13-9.5-22.5t-22.5-9.5h-64q-13 0-22.5 9.5t-9.5 22.5v224h-64V480q0-13-9.5-22.5t-22.5-9.5h-64q-13 0-22.5 9.5t-9.5 22.5v352h-64V672q0-13-9.5-22.5t-22.5-9.5h-64q-13 0-22.5 9.5t-9.5 22.5v160h-32q-13 0-22.5 9.5t-9.5 22.5t9.5 22.5t22.5 9.5h576q14 0 23-9.5t9-22.5t-9.5-22.5t-22.5-9.5zm-160-832q26 0 44 18l257 257q19 19 19 46h-320V0z" fill="currentColor" />
             </svg>
             Reports
         </a>
-        <!-- <a href="calendar.php" class="sidebar-text 
-            <?= $currentPage === 'calendar.php'
-                ? 'bg-[#234CA1] text-white'
-                : 'text-[#234CA1] hover:bg-[#828282] hover:text-white transition-colors duration-100'
-            ?> ">
-            <svg height="18" width="18" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 4c0-1.1.9-2 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4zm2 2v12h14V6H3zm2-6h2v2H5V0zm8 0h2v2h-2V0zM5 9h2v2H5V9zm0 4h2v2H5v-2zm4-4h2v2H9V9zm0 4h2v2H9v-2zm4-4h2v2h-2V9zm0 4h2v2h-2v-2z" fill="currentColor"/>
-            </svg>
-            Calendar
-        </a>
-        <a href="contacts.php" class="sidebar-text 
+        <!-- <a href="contacts.php" class="sidebar-text 
             <?= $currentPage === 'contacts.php'
                 ? 'bg-[#234CA1] text-white'
                 : 'text-[#234CA1] hover:bg-[#828282] hover:text-white transition-colors duration-100'
@@ -67,7 +67,7 @@
         <div class="logout-row">
             <div class="user-icon">
                 <svg height="24" width="24" viewBox="0 0 1664 1664" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M832 0Q673 0 560.5 112.5T448 384t112.5 271.5T832 768t271.5-112.5T1216 384t-112.5-271.5T832 0zm0 896q112 0 227 22t224 69.5t193.5 114t136 162.5t51.5 208q0 75-57 133.5t-135 58.5H192q-78 0-135-58.5T0 1472q0-112 51.5-208t136-162.5t193.5-114T605 918t227-22z" fill="currentColor"/>
+                    <path d="M832 0Q673 0 560.5 112.5T448 384t112.5 271.5T832 768t271.5-112.5T1216 384t-112.5-271.5T832 0zm0 896q112 0 227 22t224 69.5t193.5 114t136 162.5t51.5 208q0 75-57 133.5t-135 58.5H192q-78 0-135-58.5T0 1472q0-112 51.5-208t136-162.5t193.5-114T605 918t227-22z" fill="currentColor" />
                 </svg>
             </div>
             <div class="logout-col">
@@ -91,7 +91,7 @@
         <a href="#" id="logoutBtn" class="logout-btn">
             <span class="logout-icon">
                 <svg height="20" width="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 21q-.825 0-1.413-.588T3 19V5q0-.825.588-1.413T5 3h7v2H5v14h7v2H5Zm11-4l-1.375-1.45l2.55-2.55H9v-2h8.175l-2.55-2.55L16 7l5 5l-5 5Z" fill="currentColor"/>
+                    <path d="M5 21q-.825 0-1.413-.588T3 19V5q0-.825.588-1.413T5 3h7v2H5v14h7v2H5Zm11-4l-1.375-1.45l2.55-2.55H9v-2h8.175l-2.55-2.55L16 7l5 5l-5 5Z" fill="currentColor" />
                 </svg>
                 Logout
             </span>
@@ -100,13 +100,13 @@
 </aside>
 
 <script>
-    document.getElementById("logoutBtn").addEventListener("click", function (e) {
-    e.preventDefault();
+    document.getElementById("logoutBtn").addEventListener("click", function(e) {
+        e.preventDefault();
 
         Swal.fire({
             html: `
                 <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
-                    <div class="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-x-5 p-5">
+                    <div class="flex flex-row items-center lg:items-start justify-center gap-x-5 p-5">
                         <i class="fa-solid fa-right-from-bracket text-[#234CA1] text-6xl"></i>
 
                         <div class="flex flex-col justify-center items-start">
