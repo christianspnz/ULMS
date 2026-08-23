@@ -10,11 +10,13 @@ requireRole([1, 2]);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
-    <link rel="icon" type="image/png" href="../assets/online-library-logo.png" class="w-24">
+    <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
     <title>UEH - Course Viewer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/mammoth@1.7.0/mammoth.browser.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
@@ -50,7 +52,13 @@ requireRole([1, 2]);
 
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
+        lucide.createIcons(); 
+        AOS.init({
+            duration: 600,
+            once: true // animate only the first time an element scrolls into view
+        });
         const urlParams = new URLSearchParams(window.location.search);
         const courseId = urlParams.get("course_id");
 

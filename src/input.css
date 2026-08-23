@@ -153,6 +153,14 @@ body {
     border: 3px solid #234CA1;
 }
 
+.popup-green{
+    border: 3px solid #16A34A;
+}
+
+.popup-yellow{
+    border: 3px solid #d0aa13;
+}
+
 .my-progress {
     width: 100%;
     height: 6px;
@@ -312,12 +320,20 @@ body {
         @apply flex flex-col w-full min-w-0;
     }
 
-    .user-icon{
-        @apply bg-white text-[#234CA1] border-2 border-[#234CA1] rounded-full p-2;
+    .user-icon {
+        @apply w-16 h-16 min-w-16 min-h-16 rounded-full border-4 border-[#234CA1] flex items-center justify-center overflow-hidden text-[#234CA1] font-eurostile-extd-black text-[20px] group-hover:bg-[#234CA1] group-hover:text-white transition-colors duration-100;
+    }
+
+    .user-icon img {
+        @apply w-full h-full object-cover rounded-full;
+    }
+
+    users-badge{
+        @apply bg-[#D02027] text-white text-xs rounded-full min-w-5 h-5 px-1.5 flex items-center justify-center ml-auto;
     }
 
     .user-info-name{
-        @apply text-[16px] font-eurostile-bold text-[#234CA1] w-full truncate whitespace-nowrap inline-block;
+        @apply text-[16px] font-eurostile-bold text-[#234CA1] w-full truncate whitespace-nowrap inline-block group-hover:underline cursor-pointer;
     }
     
     .user-info-subname{
@@ -440,6 +456,20 @@ body {
 
     .anchor-checkbox{
         @apply hover:text-[#234CA1] underline;
+    }
+
+    /* New password Validation */
+
+    .password-req {
+        @apply flex items-center gap-2 text-gray-400 transition-colors duration-200;
+    }
+
+    .password-req.valid {
+        @apply text-green-600;
+    }
+
+    .password-req.invalid {
+        @apply text-[#D02027];
     }
 
     /* Contact Us */

@@ -1,22 +1,22 @@
-<?php 
+<?php
 
-    include('./config/config.php');
+include('./config/config.php');
 
-    $stmt = mysqli_prepare(
-        $conn,
-        "SELECT 1
+$stmt = mysqli_prepare(
+    $conn,
+    "SELECT 1
         FROM users
         WHERE designation_id = 4
         LIMIT 1"
-    );
+);
 
-    mysqli_stmt_execute($stmt);
+mysqli_stmt_execute($stmt);
 
-    $result = mysqli_stmt_get_result($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
-    $superAdminExists = mysqli_num_rows($result) > 0;
+$superAdminExists = mysqli_num_rows($result) > 0;
 
-    mysqli_stmt_close($stmt);
+mysqli_stmt_close($stmt);
 
 ?>
 
@@ -27,44 +27,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/output.css">
-    <link rel="icon" type="image/png" href="./assets/online-library-logo.png" class="w-24">
+    <link rel="icon" type="image/png" href="./assets/ulh-logo.png" class="w-24">
     <title>UEH</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+</head> 
 
 <body class="m-0 p-0 lg:min-h-screen h-auto flex items-center justify-center">
     <form id="registerForm" action="./php/register_process.php" method="POST" class="login-register-form">
         <div class="main-card lg:flex-row justify-between w-full lg:w-[70%]">
             <div class="main-card-col">
-                <img src="./assets/Logo.png" alt="UAAGI LMS Logo" class="w-52">
-                <span class="login-register-title">Registration</span>
+                <div data-aos="zoom-in" data-aos-easing="ease-in-sine" class="flex flex-col lg:flex-row w-full justify-center items-center gap-x-2 gap-y-1">
+                    <img src="./assets/ulh-logo.png" alt="UAAGI LMS Logo" class="w-20">
+                    <img src="./assets/Logo.png" alt="UAAGI LMS Logo" class="w-52">
+                </div>
+                <span data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="login-register-title">Registration</span>
                 <div class="label-inputs-col w-[90%]">
-                    <span class="label-inputs">Email</span>
-                    <input type="email" name="email" placeholder="sample@gmail.com" class="text-inputs" >
+                    <span data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="label-inputs">Email</span>
+                    <input data-aos="zoom-in"  data-aos-easing="ease-in-sine" type="email" name="email" placeholder="sample@gmail.com" class="text-inputs">
                 </div>
                 <div class="label-inputs-col w-[90%]">
-                    <span class="label-inputs">Last Name</span>
-                    <input type="text" name="lastname" placeholder="cruz" class="text-inputs uppercase" >
+                    <span data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="label-inputs">Last Name</span>
+                    <input data-aos="zoom-in"  data-aos-easing="ease-in-sine" type="text" name="lastname" placeholder="cruz" class="text-inputs uppercase">
                 </div>
                 <div class="label-inputs-col w-[90%]">
-                    <span class="label-inputs">First Name</span>
-                    <input type="text" name="firstname" placeholder="juan" class="text-inputs uppercase" >
+                    <span data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="label-inputs">First Name</span>
+                    <input data-aos="zoom-in"  data-aos-easing="ease-in-sine" type="text" name="firstname" placeholder="juan" class="text-inputs uppercase">
                 </div>
                 <div class="label-inputs-col w-[90%]">
-                    <span class="label-inputs">Middle Name</span>
-                    <input type="text" name="middlename" placeholder="dela" class="text-inputs uppercase">
+                    <span data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="label-inputs">Middle Name</span>
+                    <input data-aos="zoom-in"  data-aos-easing="ease-in-sine" type="text" name="middlename" placeholder="dela" class="text-inputs uppercase">
                 </div>
             </div>
-            <div class="line-separator"></div>
+            <div data-aos="flip-up"  data-aos-easing="ease-in-sine" class="line-separator"></div>
             <div class="main-card-col">
                 <div class="flex flex-col lg:flex-row w-full lg:w-[90%] items-center justify-between gap-x-5">
                     <!-- Designation -->
                     <div class="label-inputs-col w-[90%]">
-                        <span class="label-inputs">Designation</span>
-                        <div class="dropdown relative inline-block w-full">
+                        <span data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="label-inputs">Designation</span>
+                        <div data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="dropdown relative inline-block w-full z-50">
                             <!-- Button -->
-                            <button type="button" class="dropdown-button dropdown-select" aria-="true">
+                            <button type="button" class="dropdown-button dropdown-select z-[9999]" aria-="true">
                                 <span class="selected-option uppercase">Select Role</span>
                                 <svg class="arrow w-5 h-5 transition-transform duration-200"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -77,18 +81,18 @@
                                         d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
-        
+
                             <input type="hidden" name="designation_id" class="selected-id">
-                            
+
                             <!-- Menu -->
                             <div class="dropdown-menu absolute left-0 z-50 hidden w-full mt-2 overflow-hidden bg-white border border-[#234CA1] rounded-2xl shadow-lg">
-        
+
                                 <?php
                                 $sql = "SELECT * FROM designations ORDER BY designation_id ASC";
                                 $result = mysqli_query($conn, $sql);
-    
+
                                 while ($designation = mysqli_fetch_assoc($result)) {
-    
+
                                     // Hide Super Admin if one already exists
                                     if (
                                         $designation["designation_id"] == 4 && $superAdminExists
@@ -105,16 +109,16 @@
                                 <?php
                                 }
                                 ?>
-        
+
                             </div>
                         </div>
                     </div>
                     <!-- Brand -->
-                    <div class="label-inputs-col w-[90%]">
-                        <span class="label-inputs">Brand</span>
-                        <div class="dropdown brand-dropdown relative inline-block w-full">
+                    <div  class="label-inputs-col w-[90%]">
+                        <span data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="label-inputs">Brand</span>
+                        <div data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="dropdown brand-dropdown relative inline-block w-full z-20">
                             <!-- Button -->
-                            <button type="button" class="dropdown-button dropdown-select">
+                            <button type="button" class="dropdown-button dropdown-select z-[9999]">
                                 <span class="selected-option truncate flex-1 text-left">
                                     Select Brand(s)
                                 </span>
@@ -126,23 +130,23 @@
                                     <path stroke-linecap="round"
                                         stroke-linejoin="round"
                                         stroke-width="2"
-                                        d="M19 9l-7 7-7-7"/>
+                                        d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
                             <div class="dropdown-menu absolute left-0 z-50 hidden w-full mt-2 bg-white border border-[#234CA1] rounded-2xl shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
                                 <?php
                                 $sql = "SELECT * FROM brands ORDER BY brand_name";
-                                $result = mysqli_query($conn,$sql);
-                                while($brand = mysqli_fetch_assoc($result)){
+                                $result = mysqli_query($conn, $sql);
+                                while ($brand = mysqli_fetch_assoc($result)) {
                                 ?>
-                                <label class="flex items-center gap-x-3 px-4 py-3 hover:bg-[#234CA1] hover:text-white cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        class="brand-checkbox"
-                                        name="brands[]"
-                                        value="<?= $brand["brand_id"];?>">
-                                    <?= htmlspecialchars($brand["brand_name"]);?>
-                                </label>
+                                    <label class="flex items-center gap-x-3 px-4 py-3 hover:bg-[#234CA1] hover:text-white cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            class="brand-checkbox"
+                                            name="brands[]"
+                                            value="<?= $brand["brand_id"]; ?>">
+                                        <?= htmlspecialchars($brand["brand_name"]); ?>
+                                    </label>
                                 <?php } ?>
                             </div>
                         </div>
@@ -151,10 +155,10 @@
                 <div class="flex flex-col lg:flex-row w-full lg:w-[90%] items-center justify-between gap-x-5">
                     <!-- Dealership -->
                     <div class="label-inputs-col w-[90%]">
-                        <span class="label-inputs">Dealership</span>
-                        <div class="dropdown relative inline-block w-full">
+                        <span data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="label-inputs">Dealership</span>
+                        <div data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="dropdown relative inline-block w-full z-10">
                             <!-- Button -->
-                            <button type="button" class="dropdown-button dropdown-select" aria-="true">
+                            <button type="button" class="dropdown-button dropdown-select z-[9999]" aria-="true">
                                 <span class="selected-option uppercase flex-1 min-w-0 truncate text-left">Select Dealership</span>
                                 <svg class="arrow w-5 h-5 transition-transform duration-200 flex-shrink-0"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -167,9 +171,9 @@
                                         d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
-    
+
                             <input type="hidden" name="dealership_id" class="selected-id">
-    
+
                             <!-- Menu -->
                             <div id="dealershipMenu" class="dropdown-menu absolute left-0 z-50 hidden w-full mt-2 overflow-hidden bg-white border border-[#234CA1] rounded-md shadow-lg overflow-y-auto max-h-60 custom-scrollbar">
                                 <div class="px-4 py-3 text-gray-500 text-center">
@@ -179,32 +183,46 @@
                         </div>
                     </div>
                     <div class="label-inputs-col w-[90%]">
-                        <span class="label-inputs">Contact Number</span>
-                        <input type="tel" id="contactnumber" name="contactnumber" placeholder="09222222222" class="text-inputs" maxlength="11" pattern="^09\d{9}$" >
+                        <span data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="label-inputs">Contact Number</span>
+                        <input data-aos="zoom-in"  data-aos-easing="ease-in-sine" type="tel" id="contactnumber" name="contactnumber" placeholder="09222222222" class="text-inputs" maxlength="11" pattern="^09\d{9}$">
                     </div>
                 </div>
                 <div class="flex flex-col lg:flex-row w-full lg:w-[90%] items-center justify-between gap-x-5">
                     <div class="label-inputs-col w-[90%]">
-                        <span class="label-inputs">Date of Birth</span>
-                        <input type="date" id="dateofbirth" name="dateofbirth" placeholder="05/01/2002" class="text-inputs" >
+                        <span data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="label-inputs">Date of Birth</span>
+                        <input data-aos="zoom-in"  data-aos-easing="ease-in-sine" type="date" id="dateofbirth" name="dateofbirth" placeholder="05/01/2002" class="text-inputs">
                     </div>
                     <div class="label-inputs-col w-[90%]">
-                        <span class="label-inputs">Date Hired</span>
-                        <input type="date" name="datehired" placeholder="05/01/2023" class="text-inputs" >
+                        <span data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="label-inputs">Date Hired</span>
+                        <input data-aos="zoom-in"  data-aos-easing="ease-in-sine" type="date" name="datehired" placeholder="05/01/2023" class="text-inputs">
                     </div>
                 </div>
                 <div class="flex flex-row w-full lg:w-[90%] items-center justify-center py-2 px-6 gap-x-3">
-                    <input type="checkbox" >
-                    <span class="checkbox-text">I have read and agree to the <a href="#" class="anchor-checkbox">privacy policy</a>, <a href="#" class="anchor-checkbox">terms of service</a>, and <a href="#" class="anchor-checkbox">community guidelines</a>.</span>
+                    <input data-aos="zoom-in"  data-aos-easing="ease-in-sine" type="checkbox">
+                    <span data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="checkbox-text">I have read and agree to the <a href="#" class="anchor-checkbox">privacy policy</a>, <a href="#" class="anchor-checkbox">terms of service</a>, and <a href="#" class="anchor-checkbox">community guidelines</a>.</span>
                 </div>
                 <div class="login-register-btn-col">
-                    <button class="login-register-btn" type="submit">Sign Up</button>
-                    <span class="asking-text">Already have an account? <a href="login.php" class="text-[#D02027] font-eurostile-bold text-[14px] hover:underline">Login here</a></span>
+                    <button data-aos="zoom-in" data-aos-easing="ease-in-sine" class="login-register-btn" type="submit">Sign Up</button>
+                    <span data-aos="zoom-in"  data-aos-easing="ease-in-sine" class="asking-text">Already have an account? <a href="login.php" class="text-[#D02027] font-eurostile-bold text-[14px] hover:underline">Login here</a></span>
                 </div>
             </div>
         </div>
     </form>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
+        AOS.init({
+            duration: 600,
+            once: false // allow animations to replay, not just fire once ever
+        });
+
+        // When navigating back via browser history (bfcache restore), the page
+        // doesn't actually reload — so AOS.init() never re-runs. This forces
+        // AOS to recheck all elements and replay their animations.
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                AOS.refreshHard();
+            }
+        });
         document.querySelectorAll(".dropdown").forEach(dropdown => {
 
             const button = dropdown.querySelector(".dropdown-button");
@@ -216,13 +234,13 @@
                 e.stopPropagation();
 
                 document.querySelectorAll(".dropdown-menu").forEach(m => {
-                    if(m !== menu){
+                    if (m !== menu) {
                         m.classList.add("hidden");
                     }
                 });
 
                 document.querySelectorAll(".arrow").forEach(a => {
-                    if(a !== arrow){
+                    if (a !== arrow) {
                         a.classList.remove("rotate-180");
                     }
                 });
@@ -236,23 +254,23 @@
             // MULTI SELECT (BRAND)
             //------------------------------------------------
 
-            if(dropdown.classList.contains("brand-dropdown")){
+            if (dropdown.classList.contains("brand-dropdown")) {
 
                 const text = dropdown.querySelector(".selected-option");
 
                 const checkboxes = dropdown.querySelectorAll(".brand-checkbox");
 
-                checkboxes.forEach(box=>{
+                checkboxes.forEach(box => {
 
-                    box.addEventListener("change",()=>{
+                    box.addEventListener("change", () => {
 
-                        const checked=[...checkboxes].filter(cb=>cb.checked);
+                        const checked = [...checkboxes].filter(cb => cb.checked);
 
-                        if(checked.length===0){
+                        if (checked.length === 0) {
 
-                            text.textContent="Select Brand(s)";
+                            text.textContent = "Select Brand(s)";
 
-                        }else{
+                        } else {
 
                             const names = checked.map(cb => cb.parentElement.textContent.trim());
 
@@ -278,13 +296,13 @@
             const selected = dropdown.querySelector(".selected-option");
             const hidden = dropdown.querySelector(".selected-id");
 
-            dropdown.querySelectorAll(".dropdown-item").forEach(item=>{
+            dropdown.querySelectorAll(".dropdown-item").forEach(item => {
 
-                item.addEventListener("click",()=>{
+                item.addEventListener("click", () => {
 
-                    selected.textContent=item.dataset.value;
+                    selected.textContent = item.dataset.value;
 
-                    hidden.value=item.dataset.id;
+                    hidden.value = item.dataset.id;
 
                     menu.classList.add("hidden");
 
@@ -296,15 +314,15 @@
 
         });
 
-        document.addEventListener("click",()=>{
+        document.addEventListener("click", () => {
 
-            document.querySelectorAll(".dropdown-menu").forEach(menu=>{
+            document.querySelectorAll(".dropdown-menu").forEach(menu => {
 
                 menu.classList.add("hidden");
 
             });
 
-            document.querySelectorAll(".arrow").forEach(arrow=>{
+            document.querySelectorAll(".arrow").forEach(arrow => {
 
                 arrow.classList.remove("rotate-180");
 
@@ -317,12 +335,12 @@
             checkbox.addEventListener("change", () => {
                 const selectedBrands = [];
                 brandCheckboxes.forEach(cb => {
-                    if(cb.checked){
+                    if (cb.checked) {
                         selectedBrands.push(cb.value);
                     }
                 });
 
-                 // Reset dealership selection
+                // Reset dealership selection
                 const dealershipDropdown = document.querySelector("#dealershipMenu").closest(".dropdown");
 
                 dealershipDropdown.querySelector(".selected-option").textContent = "Select Dealership";
@@ -339,20 +357,20 @@
                 }
 
                 fetch("./php/get_dealerships.php", {
-                    method: "POST",
-                    headers:{
-                        "Content-Type":"application/json"
-                    },
-                    body: JSON.stringify({
-                        brands:selectedBrands
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            brands: selectedBrands
+                        })
                     })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    const menu = document.getElementById("dealershipMenu");
-                    menu.innerHTML = "";
-                    data.forEach(dealer => {
-                        menu.innerHTML += `
+                    .then(res => res.json())
+                    .then(data => {
+                        const menu = document.getElementById("dealershipMenu");
+                        menu.innerHTML = "";
+                        data.forEach(dealer => {
+                            menu.innerHTML += `
                             <button
                                 type="button"
                                 class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white"
@@ -361,26 +379,26 @@
                                 ${dealer.dealership_name}
                             </button>
                         `;
+                        });
+                        attachDealershipEvents();
                     });
-                    attachDealershipEvents();
-                });
             });
         });
 
         function truncate(text, max = 30) {
-            return text.length > max
-                ? text.substring(0, max) + "..."
-                : text;
+            return text.length > max ?
+                text.substring(0, max) + "..." :
+                text;
         }
 
-        function attachDealershipEvents(){
+        function attachDealershipEvents() {
             const dropdown = document.querySelector("#dealershipMenu").closest(".dropdown");
             const selected = dropdown.querySelector(".selected-option");
             const hidden = dropdown.querySelector(".selected-id");
             const menu = dropdown.querySelector(".dropdown-menu");
             const arrow = dropdown.querySelector(".arrow");
-            dropdown.querySelectorAll(".dropdown-item").forEach(item=>{
-                item.addEventListener("click",()=>{
+            dropdown.querySelectorAll(".dropdown-item").forEach(item => {
+                item.addEventListener("click", () => {
                     selected.textContent = item.dataset.value;
                     hidden.value = item.dataset.id;
                     menu.classList.add("hidden");
@@ -389,23 +407,23 @@
             });
         }
 
-        document.getElementById("registerForm").addEventListener("submit", function(e){
+        document.getElementById("registerForm").addEventListener("submit", function(e) {
 
             e.preventDefault();
 
             const formData = new FormData(this);
 
-            fetch("./php/registration/register_process.php",{
-                method:"POST",
-                body:formData
-            })
-            .then(res => res.json())
-            .then(data=>{
+            fetch("./php/registration/register_process.php", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
 
-                if(data.success){
+                    if (data.success) {
 
-                    Swal.fire({
-                        html: `
+                        Swal.fire({
+                            html: `
                             <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
                                 <div class="flex flex-col lg:flex-row items-center justify-center gap-x-5 p-5">
                                     <i class="fa-solid fa-circle-check text-[#234CA1] text-6xl"></i>
@@ -416,7 +434,7 @@
                                         </h2>
 
                                         <p class="text-sm text-gray-500 text-center lg:text-left">
-                                            Your account has been created successfully.
+                                            Your account has been registered successfully.
                                         </p>
                                     </div>
                                 </div>
@@ -424,28 +442,28 @@
                                 <button
                                     id="proceedBtn"
                                     class="w-full h-12 bg-[#234CA1] text-white rounded-xl font-bold hover:bg-[#1B3D82] transition">
-                                    Proceed to Login
+                                    Please check your email for your temporary password and proceed to login once your registration has been approved.
                                 </button>
                             </div>
                         `,
-                        customClass: {
-                            popup: "my-popup popup-blue",
-                            htmlContainer: "!p-0 !m-0"
-                        },
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        didOpen: () => {
-                            document.getElementById("proceedBtn").onclick = () => {
-                                window.location.href = "login.php";
-                            };
-                        }
-                    });
+                            customClass: {
+                                popup: "my-popup popup-blue",
+                                htmlContainer: "!p-0 !m-0"
+                            },
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                document.getElementById("proceedBtn").onclick = () => {
+                                    window.location.href = "login.php";
+                                };
+                            }
+                        });
 
-                }else{
+                    } else {
 
-                    Swal.fire({
-                        html: `
+                        Swal.fire({
+                            html: `
                             <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
                                 <div class="flex flex-col lg:flex-row items-center justify-center gap-x-5 p-5">
                                     <i class="fa-solid fa-circle-xmark text-[#D02027] text-6xl"></i>
@@ -468,23 +486,23 @@
                                 </button>
                             </div>
                         `,
-                        customClass: {
-                            popup: "my-popup popup-red",
-                            htmlContainer: "!p-0 !m-0"
-                        },
-                        showConfirmButton: false,
-                        didOpen: () => {
-                            document.getElementById("retryBtn").onclick = () => Swal.close();
-                        }
-                    });
+                            customClass: {
+                                popup: "my-popup popup-red",
+                                htmlContainer: "!p-0 !m-0"
+                            },
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                document.getElementById("retryBtn").onclick = () => Swal.close();
+                            }
+                        });
 
-                }
+                    }
 
-            })
-            .catch(error=>{
+                })
+                .catch(error => {
 
-                Swal.fire({
-                    html: `
+                    Swal.fire({
+                        html: `
                         <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
                             <div class="flex flex-col lg:flex-row items-center justify-center gap-x-5 p-5">
                                 <i class="fa-solid fa-circle-xmark text-[#D02027] text-6xl"></i>
@@ -507,25 +525,25 @@
                             </button>
                         </div>
                     `,
-                    customClass: {
-                        popup: "my-popup popup-red",
-                        htmlContainer: "!p-0 !m-0"
-                    },
-                    showConfirmButton: false,
-                    didOpen: () => {
-                        document.getElementById("retryBtn").onclick = () => Swal.close();
-                    }
+                        customClass: {
+                            popup: "my-popup popup-red",
+                            htmlContainer: "!p-0 !m-0"
+                        },
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            document.getElementById("retryBtn").onclick = () => Swal.close();
+                        }
+                    });
+
+                    console.error(error);
+
                 });
-
-                console.error(error);
-
-            });
 
         });
 
         const contact = document.getElementById("contactnumber");
 
-        contact.addEventListener("input", function () {
+        contact.addEventListener("input", function() {
             this.value = this.value.replace(/\D/g, "").slice(0, 11);
         });
     </script>

@@ -1,7 +1,7 @@
 <div class="header-logo">
    
-    <img src="./assets/ulh-logo.png" alt="UAAGI LMS Logo" class="w-20 mt-5 mr-1">
-    <img src="./assets/Logo.png" alt="UAAGI LMS Logo" class="w-32 lg:w-72 mt-5 hidden lg:flex">
+    <img data-aos="fade-right" data-aos-delay="300" data-aos-easing="ease-in-sine" src="./assets/ulh-logo.png" alt="UAAGI LMS Logo" class="w-20 mt-5 mr-1">
+    <img data-aos="fade-right" data-aos-delay="150" data-aos-easing="ease-in-sine" src="./assets/Logo.png" alt="UAAGI LMS Logo" class="w-32 lg:w-72 mt-5 hidden lg:flex">
     
 
     <!-- Hamburger button - only visible on mobile -->
@@ -14,8 +14,8 @@
     <!-- Buttons container - flex row on desktop, dropdown on mobile -->
     <div id="nav-buttons" class="hidden md:flex gap-x-5 items-center  md:static absolute justify-end top-full w-full right-0 py-4 md:py-0 gap-y-5">
         <div class="bg-white flex items-end flex-col md:flex-row p-5 lg:p-0 gap-y-3 rounded-xl border border-[#DEDEDE] shadow md:border-0 md:shadow-none gap-x-3">
-            <button class="landing-buttons sign-up-btn text-[16px] w-40" onclick="window.location.href='registration.php'">SIGN UP</button>
-            <button onclick="window.location.href='login.php'" class="bg-[#234CA1] landing-buttons text-white text-[16px] w-40">LOGIN</button>
+            <button data-aos="fade-left" data-aos-delay="150" data-aos-easing="ease-in-sine" class="landing-buttons sign-up-btn text-[16px] w-40" onclick="window.location.href='registration.php'">SIGN UP</button>
+            <button data-aos="fade-left" data-aos-delay="300" data-aos-easing="ease-in-sine" onclick="window.location.href='start_learning.php'" class="bg-[#234CA1] landing-buttons text-white text-[16px] w-40">LOGIN</button>
         </div>
     </div>
 </div>

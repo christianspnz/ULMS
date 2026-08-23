@@ -33,12 +33,17 @@ $data = [
 
     "date_hired" => $_POST["datehired"],
 
-    "status" => "Active"
+    "status" => "Pending"
 ];
 
 // ===============================
 // VALIDATIONS
 // ===============================
+// Bootstrap exception: if this IS the first Super Admin being created,
+// auto-approve immediately since there's no one else to approve them.
+if ($data["designation_id"] == 4 && !$superAdminExists) {
+    $data["status"] = "Active";
+}
 
 // Email
 if (empty($data["email"])) {
@@ -253,11 +258,13 @@ try {
         mysqli_stmt_close($stmt);
     }
 
-    sendAccountEmail(
-        $data["email"],
-        $data["first_name"],
-        $password["plain"]
-    );
+    if ($data["status"] === "Active") {
+        sendAccountEmail(
+            $data["email"],
+            $data["first_name"],
+            $password["plain"]
+        );
+    }
 
     mysqli_commit($conn);
 

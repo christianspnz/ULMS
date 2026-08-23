@@ -16,16 +16,18 @@ if (empty($_SESSION['course_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
-    <link rel="icon" type="image/png" href="../assets/online-library-logo.png" class="w-24">
+    <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
     <title>UEH - Super Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body class="h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
-        <span class="page-breadcrumbs">
+        <span class="page-breadcrumbs" data-aos="fade-down" data-aos-easing="ease-in-out">
             Add Courses
             <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
@@ -49,20 +51,20 @@ if (empty($_SESSION['course_id'])) {
         <form id="courseForm" enctype="multipart/form-data" method="POST" class="add-course-form">
             <!-- Header -->
             <div class="flex justify-between items-center w-full">
-                <div>
+                <div data-aos="fade-right" data-aos-delay="300" data-aos-easing="ease-in-out">
                     <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
                         Training Modules
                     </h2>
-                    <p class="text-gray-500 mt-1">
+                    <p class="font-eurostile text-gray-500 mt-1">
                         Create modules and upload learning materials for this course.
                     </p>
                 </div>
-                <button type="button" id="addModule" class="bg-[#234CA1] p-3 text-white rounded-lg font-eurostile-bold uppercase flex items-center gap-2">
+                <button data-aos="fade-left" data-aos-delay="300" data-aos-easing="ease-in-out" type="button" id="addModule" class="bg-[#234CA1] p-3 text-white rounded-lg font-eurostile-bold uppercase flex items-center gap-2">
                     <i class="fa-solid fa-plus"></i>
                     Add Module
                 </button>
             </div>
-            <div id="moduleContainer" class="space-y-6 w-full">
+            <div data-aos="fade-up" data-aos-delay="450" data-aos-easing="ease-in-out" id="moduleContainer" class="space-y-6 w-full">
                 <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden module-card">
                     <!-- Header -->
                     <div class="bg-[#234CA1] px-6 py-4 flex justify-between items-center">
@@ -177,13 +179,25 @@ if (empty($_SESSION['course_id'])) {
                 </div>
             </template>
             <!-- Buttons -->
-            <div class="flex justify-end gap-x-5 w-full">
+            <div data-aos="fade-left" data-aos-delay="450" data-aos-easing="ease-in-out" class="flex justify-end gap-x-5 w-full">
                 <button type="button" onclick="window.location.href='add-course-step1.php'" class="bg-[#D02027] font-eurostile-bold uppercase text-sm lg:text-base text-white w-[40%] lg:w-auto lg:px-10 rounded-xl hover:scale-105 hover:bg-[#D02027]/50 transition duration-300 h-12">Previous</button>
                 <button type="submit" class="bg-[#234CA1] font-eurostile-bold uppercase text-sm lg:text-base text-white w-[60%] lg:w-auto lg:px-10 rounded-xl hover:scale-105 hover:bg-[#234CA1]/50 transition duration-300 h-12">Save & Continue</button>
             </div>
         </form>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
+        lucide.createIcons(); 
+        AOS.init({
+            duration: 600,
+            once: false // allow animations to replay, not just fire once ever
+        });
+
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                AOS.refreshHard();
+            }
+        });
         const moduleContainer = document.getElementById("moduleContainer");
         const addModuleBtn = document.getElementById("addModule");
         const moduleTemplate = document.getElementById("moduleTemplate");

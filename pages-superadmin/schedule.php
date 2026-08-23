@@ -17,11 +17,13 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
-    <link rel="icon" type="image/png" href="../assets/online-library-logo.png" class="w-24">
+    <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
     <title>UEH - Schedule</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         .fc-event {
             cursor: pointer;
@@ -36,28 +38,28 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
 <body class="h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
-        <span class="page-breadcrumbs">
+        <span class="page-breadcrumbs" data-aos="fade-down" data-aos-easing="ease-in-out">
             Schedule
         </span>
 
-        <div class="flex justify-between items-center w-full">
+        <!-- <div data-aos="fade-right" data-aos-delay="200" data-aos-easing="ease-in-out" class="flex justify-between items-center w-full">
             <div>
                 <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
                     Schedule
                 </h2>
-                <p class="text-gray-500 mt-1">
+                <p class="font-eurostile text-gray-500 mt-1">
                     Manage company-wide events and announcements.
                 </p>
             </div>
-        </div>
+        </div> -->
 
         <div class="flex flex-col lg:flex-row gap-5 mt-5">
 
-            <div class="w-full lg:w-[65%] bg-white rounded-2xl shadow-md border border-gray-200 p-3 md:p-6">
+            <div data-aos="fade-right" data-aos-delay="300" data-aos-easing="ease-in-out" class="w-full lg:w-[65%] bg-white rounded-2xl shadow-md border border-gray-200 p-3 md:p-6">
                 <div id="calendar"></div>
             </div>
 
-            <div class="w-full lg:w-[35%] bg-white rounded-2xl shadow-md border border-gray-200 p-4 md:p-6 h-fit">
+            <div data-aos="fade-left" data-aos-delay="400" data-aos-easing="ease-in-out" class="w-full lg:w-[35%] bg-white rounded-2xl shadow-md border border-gray-200 p-4 md:p-6 h-fit">
                 <h3 class="text-lg md:text-xl font-eurostile-bold text-[#234CA1] mb-4">Upcoming Schedules</h3>
                 <div id="upcomingSchedulesList" class="space-y-3">
                     <p class="text-gray-400 text-sm">Loading...</p>
@@ -68,7 +70,19 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
 
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
+        lucide.createIcons(); 
+        AOS.init({
+            duration: 600,
+            once: false // allow animations to replay, not just fire once ever
+        });
+
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                AOS.refreshHard();
+            }
+        });
         let editingScheduleId = null;
         const allBrands = <?= json_encode($allBrands) ?>;
         const allDealerships = <?= json_encode($allDealerships) ?>;

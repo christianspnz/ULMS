@@ -5,7 +5,6 @@ requireRole([1, 2]);
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,12 +13,10 @@ requireRole([1, 2]);
     <title>UEH - Assessment</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-
 <body class="h-auto">
-    <?php include '../sidebar-learner.php'; ?>
+    <?php include '../sidebar-manager.php'; ?>
     <main>
 
         <span class="page-breadcrumbs">
@@ -38,14 +35,8 @@ requireRole([1, 2]);
 
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
-        lucide.createIcons(); 0
-        AOS.init({
-            duration: 600,
-            once: true // animate only the first time an element scrolls into view
-        });
-
+        lucide.createIcons();
         const urlParams = new URLSearchParams(window.location.search);
         const courseId = urlParams.get("course_id");
         const type = urlParams.get("type"); // 'Pre-Test' or 'Post-Test'
@@ -146,10 +137,7 @@ requireRole([1, 2]);
                             <button id="incompleteOkBtn" class="w-full h-12 bg-[#D02027] text-white rounded-xl font-eurostile-bold">OK</button>
                         </div>
                     `,
-                    customClass: {
-                        popup: "my-popup popup-red",
-                        htmlContainer: "!p-0 !m-0"
-                    },
+                    customClass: { popup: "my-popup popup-red", htmlContainer: "!p-0 !m-0" },
                     showConfirmButton: false,
                     allowOutsideClick: false,
                     allowEscapeKey: false,
@@ -189,10 +177,7 @@ requireRole([1, 2]);
                                 <button id="submitErrOkBtn" class="w-full h-12 bg-[#D02027] text-white rounded-xl font-eurostile-bold">OK</button>
                             </div>
                         `,
-                        customClass: {
-                            popup: "my-popup popup-red",
-                            htmlContainer: "!p-0 !m-0"
-                        },
+                        customClass: { popup: "my-popup popup-red", htmlContainer: "!p-0 !m-0" },
                         showConfirmButton: false,
                         allowOutsideClick: false,
                         allowEscapeKey: false,
@@ -204,9 +189,9 @@ requireRole([1, 2]);
                     return;
                 }
 
-                const redirectTarget = type === 'Pre-Test' ?
-                    `course-viewer.php?course_id=${courseId}` :
-                    `courses.php`;
+                const redirectTarget = type === 'Pre-Test'
+                    ? `course-viewer.php?course_id=${courseId}`
+                    : `courses.php`;
 
                 Swal.fire({
                     html: `
@@ -222,10 +207,7 @@ requireRole([1, 2]);
                             <button id="assessmentDoneBtn" class="w-full h-12 bg-[#234CA1] text-white rounded-xl font-eurostile-bold">Continue</button>
                         </div>
                     `,
-                    customClass: {
-                        popup: "my-popup popup-blue",
-                        htmlContainer: "!p-0 !m-0"
-                    },
+                    customClass: { popup: "my-popup popup-blue", htmlContainer: "!p-0 !m-0" },
                     showConfirmButton: false,
                     allowOutsideClick: false,
                     allowEscapeKey: false,
@@ -250,7 +232,7 @@ requireRole([1, 2]);
         }
 
         loadAssessment();
+
     </script>
 </body>
-
 </html>

@@ -6,6 +6,7 @@ $stmt = mysqli_prepare($conn, "
     SELECT
         u.first_name,
         u.last_name,
+        u.profile_picture,
         des.designation_name,
         d.dealership_name,
         GROUP_CONCAT(
@@ -33,6 +34,7 @@ $stmt = mysqli_prepare($conn, "
         u.user_id,
         u.first_name,
         u.last_name,
+        u.profile_picture,
         des.designation_name,
         d.dealership_name
 ");

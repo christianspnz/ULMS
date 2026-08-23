@@ -23,104 +23,107 @@ function sendAccountEmail($email, $firstname, $password, $preview = false)
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;
 
-    $mail->setFrom("ulmsadministrator@gmail.com", "U-LMS");
+    $mail->setFrom("ulmsadministrator@gmail.com", "UAAGI Learning Hub");
     $mail->addAddress($email, $firstname);
 
     $mail->isHTML(true);
 
     $mail->addEmbeddedImage(
-        "../assets/Logo.png",
+        "../../assets/Logo.png",
         "ulmslogo"
     );
 
-    $mail->Subject = "Welcome to U-LMS";
+    $mail->Subject = "Your UAAGI Learning Hub Account is Ready";
 
     $body = "
-        <div style='background-color:#234CA1;max-width:600px;margin:30px auto;padding:20px;border-radius:10px;'>
+        <div style='background-color:#f4f6fb;padding:40px 20px;font-family:Arial, sans-serif;'>
 
-        <div style='font-family:Eurostile Extd, sans-serif;background:#ffffff;padding:30px;border-radius:8px;'>
+            <div style='max-width:560px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 4px 16px rgba(35,76,161,0.12);'>
 
-            <div style='text-align:center;'>
+                <!-- Header band -->
+                <div style='background:#234CA1;padding:32px 20px;text-align:center;'>
+                    <img src='cid:ulmslogo'
+                         alt='UAAGI Learning Hub'
+                         style='width:170px;height:auto;'>
+                </div>
 
-                <img src='cid:ulmslogo'
-                     alt='U-LMS Logo'
-                     style='width:150px;height:auto;margin-bottom:20px;'>
+                <!-- Body -->
+                <div style='padding:36px 32px;'>
 
-                <h1 style='color:#234CA1;font-size:30px;margin:0;'>
-                    Welcome to U-LMS
-                </h1>
+                    <h1 style='color:#234CA1;font-size:22px;margin:0 0 4px 0;'>
+                        Account Approved!
+                    </h1>
+
+                    <p style='color:#666666;font-size:14px;margin:0 0 24px 0;'>
+                        Welcome to UAAGI Learning Hub
+                    </p>
+
+                    <p style='font-size:14px;color:#333333;line-height:1.6;margin:0 0 20px 0;'>
+                        Hi <strong>{$firstname}</strong>,
+                    </p>
+
+                    <p style='font-size:14px;color:#333333;line-height:1.6;margin:0 0 24px 0;'>
+                        Your account has been reviewed and approved. Use the credentials below to sign in for the first time.
+                    </p>
+
+                    <!-- Credentials card -->
+                    <div style='background:#f8fafc;border:1px solid #e5e9f2;border-radius:10px;padding:20px 24px;margin-bottom:24px;'>
+
+                        <div style='margin-bottom:14px;'>
+                            <p style='margin:0;font-size:11px;letter-spacing:0.5px;color:#8a94a6;text-transform:uppercase;font-weight:bold;'>
+                                Email
+                            </p>
+                            <p style='margin:2px 0 0 0;font-size:15px;color:#234CA1;font-weight:bold;'>
+                                {$email}
+                            </p>
+                        </div>
+
+                        <div>
+                            <p style='margin:0;font-size:11px;letter-spacing:0.5px;color:#8a94a6;text-transform:uppercase;font-weight:bold;'>
+                                Temporary Password
+                            </p>
+                            <p style='margin:2px 0 0 0;font-size:15px;color:#234CA1;font-weight:bold;letter-spacing:0.5px;'>
+                                {$password}
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <!-- Security note -->
+                    <div style='background:#fff8e6;border-left:3px solid #f0b429;border-radius:6px;padding:12px 16px;margin-bottom:28px;'>
+                        <p style='margin:0;font-size:13px;color:#7a5c00;line-height:1.5;'>
+                            For your security, please change this temporary password immediately after logging in.
+                        </p>
+                    </div>
+
+                    <!-- CTA -->
+                    <div style='text-align:center;margin-bottom:8px;'>
+                        <a href='http://localhost:8080/ULMS/login.php'
+                           style='background:#D02027;
+                                  color:#ffffff;
+                                  text-decoration:none;
+                                  padding:14px 36px;
+                                  border-radius:8px;
+                                  display:inline-block;
+                                  font-weight:bold;
+                                  font-size:14px;'>
+                            Log In to Your Account
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div style='background:#f8fafc;padding:20px 32px;text-align:center;border-top:1px solid #eef1f6;'>
+                    <p style='margin:0;font-size:12px;color:#9aa3b5;line-height:1.5;'>
+                        This is an automated message from UAAGI Learning Hub.<br>
+                        Please do not reply to this email.
+                    </p>
+                </div>
 
             </div>
-
-            <hr style='margin:25px 0;border:none;border-top:1px solid #ddd;'>
-
-            <p style='font-size:14px;color:#234CA1;'>
-                Hello <strong>{$firstname}</strong>,
-            </p>
-
-            <p style='font-size:14px;color:#234CA1;'>
-                Your account has been successfully created.
-            </p>
-
-            <table width='100%' cellpadding='10'
-                   style='border-collapse:collapse;margin:25px 0;'>
-
-                <tr>
-                    <td style='background:#f5f5f5;font-weight:bold;width:180px;'>
-                        Email
-                    </td>
-
-                    <td style='background:#fafafa;'>
-                        {$email}
-                    </td>
-                </tr>
-
-                <tr>
-                    <td style='background:#f5f5f5;font-weight:bold;'>
-                        Temporary Password
-                    </td>
-
-                    <td style='background:#fafafa;'>
-                        {$password}
-                    </td>
-                </tr>
-
-            </table>
-
-            <p style='font-size:14px;color:#234CA1;'>
-                Please change your password after your first login.
-            </p>
-
-            <div style='text-align:center;margin-top:35px;'>
-
-                <a href='http://localhost:8080/ULMS/login.php'
-                   style='background:#D02027;
-                          color:#ffffff;
-                          text-decoration:none;
-                          padding:14px 30px;
-                          border-radius:6px;
-                          display:inline-block;
-                          font-weight:bold;'>
-
-                    Login to U-LMS
-
-                </a>
-
-            </div>
-
-            <p style='margin-top:40px;
-                      text-align:center;
-                      color:#777;
-                      font-size:13px;'>
-
-                This is an automated email from U-LMS.<br>
-                Please do not reply to this message.
-
-            </p>
 
         </div>
-
-    </div>
     ";
 
     $mail->Body = $body;

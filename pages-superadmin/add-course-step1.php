@@ -12,16 +12,18 @@ requireRole(4);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
-    <link rel="icon" type="image/png" href="../assets/online-library-logo.png" class="w-24">
+    <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
     <title>UEH - Super Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body class="h-auto lg:h-screen">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
-        <span class="page-breadcrumbs">
+        <span class="page-breadcrumbs" data-aos="fade-down" data-aos-easing="ease-in-out">
             Add Courses
             <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
@@ -40,21 +42,20 @@ requireRole(4);
             </svg>
             Review & Publish -->
         </span>
-        <?php $currentStep = 1;
-        include 'course-stepper.php'; ?>
+        <?php $currentStep = 1; include 'course-stepper.php'; ?>
         <form id="courseForm" enctype="multipart/form-data" method="POST" class="add-course-form">
-            <div class="flex justify-between items-center w-full">
+            <div data-aos="fade-right" data-aos-delay="300" data-aos-easing="ease-in-out" class="flex justify-between items-center w-full">
                 <div>
                     <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
                         Course Information
                     </h2>
-                    <p class="text-gray-500 mt-1">
+                    <p class="font-eurostile text-gray-500 mt-1">
                         Create the Course Information for this course.
                     </p>
                 </div>
             </div>
             <div class="flex flex-col lg:flex-row justify-between items-center w-full gap-y-5 gap-x-10">
-                <div class="flex flex-col gap-y-5 w-full lg:w-[60%] justify-between items-center h-full">
+                <div data-aos="fade-right" data-aos-delay="450" data-aos-easing="ease-in-out" class="flex flex-col gap-y-5 w-full lg:w-[60%] justify-between items-center h-full">
                     <div class="label-inputs-col">
                         <label class="label-inputs">Course Title</label>
                         <input type="text" name="course_title" id="course_title" class="text-inputs" placeholder="Course Title">
@@ -92,7 +93,7 @@ requireRole(4);
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-col justify-between items-center h-full w-full lg:w-[40%] gap-y-5">
+                <div data-aos="fade-left" data-aos-delay="450" data-aos-easing="ease-in-out" class="flex flex-col justify-between items-center h-full w-full lg:w-[40%] gap-y-5">
                     <!-- Thumbnail -->
                     <div class="min-w-full flex-shrink-0 flex gap-y-2 flex-col">
                         <label class="label-inputs">Thumbnail</label>
@@ -125,7 +126,19 @@ requireRole(4);
             </div>
         </form>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
+        lucide.createIcons(); 
+        AOS.init({
+            duration: 600,
+            once: false // allow animations to replay, not just fire once ever
+        });
+
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                AOS.refreshHard();
+            }
+        });
         // ==========================================
         // Thumbnail Upload Preview
         // ==========================================

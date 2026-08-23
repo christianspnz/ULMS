@@ -9,47 +9,49 @@ requireRole(2);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
-    <link rel="icon" type="image/png" href="../assets/online-library-logo.png" class="w-24">
+    <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
     <title>UEH - Managers</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
     <?php include '../sidebar-manager.php'; ?>
     <main>
 
-        <span class="page-breadcrumbs">
+        <span class="page-breadcrumbs" data-aos="fade-down" data-aos-easing="ease-in-out">
             Courses
         </span>
 
-        <div class="flex justify-between items-center w-full mt-3">
+        <div data-aos="fade-down" data-aos-delay="200" data-aos-easing="ease-in-out" class="flex justify-between items-center w-full mt-3">
             <div>
                 <h2 class="text-3xl font-eurostile-black text-[#234CA1]">My Courses</h2>
-                <p class="text-gray-500 mt-1">Continue where you left off.</p>
+                <p class="font-eurostile text-gray-500 mt-1">Continue where you left off.</p>
             </div>
         </div>
 
-        <div class="flex gap-x-2 border-b border-gray-200 mt-3 mb-3 w-full lg:w-auto overflow-x-auto" id="myCoursesTabs">
+        <div data-aos="fade-right" data-aos-delay="300" data-aos-easing="ease-in-out" class="flex gap-x-2 border-b border-gray-200 mt-3 mb-3 w-full lg:w-auto overflow-x-auto" id="myCoursesTabs">
             <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-[#234CA1] text-[#234CA1]" data-status="all">All</button>
             <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1]" data-status="Not Started">Not Started</button>
             <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1]" data-status="In Progress">In Progress</button>
             <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1]" data-status="Completed">Completed</button>
         </div>
 
-        <div id="myCoursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div data-aos="fade-up" data-aos-delay="400" data-aos-easing="ease-in-out" id="myCoursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             <div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">
                 Loading your courses...
             </div>
         </div>
 
-        <div class="flex justify-between items-center w-full mt-10">
+        <div data-aos="fade-up" data-aos-delay="500" data-aos-easing="ease-in-out" class="flex justify-between items-center w-full mt-10">
             <div>
                 <h2 class="text-3xl font-eurostile-black text-[#234CA1]">Available Courses</h2>
                 <p class="text-gray-500">Courses available for your brand.</p>
             </div>
         </div>
 
-        <div id="availableCoursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
+        <div data-aos="fade-up" data-aos-delay="600" data-aos-easing="ease-in-out" id="availableCoursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
             <div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">
                 Loading available courses...
             </div>
@@ -57,8 +59,19 @@ requireRole(2);
 
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
+        lucide.createIcons();
+        AOS.init({
+            duration: 600,
+            once: false // allow animations to replay, not just fire once ever
+        });
 
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                AOS.refreshHard();
+            }
+        });
         // ---------- TAB SWITCHING (My Courses vs Team Progress) ----------
 
         document.querySelectorAll(".main-tab-btn").forEach(btn => {
@@ -155,6 +168,21 @@ requireRole(2);
 
         }
 
+        function getStatusBadgeClass(status) {
+
+            switch (status) {
+                case "Completed":
+                    return "bg-green-100 text-green-700";
+                case "In Progress":
+                    return "bg-yellow-100 text-yellow-700";
+                case "Not Started":
+                    return "bg-gray-100 text-gray-500";
+                default:
+                    return "bg-blue-100 text-blue-700";
+            }
+
+        }
+
         function renderMyCourses() {
 
             const myGrid = document.getElementById("myCoursesGrid");
@@ -172,18 +200,28 @@ requireRole(2);
 
                 <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
 
-                    <div class="h-40 bg-gray-100 overflow-hidden">
+                    <div class="h-40 bg-gray-100 overflow-hidden border-b border-gray-200">
                         ${course.thumbnail
                             ? `<img src="../uploads/thumbnails/${escapeHtml(course.thumbnail)}" class="w-full h-full object-cover" alt="Course thumbnail">`
                             : `<div class="w-full h-full flex items-center justify-center text-gray-300"><i class="fa-solid fa-image text-4xl"></i></div>`
                         }
                     </div>
 
-                    <div class="p-5">
-                        <span class="text-xs font-bold uppercase px-2 py-1 rounded-full bg-blue-100 text-blue-700">${escapeHtml(course.enrollment_status)}</span>
-                        <h3 class="text-lg font-eurostile-bold text-[#234CA1] mt-2">${escapeHtml(course.course_title)}</h3>
-                        <p class="text-sm text-gray-500 mt-1 line-clamp-2">${escapeHtml(course.course_description ?? "")}</p>
+                    <div class="flex flex-col justify-between h-52 p-5">
+                        <div class="flex flex-col justify-between">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-eurostile-bold text-[#234CA1]">
+                                ${escapeHtml(course.course_title)}
+                                </h3>
+                                <span class="text-xs font-bold uppercase px-2 py-1 rounded-full ${getStatusBadgeClass(course.enrollment_status)}">
+                                    ${escapeHtml(course.enrollment_status)}
+                                </span>
+                            </div>
 
+                            <p class="text-sm text-gray-500 mt-1 line-clamp-2">
+                                ${escapeHtml(course.course_description ?? "")}
+                            </p>
+                        </div>
                         <div class="mt-3">
                             <div class="w-full bg-gray-200 rounded-full h-2">
                                 <div class="bg-[#234CA1] h-2 rounded-full" style="width: ${course.progress}%"></div>

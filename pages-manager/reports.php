@@ -9,9 +9,10 @@ requireRole(2);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
-    <link rel="icon" type="image/png" href="../assets/online-library-logo.png" class="w-24">
+    <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
     <title>UEH - Reports</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
     <?php include '../sidebar-manager.php'; ?>
@@ -35,7 +36,7 @@ requireRole(2);
     </main>
 
     <script>
-
+        lucide.createIcons(); 
         async function loadTeamProgress() {
 
             const wrapper = document.getElementById("teamTableWrapper");

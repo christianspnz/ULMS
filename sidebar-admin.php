@@ -9,7 +9,10 @@
     include "hamburger-btn.php";  
 ?>
 <aside id="sidebar" class="sidebar hidden lg:flex fixed lg:top-0 lg:left-0 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 lg:translate-y-0 lg:translate-x-0 z-40 lg:m-5">
-    <img src="../assets/Logo.png" alt="UAAGI LMS Logo" class="w-40">
+    <div class="flex flex-col lg:flex-row w-full justify-center items-center gap-x-2 gap-y-1">
+        <img src="../assets/ulh-logo.png" alt="UAAGI LMS Logo" class="w-14">
+        <img src="../assets/Logo.png" alt="UAAGI LMS Logo" class="w-40">
+    </div>
     <nav class="sidebar-nav">
         <a href="courses.php" class="sidebar-text 
             <?= $currentPage === 'courses.php'
@@ -55,9 +58,10 @@
     <div class="logout-container">
         <div class="logout-row">
             <div class="user-icon">
-                <svg height="24" width="24" viewBox="0 0 1664 1664" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M832 0Q673 0 560.5 112.5T448 384t112.5 271.5T832 768t271.5-112.5T1216 384t-112.5-271.5T832 0zm0 896q112 0 227 22t224 69.5t193.5 114t136 162.5t51.5 208q0 75-57 133.5t-135 58.5H192q-78 0-135-58.5T0 1472q0-112 51.5-208t136-162.5t193.5-114T605 918t227-22z" fill="currentColor"/>
-                </svg>
+                <?= strtoupper(
+                    substr($user["first_name"], 0, 1) .
+                    substr($user["last_name"], 0, 1)
+                ); ?>
             </div>
             <div class="logout-col">
                 <span class="user-info-name">

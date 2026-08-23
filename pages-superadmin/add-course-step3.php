@@ -17,16 +17,18 @@ if (empty($_SESSION['course_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
-    <link rel="icon" type="image/png" href="../assets/online-library-logo.png" class="w-24">
+    <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
     <title>UEH - Super Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body class="h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
-        <span class="page-breadcrumbs">
+        <span data-aos="fade-down" data-aos-easing="ease-in-out" class="page-breadcrumbs">
             Add Courses
             <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
@@ -48,18 +50,18 @@ if (empty($_SESSION['course_id'])) {
         <?php $currentStep = 3;
         include 'course-stepper.php'; ?>
         <form id="assessmentForm" class="add-course-form" method="POST" action="../php/courses/save-step3.php">
-            <div class="flex justify-between items-center w-full">
+            <div data-aos="fade-right" data-aos-delay="300" data-aos-easing="ease-in-out" class="flex justify-between items-center w-full">
                 <div>
                     <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
                         Assessment
                     </h2>
-                    <p class="text-gray-500 mt-1">
+                    <p class="font-eurostile text-gray-500 mt-1">
                         Create the Pre-Test and Post-Test for this course.
                     </p>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 flex gap-y-4 flex-col w-full">
+            <div data-aos="fade-right" data-aos-delay="400" data-aos-easing="ease-in-out" class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 flex gap-y-4 flex-col w-full">
                 <label class="label-inputs-add-course">Load Existing Assessment (Optional)</label>
 
                 <div class="dropdown relative inline-block w-full" id="assessmentPickerDropdown">
@@ -81,7 +83,7 @@ if (empty($_SESSION['course_id'])) {
             </div>
 
             <!-- QUESTIONS -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 w-full">
+            <div data-aos="fade-down" data-aos-delay="300" data-aos-easing="ease-in-out" class="bg-white rounded-2xl shadow-md border border-gray-200 w-full">
                 <div class="bg-[#234CA1] px-6 py-4 flex justify-between items-center rounded-t-2xl">
                     <div>
                         <p class="text-white text-sm">Assessment</p>
@@ -139,7 +141,7 @@ if (empty($_SESSION['course_id'])) {
                 </div>
             </div>
 
-            <div class="flex justify-end gap-x-5 w-full">
+            <div data-aos="fade-left" data-aos-delay="300" data-aos-easing="ease-in-out" class="flex justify-end gap-x-5 w-full">
                 <button
                     type="button"
                     onclick="window.location.href='add-course-step2.php'"
@@ -382,7 +384,19 @@ if (empty($_SESSION['course_id'])) {
 
         </template>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
+        lucide.createIcons(); 
+        AOS.init({
+            duration: 600,
+            once: false // allow animations to replay, not just fire once ever
+        });
+
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                AOS.refreshHard();
+            }
+        });
         const questionTemplate = document.getElementById("questionTemplate");
         const multipleChoiceTemplate = document.getElementById("multipleChoiceTemplate");
         const trueFalseTemplate = document.getElementById("trueFalseTemplate");
