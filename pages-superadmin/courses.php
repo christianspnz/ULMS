@@ -41,14 +41,13 @@ $courses = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
 <body>
     <?php include('../sidebar-superadmin.php') ?>
     <main>
-        <span class="page-breadcrumbs" data-aos="fade-down" data-aos-easing="ease-in-out">
-            Courses
-            <!-- <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor"/>
-            </svg>
-            Sample -->
-        </span>
-        <div data-aos="fade-down" data-aos-delay="200" data-aos-easing="ease-in-out" class="flex flex-col lg:flex-row gap-y-2 justify-between items-start lg:items-center w-full">
+        <div class="flex justify-between items-center w-full">
+            <span class="page-breadcrumbs">
+                Courses
+            </span>
+            <?php include '../notification-bell.php'; ?>
+        </div>
+        <div class="flex flex-col lg:flex-row gap-y-2 justify-between items-start lg:items-center w-full">
             <div>
                 <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
                     Course Management
@@ -64,7 +63,7 @@ $courses = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
             </a>
         </div>
         <!-- Tabs -->
-        <div data-aos="fade-right" data-aos-delay="300" data-aos-easing="ease-in-out" class="flex gap-x-2 border-b border-gray-200 mt-5">
+        <div class="flex gap-x-2 border-b border-gray-200 mt-5">
             <?php foreach ($allowedTabs as $tab): ?>
                 <a href="?status=<?= $tab ?>"
                     class="px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 transition
@@ -76,7 +75,7 @@ $courses = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
             <?php endforeach; ?>
         </div>
         <!-- Course Grid -->
-        <div data-aos="fade-up" data-aos-delay="400" data-aos-easing="ease-in-out" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
             <?php if (empty($courses)): ?>
                 <div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">
                     No <?= strtolower($activeTab) ?> courses found.

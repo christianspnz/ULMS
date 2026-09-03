@@ -21,11 +21,14 @@ requireRole(1)
 <body>
     <?php include '../sidebar-learner.php'; ?>
     <main>
-        <span class="page-breadcrumbs" data-aos="fade-down" data-aos-easing="ease-in-out">
-            Courses
-        </span>
+        <div class="flex justify-between items-center w-full">
+            <span class="page-breadcrumbs">
+                Courses
+            </span>
+            <?php include '../notification-bell.php'; ?>
+        </div> 
 
-        <div data-aos="fade-down" data-aos-delay="200" data-aos-easing="ease-in-out" class="flex justify-between items-center w-full">
+        <div class="flex justify-between items-center w-full">
             <div>
                 <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
                     My Courses
@@ -36,20 +39,20 @@ requireRole(1)
             </div>
         </div>
 
-        <div data-aos="fade-right" data-aos-delay="300" data-aos-easing="ease-in-out" class="flex gap-x-2 border-b border-gray-200 mt-3 mb-3 w-full lg:w-auto overflow-x-auto" id="myCoursesTabs">
+        <div class="flex gap-x-2 border-b border-gray-200 mt-3 mb-3 w-full lg:w-auto overflow-x-auto" id="myCoursesTabs">
             <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-[#234CA1] text-[#234CA1]" data-status="all">All</button>
             <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1]" data-status="Not Started">Not Started</button>
             <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1]" data-status="In Progress">In Progress</button>
             <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1]" data-status="Completed">Completed</button>
         </div>
 
-        <div data-aos="fade-up" data-aos-delay="400" data-aos-easing="ease-in-out" id="myCoursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6" id="myCoursesGrid">
             <div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">
                 Loading your courses...
             </div>
         </div>
 
-        <div data-aos="fade-up" data-aos-delay="500" data-aos-easing="ease-in-out" class="flex justify-between items-center w-full mt-10">
+        <div class="flex justify-between items-center w-full mt-10">
             <div>
                 <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
                     Available Courses
@@ -60,7 +63,7 @@ requireRole(1)
             </div>
         </div>
 
-        <div data-aos="fade-up" data-aos-delay="600" data-aos-easing="ease-in-out" id="availableCoursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6" id="availableCoursesGrid">
             <div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">
                 Loading available courses...
             </div>

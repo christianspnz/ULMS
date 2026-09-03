@@ -28,7 +28,7 @@ if (empty($_SESSION['course_id'])) {
 <body class="h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
-        <span data-aos="fade-down" data-aos-easing="ease-in-out" class="page-breadcrumbs">
+        <span class="page-breadcrumbs">
             Add Courses
             <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
@@ -50,7 +50,7 @@ if (empty($_SESSION['course_id'])) {
         <?php $currentStep = 3;
         include 'course-stepper.php'; ?>
         <form id="assessmentForm" class="add-course-form" method="POST" action="../php/courses/save-step3.php">
-            <div data-aos="fade-right" data-aos-delay="300" data-aos-easing="ease-in-out" class="flex justify-between items-center w-full">
+            <div class="flex justify-between items-center w-full">
                 <div>
                     <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
                         Assessment
@@ -61,7 +61,7 @@ if (empty($_SESSION['course_id'])) {
                 </div>
             </div>
 
-            <div data-aos="fade-right" data-aos-delay="400" data-aos-easing="ease-in-out" class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 flex gap-y-4 flex-col w-full">
+            <div class="bg-white rounded-2xl z-9999 shadow-md border border-gray-200 p-6 flex gap-y-4 flex-col w-full">
                 <label class="label-inputs-add-course">Load Existing Assessment (Optional)</label>
 
                 <div class="dropdown relative inline-block w-full" id="assessmentPickerDropdown">
@@ -75,7 +75,7 @@ if (empty($_SESSION['course_id'])) {
 
                     <input type="hidden" class="selected-id" id="selectedAssessmentId">
 
-                    <div class="dropdown-menu absolute left-0 z-50 hidden w-full mt-2 bg-white border border-[#234CA1] rounded-md shadow-lg overflow-y-auto max-h-60 custom-scrollbar" id="assessmentPickerMenu">
+                    <div class="dropdown-menu absolute left-0 z-9999 hidden w-full mt-2 bg-white border border-[#234CA1] rounded-md shadow-lg overflow-y-auto max-h-60 custom-scrollbar" id="assessmentPickerMenu">
                         <div class="px-4 py-3 text-gray-400 text-sm">Loading...</div>
                     </div>
 
@@ -83,7 +83,7 @@ if (empty($_SESSION['course_id'])) {
             </div>
 
             <!-- QUESTIONS -->
-            <div data-aos="fade-down" data-aos-delay="300" data-aos-easing="ease-in-out" class="bg-white rounded-2xl shadow-md border border-gray-200 w-full">
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 w-full">
                 <div class="bg-[#234CA1] px-6 py-4 flex justify-between items-center rounded-t-2xl">
                     <div>
                         <p class="text-white text-sm">Assessment</p>
@@ -141,7 +141,7 @@ if (empty($_SESSION['course_id'])) {
                 </div>
             </div>
 
-            <div data-aos="fade-left" data-aos-delay="300" data-aos-easing="ease-in-out" class="flex justify-end gap-x-5 w-full">
+            <div  class="flex flex-col lg:flex-row gap-2 justify-end gap-x-5 w-full">
                 <button
                     type="button"
                     onclick="window.location.href='add-course-step2.php'"

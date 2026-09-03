@@ -3,6 +3,24 @@ require "../config/config.php";
 require "../php/auth-logout/auth.php";
 requireRole(4);
 
+function formatDuration($minutes)
+{
+    $minutes = (int) $minutes;
+
+    if ($minutes < 60) {
+        return $minutes . " min";
+    }
+
+    $hours = floor($minutes / 60);
+    $remainingMinutes = $minutes % 60;
+
+    if ($remainingMinutes === 0) {
+        return $hours . " hr";
+    }
+
+    return $hours . " hr " . $remainingMinutes . " min";
+}
+
 $reportType = $_GET['type'] ?? null;
 
 if (!$reportType) {
@@ -454,6 +472,213 @@ switch ($reportType) {
                 $r['passed'] == 1 ? 'Passed' : 'Failed',
                 date('M j, Y', strtotime($r['attempted_at']))
             ];
+        }
+
+        break;
+    case 'trends':
+
+        $reportTitle = "Enrollment Trends Over Time";
+        $reportSubtitle = "Daily enrollment counts";
+
+        $trendDateFrom = $dateFrom ?? date('Y-m-d', strtotime('-6 months'));
+        $trendDateTo = $dateTo ?? date('Y-m-d');
+
+        $conditions = ["e.enrolled_at >= ?", "e.enrolled_at <= ?"];
+        $params = [$trendDateFrom . " 00:00:00", $trendDateTo . " 23:59:59"];
+        $types = "ss";
+
+        if ($courseId) {
+            $conditions[] = "e.course_id = ?";
+            $params[] = $courseId;
+            $types .= "i";
+        }
+        if ($status && in_array($status, ['Not Started', 'In Progress', 'Completed'])) {
+            $conditions[] = "e.status = ?";
+            $params[] = $status;
+            $types .= "s";
+        }
+
+        if (!empty($dealershipIds) && is_array($dealershipIds)) {
+            $placeholders = implode(",", array_fill(0, count($dealershipIds), "?"));
+            $conditions[] = "u.dealership_id IN ({$placeholders})";
+            foreach ($dealershipIds as $id) {
+                $params[] = $id;
+                $types .= "i";
+            }
+        }
+
+        $whereSql = "WHERE " . implode(" AND ", $conditions);
+
+        $sql = "SELECT DATE_FORMAT(e.enrolled_at, '%Y-%m-%d') as enroll_date, COUNT(*) as total
+            FROM enrollments e
+            JOIN users u ON u.user_id = e.user_id
+            {$whereSql}
+            GROUP BY enroll_date
+            ORDER BY enroll_date ASC";
+
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $rows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
+        $tableHeaders = ["Date", "Enrollments"];
+
+        foreach ($rows as $r) {
+            $tableRows[] = [$r['enroll_date'], $r['total']];
+        }
+
+        break;
+
+    case 'completiontime':
+
+        $reportTitle = "Completion Time by Course";
+        $reportSubtitle = "Average, fastest, and slowest completion times";
+
+        $conditions = ["e.status = 'Completed'", "e.completed_at IS NOT NULL"];
+        $params = [];
+        $types = "";
+
+        if ($dateFrom) {
+            $conditions[] = "e.completed_at >= ?";
+            $params[] = $dateFrom . " 00:00:00";
+            $types .= "s";
+        }
+        if ($dateTo) {
+            $conditions[] = "e.completed_at <= ?";
+            $params[] = $dateTo . " 23:59:59";
+            $types .= "s";
+        }
+        if ($courseId) {
+            $conditions[] = "e.course_id = ?";
+            $params[] = $courseId;
+            $types .= "i";
+        }
+
+        if (!empty($dealershipIds) && is_array($dealershipIds)) {
+            $placeholders = implode(",", array_fill(0, count($dealershipIds), "?"));
+            $conditions[] = "u.dealership_id IN ({$placeholders})";
+            foreach ($dealershipIds as $id) {
+                $params[] = $id;
+                $types .= "i";
+            }
+        }
+
+        $whereSql = "WHERE " . implode(" AND ", $conditions);
+
+        $sql = "SELECT c.course_id, c.course_title,
+            COUNT(*) as completed_count,
+            ROUND(AVG(TIMESTAMPDIFF(MINUTE, e.enrolled_at, e.completed_at)), 0) as avg_minutes,
+            MIN(TIMESTAMPDIFF(MINUTE, e.enrolled_at, e.completed_at)) as fastest_minutes,
+            MAX(TIMESTAMPDIFF(MINUTE, e.enrolled_at, e.completed_at)) as slowest_minutes
+            FROM enrollments e
+            JOIN users u ON u.user_id = e.user_id
+            JOIN courses c ON c.course_id = e.course_id
+            {$whereSql}
+            GROUP BY c.course_id, c.course_title
+            ORDER BY avg_minutes ASC";
+
+        if (!empty($params)) {
+            $stmt = mysqli_prepare($conn, $sql);
+            mysqli_stmt_bind_param($stmt, $types, ...$params);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+        } else {
+            $result = mysqli_query($conn, $sql);
+        }
+
+        $rows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
+        foreach ($rows as &$row) {
+            $row['avg_time'] = formatDuration($row['avg_minutes']);
+            $row['fastest_time'] = formatDuration($row['fastest_minutes']);
+            $row['slowest_time'] = formatDuration($row['slowest_minutes']);
+        }
+        unset($row);
+
+        if (!empty($brandIds) && is_array($brandIds)) {
+
+            $rows = array_values(array_filter($rows, function ($row) use ($conn, $brandIds) {
+                $bStmt = mysqli_prepare($conn, "SELECT brand_id FROM course_brands WHERE course_id = ?");
+                mysqli_stmt_bind_param($bStmt, "i", $row['course_id']);
+                mysqli_stmt_execute($bStmt);
+                $bResult = mysqli_stmt_get_result($bStmt);
+                $courseBrandIds = $bResult ? array_column($bResult->fetch_all(MYSQLI_ASSOC), 'brand_id') : [];
+                return empty($courseBrandIds) || count(array_intersect($courseBrandIds, $brandIds)) > 0;
+            }));
+        }
+
+        $tableHeaders = ["Course", "Completed", "Avg Minutes", "Fastest (min)", "Slowest (min)"];
+
+        foreach ($rows as $r) {
+            $tableRows[] = [$r['course_title'], $r['completed_count'], $r['avg_minutes'], $r['fastest_minutes'], $r['slowest_minutes']];
+        }
+
+        break;
+
+    case 'stale':
+
+        $staleDays = (int) ($_GET['stale_days'] ?? 14);
+
+        $reportTitle = "Stale Enrollments";
+        $reportSubtitle = "Learners with no progress after " . $staleDays . " days";
+
+        $conditions = [
+            "e.status = 'Not Started'",
+            "e.progress = 0",
+            "e.enrolled_at <= DATE_SUB(NOW(), INTERVAL ? DAY)"
+        ];
+        $params = [$staleDays];
+        $types = "i";
+
+        if ($courseId) {
+            $conditions[] = "e.course_id = ?";
+            $params[] = $courseId;
+            $types .= "i";
+        }
+
+        if (!empty($dealershipIds) && is_array($dealershipIds)) {
+            $placeholders = implode(",", array_fill(0, count($dealershipIds), "?"));
+            $conditions[] = "u.dealership_id IN ({$placeholders})";
+            foreach ($dealershipIds as $id) {
+                $params[] = $id;
+                $types .= "i";
+            }
+        }
+
+        $whereSql = "WHERE " . implode(" AND ", $conditions);
+
+        $sql = "SELECT u.first_name, u.last_name, u.email, c.course_id, c.course_title, e.enrolled_at,
+            DATEDIFF(NOW(), e.enrolled_at) as days_stale
+            FROM enrollments e
+            JOIN users u ON u.user_id = e.user_id
+            JOIN courses c ON c.course_id = e.course_id
+            {$whereSql}
+            ORDER BY days_stale DESC
+            LIMIT 200";
+
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $rows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
+        if (!empty($brandIds) && is_array($brandIds)) {
+
+            $rows = array_values(array_filter($rows, function ($row) use ($conn, $brandIds) {
+                $bStmt = mysqli_prepare($conn, "SELECT brand_id FROM course_brands WHERE course_id = ?");
+                mysqli_stmt_bind_param($bStmt, "i", $row['course_id']);
+                mysqli_stmt_execute($bStmt);
+                $bResult = mysqli_stmt_get_result($bStmt);
+                $courseBrandIds = $bResult ? array_column($bResult->fetch_all(MYSQLI_ASSOC), 'brand_id') : [];
+                return empty($courseBrandIds) || count(array_intersect($courseBrandIds, $brandIds)) > 0;
+            }));
+        }
+
+        $tableHeaders = ["Learner", "Course", "Enrolled", "Days Idle"];
+
+        foreach ($rows as $r) {
+            $tableRows[] = [$r['first_name'] . ' ' . $r['last_name'], $r['course_title'], date('M j, Y', strtotime($r['enrolled_at'])), $r['days_stale'] . 'd'];
         }
 
         break;

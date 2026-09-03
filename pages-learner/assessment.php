@@ -22,13 +22,16 @@ requireRole([1, 2]);
     <?php include '../sidebar-learner.php'; ?>
     <main>
 
-        <span class="page-breadcrumbs">
-            <a href="courses.php">Courses</a>
-            <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
-            </svg>
-            <span id="typeLabel">Assessment</span>
-        </span>
+        <div class="flex justify-between items-center w-full">
+            <span class="page-breadcrumbs">
+                <a href="courses.php">Courses</a>
+                <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
+                </svg>
+                <span id="typeLabel">Assessment</span>
+            </span>
+            <?php include '../notification-bell.php'; ?>
+        </div> 
 
         <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
             <div id="assessmentContainer">

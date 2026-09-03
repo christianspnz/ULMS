@@ -22,10 +22,10 @@ if (empty($_SESSION['course_id'])) {
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
+<body class="h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
-        <span data-aos="fade-down" data-aos-easing="ease-in-out" class="page-breadcrumbs">
+        <span class="page-breadcrumbs">
             Add Courses
             <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
@@ -45,7 +45,7 @@ if (empty($_SESSION['course_id'])) {
             Review & Publish
         </span>
         <?php  $currentStep = 4; include 'course-stepper.php'; ?>
-        <div data-aos="fade-right" data-aos-delay="300" data-aos-easing="ease-in-out" class="flex justify-between items-center w-full">
+        <div class="flex justify-between items-center w-full">
             <div>
                 <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
                     Review & Publish
@@ -56,13 +56,13 @@ if (empty($_SESSION['course_id'])) {
             </div>
         </div>
 
-        <div data-aos="fade-right" data-aos-delay="450" data-aos-easing="ease-in-out" id="reviewContainer" class="space-y-5">
+        <div id="reviewContainer" class="space-y-5">
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 text-gray-400">
                 Loading course details...
             </div>
         </div>
 
-        <div data-aos="fade-left" data-aos-delay="550" data-aos-easing="ease-in-out" class="flex justify-end gap-x-5 w-full mt-5">
+        <div class="flex flex-col lg:flex-row gap-2 justify-end gap-x-5 w-full mt-5">
             <button
                 type="button"
                 onclick="window.location.href='add-course-step3.php'"

@@ -35,7 +35,10 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
     <?php include('../sidebar-superadmin.php') ?>
     <main>
 
-        <span class="page-breadcrumbs">Accounts</span>
+        <div class="flex justify-between items-center w-full">
+            <span class="page-breadcrumbs">Accounts</span>
+            <?php include '../notification-bell.php'; ?>
+        </div> 
 
         <div class="flex justify-between items-center w-full">
             <div>
@@ -287,7 +290,7 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
                     </td>
 
                     <td class="py-3.5 px-5">
-                        <span class="text-xs font-bold uppercase px-2.5 py-1 rounded-full ${roleClass}">${escapeHtml(u.designation_name ?? '—')}</span>
+                        <span class="text-xs font-bold uppercase px-3.5 py-1 rounded-full truncate ${roleClass}">${escapeHtml(u.designation_name ?? '—')}</span>
                     </td>
 
                     <td class="py-3.5 px-5">
@@ -299,8 +302,8 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
                     </td>
 
                     <td class="py-3.5 px-5 text-center">
-                        <p class="text-xs text-gray-500">DOB: ${u.date_of_birth ?? '—'}</p>
-                        <p class="text-xs text-gray-400 mt-0.5">Hired: ${u.date_hired ?? '—'}</p>
+                        <p class="text-xs text-gray-500 truncate">DOB: ${u.date_of_birth ?? '—'}</p>
+                        <p class="text-xs text-gray-400 mt-0.5 truncate">Hired: ${u.date_hired ?? '—'}</p>
                     </td>
 
                     <td class="py-3.5 px-5 text-center">

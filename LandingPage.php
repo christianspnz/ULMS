@@ -64,11 +64,11 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
             <!-- Unified feature card -->
             <div data-aos="zoom-in" class="flex w-full justify-center lg:justify-end items-center lg:w-[45%]">
 
-                <div class="bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
+                <div class="hover:scale-105 cursor-pointer duration-300 ease-in-out transition-transform bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
 
                     <div class="flex items-center justify-between mb-6 pb-6 border-b border-gray-100">
                         <div data-aos="zoom-in" data-aos-delay="150" data-aos-easing="ease-in-sine" class="flex flex-col justify-center items-start">
-                            <p class="text-lg font-eurostile-bold text-[#234CA1]">UAAGI Online Library</p>
+                            <p class="text-lg font-eurostile-bold text-[#234CA1]">UAAGI Training Hub</p>
                             <p class="text-gray-500 text-sm">Everything you need, in one place</p>
                         </div>
                         <div data-aos="zoom-in" data-aos-delay="150" data-aos-easing="ease-in-sine" class="bg-[#234CA1] rounded-full p-4">

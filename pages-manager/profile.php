@@ -37,7 +37,7 @@ $sidebarFile = match ($designationId) {
 
     <main class="min-h-screen">
         <!-- PAGE HEADER -->
-        <div class="" data-aos="fade-down" data-aos-easing="ease-in-out">
+        <div class="">
             <div class="flex items-center gap-3 mb-2">
                 <div>
                     <h1 class="text-2xl uppercase font-eurostile-bold text-[#234CA1]">My Profile</h1>
@@ -49,7 +49,7 @@ $sidebarFile = match ($designationId) {
         <!-- MAIN GRID -->
         <div class="grid grid-cols-1 xl:grid-cols-[0.8fr_1.2fr] gap-4 items-start">
             <!-- LEFT : PROFILE SUMMARY -->
-            <div class="space-y-4" data-aos="fade-right" data-delay="200" data-aos-easing="ease-in-out">
+            <div class="space-y-4">
                 <!-- PROFILE CARD -->
                 <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                     <!-- BLUE HEADER -->
@@ -161,7 +161,7 @@ $sidebarFile = match ($designationId) {
             </div>
 
             <!-- RIGHT : SETTINGS -->
-            <div class="space-y-4" data-aos="fade-left" data-delay="200" data-aos-easing="ease-in-out">
+            <div class="space-y-4">
                 <!-- PERSONAL INFORMATION -->
                 <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
                     <div class="flex items-start justify-between mb-5">
@@ -742,6 +742,43 @@ $sidebarFile = match ($designationId) {
                 }
             }
 
+            function setIcon(container, iconName) {
+
+                const existingIcon = container.querySelector("svg, i");
+
+                if (!existingIcon) return;
+
+                const newIcon = document.createElement("i");
+                newIcon.setAttribute("data-lucide", iconName);
+
+                existingIcon.replaceWith(newIcon);
+
+            }
+
+
+            function updateRequirement(id, isValid) {
+
+                const element = document.getElementById(id);
+
+                if (!element) return;
+
+                if (isValid) {
+
+                    element.classList.remove("text-gray-400", "text-[#D02027]");
+                    element.classList.add("text-green-600");
+
+                    setIcon(element, "circle-check");
+
+                } else {
+
+                    element.classList.remove("text-green-600");
+                    element.classList.add("text-gray-400");
+
+                    setIcon(element, "circle-x");
+
+                }
+
+            }
 
             function validateConfirmation() {
 
@@ -752,7 +789,6 @@ $sidebarFile = match ($designationId) {
 
                 if (!element) return;
 
-                const icon = element.querySelector("i");
                 const text = element.querySelector("span");
 
 
@@ -761,7 +797,7 @@ $sidebarFile = match ($designationId) {
                     element.classList.remove("text-green-600", "text-[#D02027]");
                     element.classList.add("text-gray-400");
 
-                    icon?.setAttribute("data-lucide", "circle-x");
+                    setIcon(element, "circle-x");
 
                     text.textContent = "Passwords must match";
 
@@ -770,7 +806,7 @@ $sidebarFile = match ($designationId) {
                     element.classList.remove("text-gray-400", "text-[#D02027]");
                     element.classList.add("text-green-600");
 
-                    icon?.setAttribute("data-lucide", "circle-check");
+                    setIcon(element, "circle-check");
 
                     text.textContent = "Passwords match";
 
@@ -779,14 +815,16 @@ $sidebarFile = match ($designationId) {
                     element.classList.remove("text-gray-400", "text-green-600");
                     element.classList.add("text-[#D02027]");
 
-                    icon?.setAttribute("data-lucide", "circle-x");
+                    setIcon(element, "circle-x");
 
                     text.textContent = "Passwords do not match";
+
                 }
 
                 if (typeof lucide !== "undefined") {
                     lucide.createIcons();
                 }
+
             }
 
             const changePasswordModalOverlay = document.getElementById("changePasswordModalOverlay");

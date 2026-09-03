@@ -1,4 +1,4 @@
-<div data-aos="fade-down" data-aos-delay="200" data-aos-easing="ease-in-out" class="w-full flex justify-center items-start">
+<div class="w-full flex justify-center items-start">
     <ul class="steps steps-vertical lg:steps-horizontal w-full">
         <li class="step <?= $currentStep >= 1 ? 'step-primary' : '' ?>">
             Course Information

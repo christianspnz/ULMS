@@ -23,6 +23,7 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
     <style>
         @media print {
 
@@ -43,7 +44,10 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
     <?php include('../sidebar-superadmin.php') ?>
     <main>
 
-        <span class="page-breadcrumbs">Reports</span>
+        <div class="flex justify-between items-center w-full">
+            <span class="page-breadcrumbs">Reports</span>
+            <?php include '../notification-bell.php'; ?>
+        </div> 
 
         <div class="flex justify-between items-center w-full">
             <div>
@@ -53,13 +57,13 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
         </div>
 
         <!-- Section tabs -->
-        <div class="flex gap-x-2 border-b border-gray-200 mt-5 overflow-x-auto" id="reportSectionTabs">
-            <button type="button" class="section-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-[#234CA1] text-[#234CA1] whitespace-nowrap" data-section="courseTraining">Course & Training</button>
-            <button type="button" class="section-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="assessment">Assessment & Performance</button>
-            <button type="button" class="section-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="enrollment">Enrollment</button>
-            <button type="button" class="section-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="attendance">Attendance & Schedule</button>
-            <button type="button" class="section-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="userTeam">User & Team</button>
-            <button type="button" class="section-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="systemWide">System-Wide Analytics</button>
+        <div class="flex justify-between gap-x-2 border-b border-gray-200 mt-5 overflow-x-auto max-w-full" id="reportSectionTabs">
+            <button type="button" class="section-tab-btn  py-3 font-eurostile-bold uppercase text-sm border-b-4 border-[#234CA1] text-[#234CA1] hover:text-[#234CA1] whitespace-nowrap" data-section="courseTraining">Course & Training</button>
+            <button type="button" class="section-tab-btn  py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="assessment">Assessment & Performance</button>
+            <button type="button" class="section-tab-btn  py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="enrollment">Enrollment</button>
+            <button type="button" class="section-tab-btn  py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="attendance">Attendance & Schedule</button>
+            <button type="button" class="section-tab-btn  py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="userTeam">User & Team</button>
+            <button type="button" class="section-tab-btn  py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="systemWide">System-Wide Analytics</button>
         </div>
 
         <!-- ============ SECTION: Course & Training Reports ============ -->
@@ -68,7 +72,7 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
             <!-- Section filter bar -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
 
-                <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
 
                     <div>
                         <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Date Type</label>
@@ -122,7 +126,7 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
 
             <!-- Report 1: Course Completion Rates -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <div class="flex justify-between items-center mb-4">
+                <div class="flex flex-col lg:flex-row gap-2 justify-between items-center mb-4">
                     <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Course Completion Rates</h3>
                     <div class="flex gap-x-2">
                         <button type="button" id="pdfCompletionBtn" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
@@ -156,7 +160,7 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
 
             <!-- Report 2: Course Catalog Summary -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <div class="flex justify-between items-center mb-4">
+                <div class="flex flex-col lg:flex-row gap-2 justify-between items-center mb-4">
                     <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Course Catalog Summary</h3>
                     <div class="flex gap-x-2">
                         <button type="button" id="pdfCatalogBtn" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
@@ -187,7 +191,7 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
                     </table>
                 </div>
             </div>
-              
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <!-- Report 3: Course Popularity Ranking -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
@@ -214,10 +218,10 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
                         </table>
                     </div>
                 </div>
-    
+
                 <!-- Report 4: Module-Level Drop-off -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                    <div class="flex justify-between items-center mb-4">
+                    <div class="flex flex-col lg:flex-row gap-2 justify-between items-center mb-4">
                         <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Module-Level Drop-off</h3>
                         <select id="dropoffCourseSelect" class="text-inputs w-64">
                             <option value="">Select a course</option>
@@ -234,12 +238,12 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
 
         </div>
 
-        <!-- ============ SECTION:Assessments & Performance Reports ============ -->
+        <!-- ============ SECTION: Assessments & Performance Reports ============ -->
         <div id="section-assessment" class="report-section mt-6 hidden">
 
             <!-- Filter bar -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
                     <div>
                         <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
                         <input type="date" id="as_dateFrom" class="text-inputs">
@@ -271,65 +275,67 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
                 </div>
             </div>
 
-            <!-- Pre/Post Comparison -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Pre-Test vs Post-Test Comparison</h3>
-                    <button type="button" onclick="openPrintReport('prepost')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                        <i class="fa-solid fa-file-pdf"></i> PDF
-                    </button>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <!-- Pre/Post Comparison -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Pre-Test vs Post-Test Comparison</h3>
+                        <button type="button" onclick="openPrintReport('prepost')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                            <i class="fa-solid fa-file-pdf"></i> PDF
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Pre-Test Avg</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Post-Test Avg</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Improvement</th>
+                                </tr>
+                            </thead>
+                            <tbody id="prepostTableBody">
+                                <tr>
+                                    <td colspan="4" class="text-center text-gray-400 py-10">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-200">
-                                <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Pre-Test Avg</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Post-Test Avg</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Improvement</th>
-                            </tr>
-                        </thead>
-                        <tbody id="prepostTableBody">
-                            <tr>
-                                <td colspan="4" class="text-center text-gray-400 py-10">Loading...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
 
-            <!-- Pass/Fail Rates -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Pass / Fail Rates</h3>
-                    <button type="button" onclick="openPrintReport('passfail')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                        <i class="fa-solid fa-file-pdf"></i> PDF
-                    </button>
-                </div>
-                <div class="overflow-x-auto max-h-96">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-200">
-                                <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Type</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Attempts</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Passed</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Failed</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Pass Rate</th>
-                            </tr>
-                        </thead>
-                        <tbody id="passfailTableBody">
-                            <tr>
-                                <td colspan="6" class="text-center text-gray-400 py-10">Loading...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- Pass/Fail Rates -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Pass / Fail Rates</h3>
+                        <button type="button" onclick="openPrintReport('passfail')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                            <i class="fa-solid fa-file-pdf"></i> PDF
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto max-h-96">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Type</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Attempts</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Passed</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Failed</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Pass Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="passfailTableBody">
+                                <tr>
+                                    <td colspan="6" class="text-center text-gray-400 py-10">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <!-- Attempt History -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <div class="flex justify-between items-center mb-4">
+                <div class="flex flex-col lg:flex-row gap-2 justify-between items-center mb-4">
                     <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Attempt History</h3>
                     <div class="flex gap-x-2">
                         <select id="as_passFail" class="text-inputs w-40">
@@ -366,7 +372,7 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
 
             <!-- Individual Learner History -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <div class="flex justify-between items-center mb-4">
+                <div class="flex flex-col lg:flex-row gap-2 justify-between items-center mb-4">
                     <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Individual Learner Assessment History</h3>
                     <select id="learnerSelect" class="text-inputs w-64">
                         <option value="">Select a learner</option>
@@ -379,8 +385,10 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div id="learnerHistoryContent">
-                    <p class="text-gray-400 text-sm">Select a learner above to view their assessment history.</p>
+                <div class=" overflow-x-auto max-h-96">
+                    <div id="learnerHistoryContent">
+                        <p class="text-gray-400 text-sm">Select a learner above to view their assessment history.</p>
+                    </div>
                 </div>
             </div>
 
@@ -388,6 +396,159 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-10 mt-5 text-center text-gray-400">
                 <i class="fa-solid fa-circle-info text-2xl mb-2"></i>
                 <p>Question-Level Analysis requires storing individual answer choices per attempt, which isn't currently tracked. Let Claude know if you'd like this added.</p>
+            </div>
+
+        </div>
+
+        <!-- ============ SECTION: Enrollments ============ -->
+        <div id="section-enrollment" class="report-section mt-6 hidden">
+
+            <!-- Filter bar -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
+                        <input type="date" id="en_dateFrom" class="text-inputs">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
+                        <input type="date" id="en_dateTo" class="text-inputs">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Course</label>
+                        <select id="en_course" class="text-inputs">
+                            <option value="">All Courses</option>
+                            <?php foreach ($allCourses as $c): ?>
+                                <option value="<?= $c['course_id'] ?>"><?= htmlspecialchars($c['course_title']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Status</label>
+                        <select id="en_status" class="text-inputs">
+                            <option value="">All Statuses</option>
+                            <option value="Not Started">Not Started</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="button" id="en_applyBtn" class="w-full bg-[#234CA1] text-white rounded-lg py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brands</label>
+                        <div class="flex flex-wrap gap-2">
+                            <?php foreach ($allBrands as $b): ?>
+                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" class="en-brand-checkbox" value="<?= $b['brand_id'] ?>">
+                                    <?= htmlspecialchars($b['brand_name']) ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealerships</label>
+                        <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
+                            <?php
+                            $dealershipsResult = mysqli_query($conn, "SELECT dealership_id, dealership_name FROM dealerships ORDER BY dealership_name ASC");
+                            $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSOC) : [];
+                            foreach ($allDealerships as $d):
+                            ?>
+                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" class="en-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
+                                    <?= htmlspecialchars($d['dealership_name']) ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enrollment Trends -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Enrollment Trends Over Time</h3>
+                    <button type="button" onclick="openPrintReport('trends')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                        <i class="fa-solid fa-file-pdf"></i> PDF
+                    </button>
+                </div>
+                <canvas id="trendsChart" height="80"></canvas>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-5">
+
+                <!-- Status Breakdown -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 lg:col-span-1">
+                    <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Status Breakdown</h3>
+                    <div id="enrollmentStatusBreakdown" class="space-y-3">
+                        <p class="text-gray-400 text-sm">Loading...</p>
+                    </div>
+                </div>
+
+                <!-- Completion Time -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 lg:col-span-2">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Completion Time by Course</h3>
+                        <button type="button" onclick="openPrintReport('completiontime')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                            <i class="fa-solid fa-file-pdf"></i> PDF
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
+                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Completed</th>
+                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Avg Minutes</th>
+                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Fastest (min)</th>
+                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Slowest (min)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="completionTimeTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center text-gray-400 py-10">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Stale Enrollments -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                <div class="flex flex-col lg:flex-row gap-3 justify-between items-center mb-4">
+                    <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Stale Enrollments</h3>
+                    <div class="flex flex-wrap justify-center items-center gap-3">
+                        <label class="text-sm text-gray-500">No progress for</label>
+                        <input type="number" id="en_staleDays" value="14" min="1" class="text-inputs w-20 text-center">
+                        <label class="text-sm text-gray-500">days</label>
+                        <button type="button" id="en_staleApplyBtn" class="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-eurostile-bold">Refresh</button>
+                        <button type="button" onclick="openPrintReport('stale')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                            <i class="fa-solid fa-file-pdf"></i> PDF
+                        </button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto max-h-96">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Learner</th>
+                                <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
+                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Enrolled</th>
+                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Days Idle</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staleTableBody">
+                            <tr>
+                                <td colspan="4" class="text-center text-gray-400 py-10">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </div>
@@ -793,7 +954,7 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
                 tbody.innerHTML = data.results.map(r => `
             <tr class="border-b border-gray-100">
                 <td class="py-3 px-3 font-medium">${escapeHtml(r.course_title)}</td>
-                <td class="py-3 px-3 text-center">${r.assessment_type}</td>
+                <td class="py-3 px-3 text-center truncate">${r.assessment_type}</td>
                 <td class="py-3 px-3 text-center">${r.total_attempts}</td>
                 <td class="py-3 px-3 text-center text-green-600">${r.passed_count}</td>
                 <td class="py-3 px-3 text-center text-red-600">${r.failed_count}</td>
@@ -889,7 +1050,182 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
         document.getElementById("as_passFail").addEventListener("change", loadAttemptHistory);
         document.getElementById("learnerSelect").addEventListener("change", (e) => loadLearnerHistory(e.target.value));
 
+        let trendsChartInstance = null;
+
+        function getEnrollmentFilterParams() {
+            const params = new URLSearchParams();
+            const dateFrom = document.getElementById("en_dateFrom").value;
+            const dateTo = document.getElementById("en_dateTo").value;
+            const courseId = document.getElementById("en_course").value;
+            const status = document.getElementById("en_status").value;
+            if (dateFrom) params.append("date_from", dateFrom);
+            if (dateTo) params.append("date_to", dateTo);
+            if (courseId) params.append("course_id", courseId);
+            if (status) params.append("status", status);
+            document.querySelectorAll(".en-brand-checkbox:checked").forEach(cb => params.append("brands[]", cb.value));
+            document.querySelectorAll(".en-dealership-checkbox:checked").forEach(cb => params.append("dealerships[]", cb.value));
+            return params;
+        }
+
+        async function loadEnrollmentTrends() {
+            try {
+                const params = getEnrollmentFilterParams();
+                const res = await fetch(`../php/reports/get-enrollment-trends.php?${params.toString()}`);
+                const data = await res.json();
+                if (data.status !== "success") return;
+
+                const labels = data.trend.map(t => t.enroll_date);
+                const values = data.trend.map(t => t.total);
+
+                if (trendsChartInstance) trendsChartInstance.destroy();
+
+                const ctx = document.getElementById("trendsChart").getContext("2d");
+                trendsChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Enrollments',
+                            data: values,
+                            borderColor: '#234CA1',
+                            backgroundColor: 'rgba(35, 76, 161, 0.08)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 3,
+                            pointBackgroundColor: '#234CA1'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function loadEnrollmentStatusBreakdown() {
+            const container = document.getElementById("enrollmentStatusBreakdown");
+            try {
+                const params = getEnrollmentFilterParams();
+                const res = await fetch(`../php/reports/get-enrollment-status-report.php?${params.toString()}`);
+                const data = await res.json();
+                if (data.status !== "success") {
+                    container.innerHTML = `<p class="text-red-500 text-sm">${data.message}</p>`;
+                    return;
+                }
+
+                const statusColors = {
+                    "Completed": "bg-green-100 text-green-700",
+                    "In Progress": "bg-yellow-100 text-yellow-700",
+                    "Not Started": "bg-gray-100 text-gray-500"
+                };
+
+                container.innerHTML = data.breakdown.map(s => `
+            <div class="flex items-center justify-between border rounded-xl p-3">
+                <span class="text-xs font-bold uppercase px-2 py-1 rounded-full ${statusColors[s.status] ?? ''}">${s.status}</span>
+                <span class="text-xl font-eurostile-black text-[#234CA1]">${s.total}</span>
+            </div>
+        `).join("") + `<p class="text-xs text-gray-400 text-center mt-2">${data.total} total enrollments</p>`;
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<p class="text-red-500 text-sm">Failed to load.</p>`;
+            }
+        }
+
+        async function loadCompletionTimeReport() {
+            const tbody = document.getElementById("completionTimeTableBody");
+            try {
+                const params = getEnrollmentFilterParams();
+                const res = await fetch(`../php/reports/get-completion-time-report.php?${params.toString()}`);
+                const data = await res.json();
+                if (data.status !== "success") {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center text-red-500 py-10">${data.message}</td></tr>`;
+                    return;
+                }
+                if (data.courses.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-400 py-10">No completed enrollments in this range.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.courses.map(c => `
+            <tr class="border-b border-gray-100">
+                <td class="py-2 px-3 font-medium">${escapeHtml(c.course_title)}</td>
+                <td class="py-2 px-3 text-center">${c.completed_count}</td>
+                <td class="py-2 px-3 text-center font-eurostile-bold text-[#234CA1]">${c.avg_minutes}</td>
+                <td class="py-2 px-3 text-center text-green-600">${c.fastest_minutes}</td>
+                <td class="py-2 px-3 text-center text-red-500">${c.slowest_minutes}</td>
+            </tr>
+        `).join("");
+
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center text-red-500 py-10">Failed to load.</td></tr>`;
+            }
+        }
+
+        async function loadStaleEnrollments() {
+            const tbody = document.getElementById("staleTableBody");
+            try {
+                const params = getEnrollmentFilterParams();
+                const staleDays = document.getElementById("en_staleDays").value || 14;
+                params.append("stale_days", staleDays);
+                const res = await fetch(`../php/reports/get-stale-enrollments.php?${params.toString()}`);
+                const data = await res.json();
+                if (data.status !== "success") {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-red-500 py-10">${data.message}</td></tr>`;
+                    return;
+                }
+                if (data.stale.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-400 py-10">No stale enrollments found.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.stale.map(s => `
+            <tr class="border-b border-gray-100">
+                <td class="py-3 px-3">${escapeHtml(s.first_name)} ${escapeHtml(s.last_name)}</td>
+                <td class="py-3 px-3">${escapeHtml(s.course_title)}</td>
+                <td class="py-3 px-3 text-center text-xs text-gray-400">${new Date(s.enrolled_at).toLocaleDateString()}</td>
+                <td class="py-3 px-3 text-center font-eurostile-bold text-red-500">${s.days_stale}d</td>
+            </tr>
+        `).join("");
+
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-red-500 py-10">Failed to load.</td></tr>`;
+            }
+        }
+
+
+        document.getElementById("en_applyBtn").addEventListener("click", () => {
+            loadEnrollmentTrends();
+            loadEnrollmentStatusBreakdown();
+            loadCompletionTimeReport();
+            loadStaleEnrollments();
+        });
+
+        document.getElementById("en_staleApplyBtn").addEventListener("click", loadStaleEnrollments);
+
         // Initial load
+        loadEnrollmentTrends();
+        loadEnrollmentStatusBreakdown();
+        loadCompletionTimeReport();
+        loadStaleEnrollments();
         loadCompletionReport();
         loadCatalogSummary();
         loadPopularCourses();

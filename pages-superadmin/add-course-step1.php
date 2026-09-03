@@ -20,10 +20,10 @@ requireRole(4);
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
-<body class="h-auto lg:h-screen">
+<body class="h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
-        <span class="page-breadcrumbs" data-aos="fade-down" data-aos-easing="ease-in-out">
+        <span class="page-breadcrumbs">
             Add Courses
             <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
@@ -44,7 +44,7 @@ requireRole(4);
         </span>
         <?php $currentStep = 1; include 'course-stepper.php'; ?>
         <form id="courseForm" enctype="multipart/form-data" method="POST" class="add-course-form">
-            <div data-aos="fade-right" data-aos-delay="300" data-aos-easing="ease-in-out" class="flex justify-between items-center w-full">
+            <div class="flex justify-between items-center w-full">
                 <div>
                     <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
                         Course Information
@@ -55,7 +55,7 @@ requireRole(4);
                 </div>
             </div>
             <div class="flex flex-col lg:flex-row justify-between items-center w-full gap-y-5 gap-x-10">
-                <div data-aos="fade-right" data-aos-delay="450" data-aos-easing="ease-in-out" class="flex flex-col gap-y-5 w-full lg:w-[60%] justify-between items-center h-full">
+                <div class="flex flex-col gap-y-5 w-full lg:w-[60%] justify-between items-center h-full">
                     <div class="label-inputs-col">
                         <label class="label-inputs">Course Title</label>
                         <input type="text" name="course_title" id="course_title" class="text-inputs" placeholder="Course Title">
@@ -76,7 +76,7 @@ requireRole(4);
                             while ($brand = mysqli_fetch_assoc($result)) {
                             ?>
                                 <label
-                                    class="brand-card flex items-center gap-3 p-3 rounded-xl border border-gray-300 cursor-pointer hover:border-[#234CA1] hover:bg-blue-50 transition">
+                                    class="brand-card flex items-center gap-3 p-3 rounded-xl border border-[#234CA1] bg-white cursor-pointer hover:border-[#234CA1] hover:bg-blue-50 transition">
 
                                     <input
                                         type="checkbox"
@@ -93,7 +93,7 @@ requireRole(4);
                         </div>
                     </div>
                 </div>
-                <div data-aos="fade-left" data-aos-delay="450" data-aos-easing="ease-in-out" class="flex flex-col justify-between items-center h-full w-full lg:w-[40%] gap-y-5">
+                <div class="flex flex-col justify-between items-center h-full w-full lg:w-[40%] gap-y-5">
                     <!-- Thumbnail -->
                     <div class="min-w-full flex-shrink-0 flex gap-y-2 flex-col">
                         <label class="label-inputs">Thumbnail</label>

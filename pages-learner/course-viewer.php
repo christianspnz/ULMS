@@ -23,13 +23,16 @@ requireRole([1, 2]);
     <?php include '../sidebar-learner.php'; ?>
     <main>
 
-        <span class="page-breadcrumbs">
-            <a href="courses.php">Courses</a>
-            <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
-            </svg>
-            <span id="courseTitleCrumb">Loading...</span>
-        </span>
+        <div class="flex justify-between items-center w-full">
+            <span class="page-breadcrumbs">
+                <a href="courses.php">Courses</a>
+                <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
+                </svg>
+                <span id="courseTitleCrumb">Loading...</span>
+            </span>
+            <?php include '../notification-bell.php'; ?>
+        </div>
 
         <div class="flex flex-col lg:flex-row gap-6 mt-5">
 
@@ -54,7 +57,7 @@ requireRole([1, 2]);
 
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
-        lucide.createIcons(); 
+        lucide.createIcons();
         AOS.init({
             duration: 600,
             once: true // animate only the first time an element scrolls into view

@@ -38,9 +38,13 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
 <body class="h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
-        <span class="page-breadcrumbs" data-aos="fade-down" data-aos-easing="ease-in-out">
-            Schedule
-        </span>
+
+        <div class="flex justify-between items-center w-full">
+            <span class="page-breadcrumbs">
+                Schedule
+            </span>
+            <?php include '../notification-bell.php'; ?>
+        </div> 
 
         <!-- <div data-aos="fade-right" data-aos-delay="200" data-aos-easing="ease-in-out" class="flex justify-between items-center w-full">
             <div>
@@ -55,11 +59,11 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
 
         <div class="flex flex-col lg:flex-row gap-5 mt-5">
 
-            <div data-aos="fade-right" data-aos-delay="300" data-aos-easing="ease-in-out" class="w-full lg:w-[65%] bg-white rounded-2xl shadow-md border border-gray-200 p-3 md:p-6">
+            <div class="w-full lg:w-[65%] bg-white rounded-2xl shadow-md border border-gray-200 p-3 md:p-6">
                 <div id="calendar"></div>
             </div>
 
-            <div data-aos="fade-left" data-aos-delay="400" data-aos-easing="ease-in-out" class="w-full lg:w-[35%] bg-white rounded-2xl shadow-md border border-gray-200 p-4 md:p-6 h-fit">
+            <div class="w-full lg:w-[35%] bg-white rounded-2xl shadow-md border border-gray-200 p-4 md:p-6 h-fit">
                 <h3 class="text-lg md:text-xl font-eurostile-bold text-[#234CA1] mb-4">Upcoming Schedules</h3>
                 <div id="upcomingSchedulesList" class="space-y-3">
                     <p class="text-gray-400 text-sm">Loading...</p>

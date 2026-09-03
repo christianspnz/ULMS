@@ -6,7 +6,7 @@ require "validate_registration.php";
 require "generate_password.php";
 require "insert_user.php";
 require "send_email.php";
-
+require "../notifications/notification-helpers.php";
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
     exit;
 }
@@ -275,8 +275,11 @@ try {
         "message" => "Registration successful!"
     ]);
 
-    exit;
+    if ($data["status"] === "Pending") {
+        notifyPendingApproval($conn, $data["first_name"], $data["last_name"]);
+    }
 
+    exit;
 } catch (Exception $e) {
 
     mysqli_rollback($conn);

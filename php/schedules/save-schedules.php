@@ -2,6 +2,7 @@
 
 require "../../config/config.php";
 require "../auth-logout/auth.php";
+require "../notifications/notification-helpers.php";
 requireRole(4);
 
 header("Content-Type: application/json");
@@ -93,6 +94,8 @@ try {
     // ---------- Sync brand/dealership targeting ----------
 
     $finalScheduleId = $scheduleId ?: mysqli_insert_id($conn);
+    // Only notify on CREATE, not on edits to an existing schedule
+    $isNewSchedule = !$scheduleId;
 
     mysqli_query($conn, "DELETE FROM schedule_brands WHERE schedule_id = " . intval($finalScheduleId));
     mysqli_query($conn, "DELETE FROM schedule_dealerships WHERE schedule_id = " . intval($finalScheduleId));
@@ -118,6 +121,10 @@ try {
         "message" => "Schedule saved successfully.",
         "schedule_id" => $finalScheduleId
     ]);
+
+    if ($isNewSchedule) {
+        notifyNewSchedule($conn, $finalScheduleId, $title, $audience);
+    }
 } catch (Exception $e) {
 
     echo json_encode([

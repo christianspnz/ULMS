@@ -18,9 +18,12 @@ requireRole(2);
     <?php include '../sidebar-manager.php'; ?>
     <main>
 
-        <span class="page-breadcrumbs">
-            Reports
-        </span>
+        <div class="flex justify-between items-center w-full">
+            <span class="page-breadcrumbs">
+                Reports
+            </span>
+            <?php include '../notification-bell.php'; ?>
+        </div> 
 
         <div class="flex justify-between items-center w-full mt-3">
             <div>

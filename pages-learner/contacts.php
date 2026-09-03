@@ -22,17 +22,16 @@ requireRole(1)
 <body class="h-auto lg:h-screen">
     <?php include '../sidebar-learner.php'; ?>
     <main>
-        <span class="page-breadcrumbs" data-aos="fade-down" data-aos-easing="ease-in-out">
-            Contact Us
-            <!-- <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor"/>
-            </svg>
-            Sample -->
-        </span>
+        <div class="flex justify-between items-center w-full">
+            <span class="page-breadcrumbs">
+                Contact Us
+            </span>
+            <?php include '../notification-bell.php'; ?>
+        </div> 
         <div class="contacts-container">
-            <span class="contacts-card-subtext" data-aos="flip-down" data-aos-delay="200" data-aos-easing="ease-in-out">Message us if you have any concerns</span>
+            <span class="contacts-card-subtext">Message us if you have any concerns</span>
             <div class="contacts-row">
-                <div data-aos="flip-left" data-aos-delay="300" data-aos-easing="ease-in-out" class="contacts-row-card">
+                <div class="contacts-row-card">
                     <span class="card-name">Karla Grace A. Malate</span>
                     <span class="card-position">Sales Training Supervisor</span>
                     <span class="card-viber-email"><b>Viber -</b>
@@ -48,7 +47,7 @@ requireRole(1)
                         </svg>
                     </span>
                 </div>
-                <div data-aos="flip-left" data-aos-delay="300" data-aos-easing="ease-in-out" class="contacts-row-card">
+                <div class="contacts-row-card">
                     <span class="card-name">Christian B. Espinoza</span>
                     <span class="card-position">Sales Training Admin Assistant</span>
                     <span class="card-viber-email"><b>Viber -</b>
@@ -65,7 +64,7 @@ requireRole(1)
                     </span>
                 </div>
             </div>
-            <div data-aos="flip-up" data-aos-delay="500" data-aos-easing="ease-in-out" class="contacts-row">
+            <div class="contacts-row">
                 <button class="contacts-btn group" onclick="openGmail()">
                     <span class="contacts-card-text">Notify us via Gmail</span>
                 </button>
