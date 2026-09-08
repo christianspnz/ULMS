@@ -131,9 +131,9 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto max-h-96 overflow-y-auto">
                     <table class="w-full text-sm">
-                        <thead>
+                        <thead class="sticky top-0 bg-white z-10">
                             <tr class="bg-gray-50 border-b border-gray-200">
                                 <th class="text-left py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">User</th>
                                 <th class="text-left py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">Role</th>
@@ -144,22 +144,19 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
                                 <th class="text-center py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="usersTableBody">
+                        <tbody id="usersTableBody" class="overflow-x-auto max-h-96">
                             <tr>
                                 <td colspan="7" class="text-center text-gray-400 py-14">Loading...</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-
             </div>
-
         </div>
-
         <!-- ============ PENDING APPROVALS TAB ============ -->
         <div id="tab-pending" class="user-tab-panel mt-6 hidden">
 
-            <div id="pendingList" class="space-y-4">
+            <div id="pendingList" class="space-y-4 overflow-x-auto max-h-96 overflow-y-auto">
                 <p class="text-gray-400 text-center py-10">Loading...</p>
             </div>
 

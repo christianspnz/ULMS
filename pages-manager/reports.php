@@ -5,6 +5,7 @@ requireRole(2);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,8 +13,11 @@ requireRole(2);
     <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
     <title>UEH - Reports</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
     <?php include '../sidebar-manager.php'; ?>
     <main>
@@ -23,7 +27,7 @@ requireRole(2);
                 Reports
             </span>
             <?php include '../notification-bell.php'; ?>
-        </div> 
+        </div>
 
         <div class="flex justify-between items-center w-full mt-3">
             <div>
@@ -39,7 +43,7 @@ requireRole(2);
     </main>
 
     <script>
-        lucide.createIcons(); 
+        lucide.createIcons();
         async function loadTeamProgress() {
 
             const wrapper = document.getElementById("teamTableWrapper");
@@ -130,7 +134,7 @@ requireRole(2);
         }
 
         loadTeamProgress();
-
     </script>
 </body>
+
 </html>

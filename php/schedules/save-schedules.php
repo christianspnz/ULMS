@@ -41,6 +41,9 @@ try {
         throw new Exception("Invalid audience selection.");
     }
 
+    // Determine create vs edit BEFORE the insert/update runs
+    $isNewSchedule = empty($scheduleId);
+
     // ---------- Insert or Update the schedule itself ----------
 
     if ($scheduleId) {
@@ -52,17 +55,10 @@ try {
              WHERE schedule_id = ?"
         );
         mysqli_stmt_bind_param(
-            $stmt,
-            "sssssssi",
-            $title,
-            $description,
-            $scheduleType,
-            $audience,
-            $eventDate,
-            $startTime,
-            $endTime,
-            $scheduleId
+            $stmt, "sssssssi",
+            $title, $description, $scheduleType, $audience, $eventDate, $startTime, $endTime, $scheduleId
         );
+
     } else {
 
         $stmt = mysqli_prepare(
@@ -72,17 +68,10 @@ try {
         );
         $createdBy = $_SESSION['user_id'];
         mysqli_stmt_bind_param(
-            $stmt,
-            "sssssssi",
-            $title,
-            $description,
-            $scheduleType,
-            $audience,
-            $eventDate,
-            $startTime,
-            $endTime,
-            $createdBy
+            $stmt, "sssssssi",
+            $title, $description, $scheduleType, $audience, $eventDate, $startTime, $endTime, $createdBy
         );
+
     }
 
     $success = mysqli_stmt_execute($stmt);
@@ -91,11 +80,9 @@ try {
         throw new Exception("Failed to save schedule.");
     }
 
-    // ---------- Sync brand/dealership targeting ----------
-
     $finalScheduleId = $scheduleId ?: mysqli_insert_id($conn);
-    // Only notify on CREATE, not on edits to an existing schedule
-    $isNewSchedule = !$scheduleId;
+
+    // ---------- Sync brand/dealership targeting ----------
 
     mysqli_query($conn, "DELETE FROM schedule_brands WHERE schedule_id = " . intval($finalScheduleId));
     mysqli_query($conn, "DELETE FROM schedule_dealerships WHERE schedule_id = " . intval($finalScheduleId));
@@ -116,15 +103,18 @@ try {
         }
     }
 
+    // ---------- Only notify on genuine first-time creation ----------
+
+    if ($isNewSchedule) {
+        notifyNewSchedule($conn, $finalScheduleId, $title, $audience);
+    }
+
     echo json_encode([
         "status" => "success",
         "message" => "Schedule saved successfully.",
         "schedule_id" => $finalScheduleId
     ]);
 
-    if ($isNewSchedule) {
-        notifyNewSchedule($conn, $finalScheduleId, $title, $audience);
-    }
 } catch (Exception $e) {
 
     echo json_encode([

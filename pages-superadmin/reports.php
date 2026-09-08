@@ -47,7 +47,7 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
         <div class="flex justify-between items-center w-full">
             <span class="page-breadcrumbs">Reports</span>
             <?php include '../notification-bell.php'; ?>
-        </div> 
+        </div>
 
         <div class="flex justify-between items-center w-full">
             <div>
@@ -57,7 +57,7 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
         </div>
 
         <!-- Section tabs -->
-        <div class="flex justify-between gap-x-2 border-b border-gray-200 mt-5 overflow-x-auto max-w-full" id="reportSectionTabs">
+        <div class="flex justify-between gap-x-5 border-b border-gray-200 mt-5 overflow-x-auto max-w-full" id="reportSectionTabs">
             <button type="button" class="section-tab-btn  py-3 font-eurostile-bold uppercase text-sm border-b-4 border-[#234CA1] text-[#234CA1] hover:text-[#234CA1] whitespace-nowrap" data-section="courseTraining">Course & Training</button>
             <button type="button" class="section-tab-btn  py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="assessment">Assessment & Performance</button>
             <button type="button" class="section-tab-btn  py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="enrollment">Enrollment</button>
@@ -545,6 +545,178 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
                         <tbody id="staleTableBody">
                             <tr>
                                 <td colspan="4" class="text-center text-gray-400 py-10">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ============ SECTION: Attendance & Schedule ============ -->
+        <div id="section-attendance" class="report-section mt-6 hidden">
+
+            <!-- Filter bar -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
+                        <input type="date" id="at_dateFrom" class="text-inputs">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
+                        <input type="date" id="at_dateTo" class="text-inputs">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Schedule Type</label>
+                        <select id="at_scheduleType" class="text-inputs">
+                            <option value="">Online & F2F</option>
+                            <option value="Online">Online</option>
+                            <option value="Face-to-Face">Face-to-Face</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Audience</label>
+                        <select id="at_audience" class="text-inputs">
+                            <option value="">All Audiences</option>
+                            <option value="Learners">Learners</option>
+                            <option value="Managers">Managers</option>
+                            <option value="Both">Both</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Attendance Status</label>
+                        <select id="at_attendanceStatus" class="text-inputs">
+                            <option value="">All Statuses</option>
+                            <option value="Present">Present</option>
+                            <option value="Left Early">Left Early</option>
+                            <option value="Absent">Absent</option>
+                            <option value="Not Started">Not Started</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brands</label>
+                        <div class="flex flex-wrap gap-2">
+                            <?php foreach ($allBrands as $b): ?>
+                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" class="at-brand-checkbox" value="<?= $b['brand_id'] ?>">
+                                    <?= htmlspecialchars($b['brand_name']) ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealerships</label>
+                        <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
+                            <?php foreach ($allDealerships as $d): ?>
+                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" class="at-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
+                                    <?= htmlspecialchars($d['dealership_name']) ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-4">
+                    <button type="button" id="at_applyBtn" class="bg-[#234CA1] text-white rounded-lg px-8 py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
+                </div>
+            </div>
+
+            <!-- Upcoming Schedule Load -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                <h3 class="text-xl font-eurostile-bold text-[#234CA1] mb-4">Upcoming Schedule Load (Next 30 Days)</h3>
+                <canvas id="scheduleLoadChart" height="70"></canvas>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
+
+                <!-- Attendance Rate by Learner -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Attendance Rate by Learner</h3>
+                        <button type="button" onclick="openPrintReport('attendancerate')" class="no-print bg-[#D02027] text-white px-3 py-1.5 rounded-lg text-xs font-eurostile-bold flex items-center gap-2">
+                            <i class="fa-solid fa-file-pdf"></i> PDF
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto max-h-96">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Learner</th>
+                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Attended</th>
+                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Total</th>
+                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceRateTableBody">
+                                <tr>
+                                    <td colspan="4" class="text-center text-gray-400 py-10">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Late / Left Early -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Late / Left Early</h3>
+                        <div class="flex items-center gap-x-2">
+                            <input type="number" id="at_lateMinutes" value="10" min="1" class="text-inputs w-16 text-center text-xs">
+                            <span class="text-xs text-gray-500">min = late</span>
+                            <button type="button" onclick="openPrintReport('latelearly')" class="no-print bg-[#D02027] text-white px-3 py-1.5 rounded-lg text-xs font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto max-h-96">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Learner</th>
+                                    <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Schedule</th>
+                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Issue</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lateLeftEarlyTableBody">
+                                <tr>
+                                    <td colspan="3" class="text-center text-gray-400 py-10">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Attendance Log -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Schedule Attendance Log</h3>
+                    <button type="button" onclick="openPrintReport('attendancelog')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                        <i class="fa-solid fa-file-pdf"></i> PDF
+                    </button>
+                </div>
+                <div class="overflow-x-auto max-h-96">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Schedule</th>
+                                <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Learner</th>
+                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Date</th>
+                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">RSVP</th>
+                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Time In</th>
+                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Time Out</th>
+                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceLogTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center text-gray-400 py-10">Loading...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1211,6 +1383,185 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
             }
         }
 
+        let scheduleLoadChartInstance = null;
+
+        function getAttendanceFilterParams() {
+            const params = new URLSearchParams();
+            const dateFrom = document.getElementById("at_dateFrom").value;
+            const dateTo = document.getElementById("at_dateTo").value;
+            const scheduleType = document.getElementById("at_scheduleType").value;
+            const audience = document.getElementById("at_audience").value;
+            const attendanceStatus = document.getElementById("at_attendanceStatus").value;
+            if (dateFrom) params.append("date_from", dateFrom);
+            if (dateTo) params.append("date_to", dateTo);
+            if (scheduleType) params.append("schedule_type", scheduleType);
+            if (audience) params.append("audience", audience);
+            if (attendanceStatus) params.append("attendance_status", attendanceStatus);
+            document.querySelectorAll(".at-brand-checkbox:checked").forEach(cb => params.append("brands[]", cb.value));
+            document.querySelectorAll(".at-dealership-checkbox:checked").forEach(cb => params.append("dealerships[]", cb.value));
+            return params;
+        }
+
+        async function loadScheduleLoad() {
+            try {
+                const params = getAttendanceFilterParams();
+                const res = await fetch(`../php/reports/get-upcoming-schedule-load.php?${params.toString()}`);
+                const data = await res.json();
+                if (data.status !== "success") return;
+
+                const labels = data.weekly_load.map(w => `Week of ${new Date(w.week_start).toLocaleDateString()}`);
+                const values = data.weekly_load.map(w => w.count);
+
+                if (scheduleLoadChartInstance) scheduleLoadChartInstance.destroy();
+
+                const ctx = document.getElementById("scheduleLoadChart").getContext("2d");
+                scheduleLoadChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Scheduled Events',
+                            data: values,
+                            backgroundColor: '#234CA1',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function loadAttendanceRate() {
+            const tbody = document.getElementById("attendanceRateTableBody");
+            try {
+                const params = getAttendanceFilterParams();
+                const res = await fetch(`../php/reports/get-attendance-rate-report.php?${params.toString()}`);
+                const data = await res.json();
+                if (data.status !== "success") {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-red-500 py-10">${data.message}</td></tr>`;
+                    return;
+                }
+                if (data.learners.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-400 py-10">No data available.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.learners.map(l => `
+            <tr class="border-b border-gray-100">
+                <td class="py-2 px-3">${escapeHtml(l.first_name)} ${escapeHtml(l.last_name)}</td>
+                <td class="py-2 px-3 text-center">${l.attended}</td>
+                <td class="py-2 px-3 text-center">${l.total}</td>
+                <td class="py-2 px-3 text-center font-eurostile-bold ${l.rate >= 80 ? 'text-green-600' : l.rate >= 50 ? 'text-yellow-600' : 'text-red-500'}">${l.rate}%</td>
+            </tr>
+        `).join("");
+
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-red-500 py-10">Failed to load.</td></tr>`;
+            }
+        }
+
+        async function loadLateLeftEarly() {
+            const tbody = document.getElementById("lateLeftEarlyTableBody");
+            try {
+                const params = getAttendanceFilterParams();
+                const lateMinutes = document.getElementById("at_lateMinutes").value || 10;
+                params.append("late_minutes", lateMinutes);
+                const res = await fetch(`../php/reports/get-late-leftearly-report.php?${params.toString()}`);
+                const data = await res.json();
+                if (data.status !== "success") {
+                    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-red-500 py-10">${data.message}</td></tr>`;
+                    return;
+                }
+                if (data.records.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-gray-400 py-10">No late or early departures found.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.records.map(r => `
+            <tr class="border-b border-gray-100">
+                <td class="py-2 px-3">${escapeHtml(r.first_name)} ${escapeHtml(r.last_name)}</td>
+                <td class="py-2 px-3 text-xs">${escapeHtml(r.title)}</td>
+                <td class="py-2 px-3 text-center">
+                    <span class="text-xs font-bold uppercase px-2 py-1 rounded-full ${r.issue === 'Late' ? 'bg-orange-100 text-orange-700' : 'bg-red-100 text-red-700'}">${r.issue}</span>
+                </td>
+            </tr>
+        `).join("");
+
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="3" class="text-center text-red-500 py-10">Failed to load.</td></tr>`;
+            }
+        }
+
+        async function loadAttendanceLog() {
+            const tbody = document.getElementById("attendanceLogTableBody");
+            try {
+                const params = getAttendanceFilterParams();
+                const res = await fetch(`../php/reports/get-attendance-log.php?${params.toString()}`);
+                const data = await res.json();
+                if (data.status !== "success") {
+                    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-red-500 py-10">${data.message}</td></tr>`;
+                    return;
+                }
+                if (data.log.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-gray-400 py-10">No records match these filters.</td></tr>`;
+                    return;
+                }
+
+                const statusColors = {
+                    "Present": "bg-green-100 text-green-700",
+                    "Left Early": "bg-orange-100 text-orange-700",
+                    "Absent": "bg-red-100 text-red-700",
+                    "Not Started": "bg-gray-100 text-gray-500"
+                };
+
+                tbody.innerHTML = data.log.map(r => `
+            <tr class="border-b border-gray-100">
+                <td class="py-2 px-3 text-xs">${escapeHtml(r.title)}</td>
+                <td class="py-2 px-3">${escapeHtml(r.first_name)} ${escapeHtml(r.last_name)}</td>
+                <td class="py-2 px-3 text-center text-xs text-gray-400">${new Date(r.event_date).toLocaleDateString()}</td>
+                <td class="py-2 px-3 text-center text-xs">${escapeHtml(r.rsvp_status || '—')}</td>
+                <td class="py-2 px-3 text-center text-xs">${r.time_in ? new Date(r.time_in).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '—'}</td>
+                <td class="py-2 px-3 text-center text-xs">${r.time_out ? new Date(r.time_out).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '—'}</td>
+                <td class="py-2 px-3 text-center">
+                    <span class="text-xs font-bold uppercase px-2 py-1 rounded-full ${statusColors[r.attendance_status] ?? ''}">${escapeHtml(r.attendance_status)}</span>
+                </td>
+            </tr>
+        `).join("");
+
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-red-500 py-10">Failed to load.</td></tr>`;
+            }
+        }
+
+        document.getElementById("at_applyBtn").addEventListener("click", () => {
+            loadScheduleLoad();
+            loadAttendanceRate();
+            loadLateLeftEarly();
+            loadAttendanceLog();
+        });
+
+
 
         document.getElementById("en_applyBtn").addEventListener("click", () => {
             loadEnrollmentTrends();
@@ -1232,6 +1583,10 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
         loadPrePostComparison();
         loadPassFailReport();
         loadAttemptHistory();
+        loadScheduleLoad();
+        loadAttendanceRate();
+        loadLateLeftEarly();
+        loadAttendanceLog();
     </script>
 </body>
 

@@ -434,7 +434,7 @@ mysqli_stmt_close($stmt);
                                         </h2>
 
                                         <p class="text-sm text-gray-500 text-center lg:text-left">
-                                            Your account has been registered successfully.
+                                            Please check your email for your temporary password and proceed to login once your registration has been approved.
                                         </p>
                                     </div>
                                 </div>
@@ -442,7 +442,7 @@ mysqli_stmt_close($stmt);
                                 <button
                                     id="proceedBtn"
                                     class="w-full h-12 bg-[#234CA1] text-white rounded-xl font-bold hover:bg-[#1B3D82] transition">
-                                    Please check your email for your temporary password and proceed to login once your registration has been approved.
+                                    Proceed to Login
                                 </button>
                             </div>
                         `,
