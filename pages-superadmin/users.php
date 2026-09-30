@@ -38,7 +38,7 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
         <div class="flex justify-between items-center w-full">
             <span class="page-breadcrumbs">Accounts</span>
             <?php include '../notification-bell.php'; ?>
-        </div> 
+        </div>
 
         <div class="flex justify-between items-center w-full">
             <div>
@@ -343,6 +343,7 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
 
         }
 
+
         function attachRowHandlers() {
 
             document.querySelectorAll(".edit-user-btn").forEach(btn => {
@@ -432,7 +433,7 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
                         <div class="grid grid-cols-2 gap-3 w-full">
                             <div>
                                 <label class="text-sm font-bold text-[#234CA1] block mb-1">Status</label>
-                                <select id="edit_status" class="text-inputs">
+                                <select id="edit_status" class="text-inputs" >
                                     <option value="Active" ${user.status === 'Active' ? 'selected' : ''}>Active</option>
                                     <option value="Inactive" ${user.status === 'Inactive' ? 'selected' : ''}>Inactive</option>
                                 </select>
@@ -507,7 +508,7 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
 
             try {
 
-                const res = await fetch("../php/users/update-user.php", {
+                const res = await fetch("../php/users/update-users.php", {
                     method: "POST",
                     body: formData
                 });
@@ -717,6 +718,46 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
         document.getElementById("applyUserFiltersBtn").addEventListener("click", loadUsers);
 
         loadUsers();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const requestedTab = urlParams.get('tab');
+        const highlightUserId = urlParams.get('highlight_user');
+
+        if (requestedTab === 'pending') {
+
+            // Programmatically click the Pending Approvals tab button to reuse existing switch logic
+            document.querySelector('.user-tab-btn[data-tab="pending"]').click();
+
+            if (highlightUserId) {
+
+                const waitForRow = setInterval(() => {
+
+                    const row = document.querySelector(`[data-user-id="${highlightUserId}"]`);
+
+                    if (row) {
+
+                        clearInterval(waitForRow);
+
+                        row.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+
+                        row.classList.add('ring-4', 'ring-[#234CA1]', 'ring-offset-2');
+
+                        setTimeout(() => {
+                            row.classList.remove('ring-4', 'ring-[#234CA1]', 'ring-offset-2');
+                        }, 3000);
+
+                    }
+
+                }, 200);
+
+                setTimeout(() => clearInterval(waitForRow), 5000);
+
+            }
+
+        }
     </script>
 </body>
 

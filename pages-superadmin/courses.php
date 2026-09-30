@@ -41,39 +41,46 @@ $courses = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
 <body>
     <?php include('../sidebar-superadmin.php') ?>
     <main>
-        <div class="flex justify-between items-center w-full">
-            <span class="page-breadcrumbs">
-                Courses
-            </span>
-            <?php include '../notification-bell.php'; ?>
-        </div>
-        <div class="flex flex-col lg:flex-row gap-y-2 justify-between items-start lg:items-center w-full">
-            <div>
-                <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
-                    Course Management
-                </h2>
-                <p class="font-eurostile text-gray-500 mt-1">
-                    View, edit, and manage all courses.
-                </p>
+
+        <div class="sticky top-0 z-30 bg-[#fbfcf8] pb-3 -mx-1 px-1">
+
+            <div class="flex justify-between items-center w-full">
+                <span class="page-breadcrumbs">
+                    Courses
+                </span>
+                <?php include '../notification-bell.php'; ?>
             </div>
-            <a href="new-course.php"
-                class="bg-[#234CA1] px-6 py-3 text-white rounded-lg font-eurostile-bold uppercase flex items-center gap-2">
-                <i class="fa-solid fa-plus"></i>
-                Add Course
-            </a>
-        </div>
-        <!-- Tabs -->
-        <div class="flex gap-x-2 border-b border-gray-200 mt-5">
-            <?php foreach ($allowedTabs as $tab): ?>
-                <a href="?status=<?= $tab ?>"
-                    class="px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 transition
+
+            <div class="flex flex-col lg:flex-row gap-y-2 justify-between items-start lg:items-center w-full">
+                <div>
+                    <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
+                        Course Management
+                    </h2>
+                    <p class="font-eurostile text-gray-500 mt-1">
+                        View, edit, and manage all courses.
+                    </p>
+                </div>
+                <a href="new-course.php"
+                    class="bg-[#234CA1] px-6 py-3 text-white rounded-lg font-eurostile-bold uppercase flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i>
+                    Add Course
+                </a>
+            </div>
+            <!-- Tabs -->
+            <div class="flex gap-x-2 border-b border-gray-200 mt-5">
+                <?php foreach ($allowedTabs as $tab): ?>
+                    <a href="?status=<?= $tab ?>"
+                        class="px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 transition
                           <?= $activeTab === $tab
                                 ? 'border-[#234CA1] text-[#234CA1]'
                                 : 'border-transparent text-gray-400 hover:text-[#234CA1]' ?>">
-                    <?= $tab ?>
-                </a>
-            <?php endforeach; ?>
+                        <?= $tab ?>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+
         </div>
+
         <!-- Course Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
             <?php if (empty($courses)): ?>
@@ -101,9 +108,9 @@ $courses = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                                         <?= htmlspecialchars($course['course_title']) ?>
                                     </h3>
                                     <span class="text-xs font-bold uppercase px-2 py-1 rounded-full
-                                        <?= $course['status'] === 'Published' ? 'bg-green-100 text-green-700' : '' ?>
-                                        <?= $course['status'] === 'Draft' ? 'bg-yellow-100 text-yellow-700' : '' ?>
-                                        <?= $course['status'] === 'Archived' ? 'bg-gray-100 text-gray-500' : '' ?>">
+                                    <?= $course['status'] === 'Published' ? 'bg-green-100 text-green-700' : '' ?>
+                                    <?= $course['status'] === 'Draft' ? 'bg-yellow-100 text-yellow-700' : '' ?>
+                                    <?= $course['status'] === 'Archived' ? 'bg-gray-100 text-gray-500' : '' ?>">
                                         <?= $course['status'] ?>
                                     </span>
                                 </div>
@@ -153,6 +160,7 @@ $courses = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
+
     </main>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>

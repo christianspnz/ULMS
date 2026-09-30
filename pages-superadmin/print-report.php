@@ -962,6 +962,363 @@ switch ($reportType) {
         }
 
         break;
+    case 'userdirectory':
+
+        $reportTitle = "User Directory";
+        $reportSubtitle = "Full user listing with role and contact details";
+
+        $designationIds = $_GET['designations'] ?? [];
+        $status = $_GET['status'] ?? null;
+        $dateHiredFrom = $_GET['date_hired_from'] ?? null;
+        $dateHiredTo = $_GET['date_hired_to'] ?? null;
+
+        $conditions = ["u.designation_id != 4"];
+        $params = [];
+        $types = "";
+
+        if (!empty($dealershipIds) && is_array($dealershipIds)) {
+            $placeholders = implode(",", array_fill(0, count($dealershipIds), "?"));
+            $conditions[] = "u.dealership_id IN ({$placeholders})";
+            foreach ($dealershipIds as $id) {
+                $params[] = $id;
+                $types .= "i";
+            }
+        }
+
+        if (!empty($designationIds) && is_array($designationIds)) {
+            $placeholders = implode(",", array_fill(0, count($designationIds), "?"));
+            $conditions[] = "u.designation_id IN ({$placeholders})";
+            foreach ($designationIds as $id) {
+                $params[] = $id;
+                $types .= "i";
+            }
+        }
+
+        if ($status && in_array($status, ['Active', 'Inactive'])) {
+            $conditions[] = "u.status = ?";
+            $params[] = $status;
+            $types .= "s";
+        }
+
+        if ($dateHiredFrom) {
+            $conditions[] = "u.date_hired >= ?";
+            $params[] = $dateHiredFrom;
+            $types .= "s";
+        }
+
+        if ($dateHiredTo) {
+            $conditions[] = "u.date_hired <= ?";
+            $params[] = $dateHiredTo;
+            $types .= "s";
+        }
+
+        $whereSql = "WHERE " . implode(" AND ", $conditions);
+
+        $sql = "SELECT u.user_id, u.last_name, u.first_name, u.middle_name, u.email,
+            u.contact_number, u.date_of_birth, u.date_hired, u.status,
+            d.designation_name, dl.dealership_name
+            FROM users u
+            LEFT JOIN designations d ON d.designation_id = u.designation_id
+            LEFT JOIN dealerships dl ON dl.dealership_id = u.dealership_id
+            {$whereSql}
+            ORDER BY u.last_name ASC";
+
+        if (!empty($params)) {
+            $stmt = mysqli_prepare($conn, $sql);
+            mysqli_stmt_bind_param($stmt, $types, ...$params);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+        } else {
+            $result = mysqli_query($conn, $sql);
+        }
+
+        $rows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
+        foreach ($rows as &$row) {
+            $bStmt = mysqli_prepare(
+                $conn,
+                "SELECT b.brand_name FROM user_brands ub JOIN brands b ON b.brand_id = ub.brand_id WHERE ub.user_id = ?"
+            );
+            mysqli_stmt_bind_param($bStmt, "i", $row['user_id']);
+            mysqli_stmt_execute($bStmt);
+            $bResult = mysqli_stmt_get_result($bStmt);
+            $row['brands'] = $bResult ? implode(', ', array_column($bResult->fetch_all(MYSQLI_ASSOC), 'brand_name')) : '';
+        }
+        unset($row);
+
+        if (!empty($brandIds) && is_array($brandIds)) {
+
+            $rows = array_values(array_filter($rows, function ($row) use ($conn, $brandIds) {
+                $bStmt = mysqli_prepare($conn, "SELECT brand_id FROM user_brands WHERE user_id = ?");
+                mysqli_stmt_bind_param($bStmt, "i", $row['user_id']);
+                mysqli_stmt_execute($bStmt);
+                $bResult = mysqli_stmt_get_result($bStmt);
+                $userBrandIds = $bResult ? array_column($bResult->fetch_all(MYSQLI_ASSOC), 'brand_id') : [];
+                return count(array_intersect($userBrandIds, $brandIds)) > 0;
+            }));
+        }
+
+        $tableHeaders = ["Name", "Designation", "Brand", "Dealership", "Email", "Hired", "Status"];
+
+        foreach ($rows as $r) {
+            $tableRows[] = [$r['first_name'] . ' ' . $r['last_name'], $r['designation_name'], $r['brands'] ?: '—', $r['dealership_name'], $r['email'], $r['date_hired'] ?? '—', $r['status']];
+        }
+
+        break;
+
+    case 'teammatrix':
+
+        $reportTitle = "Team Progress Matrix";
+        $reportSubtitle = "Course completion status across the team";
+
+        $designationIds = $_GET['designations'] ?? [];
+        $status = $_GET['status'] ?? null;
+
+        $conditions = ["u.designation_id != 4"];
+        $params = [];
+        $types = "";
+
+        if (!empty($dealershipIds) && is_array($dealershipIds)) {
+            $placeholders = implode(",", array_fill(0, count($dealershipIds), "?"));
+            $conditions[] = "u.dealership_id IN ({$placeholders})";
+            foreach ($dealershipIds as $id) {
+                $params[] = $id;
+                $types .= "i";
+            }
+        }
+
+        if (!empty($designationIds) && is_array($designationIds)) {
+            $placeholders = implode(",", array_fill(0, count($designationIds), "?"));
+            $conditions[] = "u.designation_id IN ({$placeholders})";
+            foreach ($designationIds as $id) {
+                $params[] = $id;
+                $types .= "i";
+            }
+        }
+
+        if ($status && in_array($status, ['Active', 'Inactive'])) {
+            $conditions[] = "u.status = ?";
+            $params[] = $status;
+            $types .= "s";
+        }
+
+        $whereSql = "WHERE " . implode(" AND ", $conditions);
+
+        $userSql = "SELECT u.user_id, u.first_name, u.last_name FROM users u {$whereSql} ORDER BY u.last_name ASC LIMIT 100";
+
+        if (!empty($params)) {
+            $stmt = mysqli_prepare($conn, $userSql);
+            mysqli_stmt_bind_param($stmt, $types, ...$params);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+        } else {
+            $result = mysqli_query($conn, $userSql);
+        }
+
+        $users = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
+        if (!empty($brandIds) && is_array($brandIds)) {
+
+            $users = array_values(array_filter($users, function ($u) use ($conn, $brandIds) {
+                $bStmt = mysqli_prepare($conn, "SELECT brand_id FROM user_brands WHERE user_id = ?");
+                mysqli_stmt_bind_param($bStmt, "i", $u['user_id']);
+                mysqli_stmt_execute($bStmt);
+                $bResult = mysqli_stmt_get_result($bStmt);
+                $userBrandIds = $bResult ? array_column($bResult->fetch_all(MYSQLI_ASSOC), 'brand_id') : [];
+                return count(array_intersect($userBrandIds, $brandIds)) > 0;
+            }));
+        }
+
+        $courseResult = mysqli_query($conn, "SELECT course_id, course_title FROM courses WHERE status = 'Published' ORDER BY course_title ASC LIMIT 20");
+        $courses = $courseResult ? $courseResult->fetch_all(MYSQLI_ASSOC) : [];
+
+        $progressMap = [];
+
+        foreach ($users as $u) {
+            $enrollStmt = mysqli_prepare($conn, "SELECT course_id, status FROM enrollments WHERE user_id = ?");
+            mysqli_stmt_bind_param($enrollStmt, "i", $u['user_id']);
+            mysqli_stmt_execute($enrollStmt);
+            $enrollResult = mysqli_stmt_get_result($enrollStmt);
+            $enrollments = $enrollResult ? $enrollResult->fetch_all(MYSQLI_ASSOC) : [];
+
+            $progressMap[$u['user_id']] = [];
+            foreach ($enrollments as $e) {
+                $progressMap[$u['user_id']][$e['course_id']] = $e['status'];
+            }
+        }
+
+        $tableHeaders = array_merge(["Learner"], array_column($courses, 'course_title'));
+
+        foreach ($users as $u) {
+            $row = [$u['first_name'] . ' ' . $u['last_name']];
+            foreach ($courses as $c) {
+                $row[] = $progressMap[$u['user_id']][$c['course_id']] ?? 'Not enrolled';
+            }
+            $tableRows[] = $row;
+        }
+
+        break;
+
+    case 'inactive':
+
+        $reportTitle = "Inactive Users";
+        $reportSubtitle = "Users currently marked Inactive";
+
+        $designationIds = $_GET['designations'] ?? [];
+
+        $conditions = ["u.designation_id != 4", "u.status = 'Inactive'"];
+        $params = [];
+        $types = "";
+
+        if (!empty($dealershipIds) && is_array($dealershipIds)) {
+            $placeholders = implode(",", array_fill(0, count($dealershipIds), "?"));
+            $conditions[] = "u.dealership_id IN ({$placeholders})";
+            foreach ($dealershipIds as $id) {
+                $params[] = $id;
+                $types .= "i";
+            }
+        }
+
+        if (!empty($designationIds) && is_array($designationIds)) {
+            $placeholders = implode(",", array_fill(0, count($designationIds), "?"));
+            $conditions[] = "u.designation_id IN ({$placeholders})";
+            foreach ($designationIds as $id) {
+                $params[] = $id;
+                $types .= "i";
+            }
+        }
+
+        $whereSql = "WHERE " . implode(" AND ", $conditions);
+
+        $sql = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.updated_at,
+            d.designation_name, dl.dealership_name
+            FROM users u
+            LEFT JOIN designations d ON d.designation_id = u.designation_id
+            LEFT JOIN dealerships dl ON dl.dealership_id = u.dealership_id
+            {$whereSql}
+            ORDER BY u.updated_at DESC";
+
+        if (!empty($params)) {
+            $stmt = mysqli_prepare($conn, $sql);
+            mysqli_stmt_bind_param($stmt, $types, ...$params);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+        } else {
+            $result = mysqli_query($conn, $sql);
+        }
+
+        $rows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
+        if (!empty($brandIds) && is_array($brandIds)) {
+
+            $rows = array_values(array_filter($rows, function ($row) use ($conn, $brandIds) {
+                $bStmt = mysqli_prepare($conn, "SELECT brand_id FROM user_brands WHERE user_id = ?");
+                mysqli_stmt_bind_param($bStmt, "i", $row['user_id']);
+                mysqli_stmt_execute($bStmt);
+                $bResult = mysqli_stmt_get_result($bStmt);
+                $userBrandIds = $bResult ? array_column($bResult->fetch_all(MYSQLI_ASSOC), 'brand_id') : [];
+                return count(array_intersect($userBrandIds, $brandIds)) > 0;
+            }));
+        }
+
+        $tableHeaders = ["Name", "Designation", "Dealership", "Email"];
+
+        foreach ($rows as $r) {
+            $tableRows[] = [$r['first_name'] . ' ' . $r['last_name'], $r['designation_name'], $r['dealership_name'] ?? '—', $r['email']];
+        }
+
+        break;
+
+    case 'newhires':
+
+        $newHireDateFrom = $_GET['date_hired_from'] ?? date('Y-m-d', strtotime('-90 days'));
+        $newHireDateTo = $_GET['date_hired_to'] ?? date('Y-m-d');
+
+        $reportTitle = "New Hires Onboarding Status";
+        $reportSubtitle = "Hired between {$newHireDateFrom} and {$newHireDateTo}";
+
+        $designationIds = $_GET['designations'] ?? [];
+
+        $conditions = ["u.designation_id != 4", "u.date_hired >= ?", "u.date_hired <= ?"];
+        $params = [$newHireDateFrom, $newHireDateTo];
+        $types = "ss";
+
+        if (!empty($dealershipIds) && is_array($dealershipIds)) {
+            $placeholders = implode(",", array_fill(0, count($dealershipIds), "?"));
+            $conditions[] = "u.dealership_id IN ({$placeholders})";
+            foreach ($dealershipIds as $id) {
+                $params[] = $id;
+                $types .= "i";
+            }
+        }
+
+        if (!empty($designationIds) && is_array($designationIds)) {
+            $placeholders = implode(",", array_fill(0, count($designationIds), "?"));
+            $conditions[] = "u.designation_id IN ({$placeholders})";
+            foreach ($designationIds as $id) {
+                $params[] = $id;
+                $types .= "i";
+            }
+        }
+
+        $whereSql = "WHERE " . implode(" AND ", $conditions);
+
+        $sql = "SELECT u.user_id, u.first_name, u.last_name, u.date_hired,
+            d.designation_name, dl.dealership_name
+            FROM users u
+            LEFT JOIN designations d ON d.designation_id = u.designation_id
+            LEFT JOIN dealerships dl ON dl.dealership_id = u.dealership_id
+            {$whereSql}
+            ORDER BY u.date_hired DESC";
+
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, $types, ...$params);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $rows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
+        if (!empty($brandIds) && is_array($brandIds)) {
+
+            $rows = array_values(array_filter($rows, function ($row) use ($conn, $brandIds) {
+                $bStmt = mysqli_prepare($conn, "SELECT brand_id FROM user_brands WHERE user_id = ?");
+                mysqli_stmt_bind_param($bStmt, "i", $row['user_id']);
+                mysqli_stmt_execute($bStmt);
+                $bResult = mysqli_stmt_get_result($bStmt);
+                $userBrandIds = $bResult ? array_column($bResult->fetch_all(MYSQLI_ASSOC), 'brand_id') : [];
+                return count(array_intersect($userBrandIds, $brandIds)) > 0;
+            }));
+        }
+
+        foreach ($rows as &$row) {
+            $enrollStmt = mysqli_prepare(
+                $conn,
+                "SELECT COUNT(*) as total, SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) as completed
+             FROM enrollments WHERE user_id = ?"
+            );
+            mysqli_stmt_bind_param($enrollStmt, "i", $row['user_id']);
+            mysqli_stmt_execute($enrollStmt);
+            $enrollResult = mysqli_stmt_get_result($enrollStmt);
+            $enroll = $enrollResult ? $enrollResult->fetch_assoc() : ['total' => 0, 'completed' => 0];
+
+            $row['total_enrolled'] = (int) $enroll['total'];
+            $row['completed'] = (int) $enroll['completed'];
+            $row['completion_rate'] = $row['total_enrolled'] > 0 ? round(($row['completed'] / $row['total_enrolled']) * 100, 1) : 0;
+        }
+        unset($row);
+
+        $tableHeaders = ["Name", "Designation", "Dealership", "Hired", "Progress"];
+
+        foreach ($rows as $r) {
+            $tableRows[] = [
+                $r['first_name'] . ' ' . $r['last_name'],
+                $r['designation_name'],
+                $r['dealership_name'] ?? '—',
+                $r['date_hired'],
+                $r['completed'] . '/' . $r['total_enrolled'] . ' (' . $r['completion_rate'] . '%)'
+            ];
+        }
+
+        break;
     default:
         die("Unknown report type.");
 }

@@ -15,27 +15,29 @@
 </head>
 
 <body class="m-0 p-0 min-h-screen flex items-center justify-center ">
-    <form id="loginForm" class="login-register-form">
+    <form id="loginForm" class="login-register-form py-0">
+        <div class="w-[55%] hidden lg:flex flex-col justify-center items-center">
+            <img src="./assets/brandedcarss.png" alt="UAAGI LMS Logo" class="w-full">
+        </div>
+        <div class="main-card-divider"></div>
         <div class="main-card">
-            <div data-aos="zoom-in" data-aos-easing="ease-in-sine" class="flex flex-col lg:flex-row w-full justify-center items-center gap-x-2 gap-y-1">
+            <div  class="flex flex-col lg:flex-row w-full justify-center items-center gap-x-2 gap-y-1">
                 <img src="./assets/ulh-logo.png" alt="UAAGI LMS Logo" class="w-20">
                 <img src="./assets/Logo.png" alt="UAAGI LMS Logo" class="w-52">
             </div>
             <div class="label-inputs-col items-center w-full lg:w-[80%]">
-                <span data-aos="zoom-in" data-aos-easing="ease-in-sine" class="login-register-title">Welcome!</span>
-                <span data-aos="zoom-in" data-aos-easing="ease-in-sine" class="login-register-subtitle">Sign in or register your account to take part in our Sales
+                <span  class="login-register-title">Welcome!</span>
+                <span  class="login-register-subtitle">Sign in or register your account to take part in our Sales
                     Training Learning Session.</span>
             </div>
             <div class="label-inputs-col w-full lg:w-[90%]">
-                <span data-aos="zoom-in" data-aos-easing="ease-in-sine" class="label-inputs">Email</span>
-                <input data-aos="zoom-in" data-aos-easing="ease-in-sine" type="email" name="email" placeholder="sample@gmail.com" class="text-inputs" required>
+                <span  class="label-inputs">Email</span>
+                <input  type="email" name="email" placeholder="sample@gmail.com" class="text-inputs" required>
             </div>
             <div class="label-inputs-col w-full lg:w-[90%]">
-                <span data-aos="zoom-in" data-aos-easing="ease-in-sine" class="label-inputs">Password</span>
+                <span  class="label-inputs">Password</span>
                 <div class="relative w-full">
                     <input
-                        data-aos="zoom-in"
-                        data-aos-easing="ease-in-sine"
                         id="pw_confirm"
                         type="password"
                         name="password"
@@ -48,14 +50,14 @@
                         class="password-toggle absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
                         data-target="pw_confirm"
                         aria-label="Show password">
-                        <i data-lucide="eye" class="w-4 h-4"></i>
+                        <i  data-lucide="eye" class="w-4 h-4"></i>
                     </button>
                 </div>
-                <a data-aos="zoom-in" data-aos-easing="ease-in-sine" href="#" class="anchortag">Forgot your password?</a>
+                <a  href="forgot-password.php" class="anchortag">Forgot your password?</a>
             </div>
             <div class="login-register-btn-col">
-                <button data-aos="zoom-in" data-aos-easing="ease-in-sine" type="submit" class="login-register-btn">Login</button>
-                <span data-aos="zoom-in" data-aos-easing="ease-in-sine" class="asking-text">Dont have an account yet?
+                <button  type="submit" class="login-register-btn">Login</button>
+                <span  class="asking-text">Dont have an account yet?
                     <a href="registration.php" class="text-[#D02027] font-eurostile-bold text-[14px] hover:underline">Register here</a>
                 </span>
             </div>
@@ -63,7 +65,7 @@
     </form>
 
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    
+
     <script>
         lucide.createIcons();
         AOS.init({
@@ -115,7 +117,7 @@
             });
 
         });
-        
+
         document.getElementById("loginForm").addEventListener("submit", function(e) {
 
             e.preventDefault();
@@ -183,8 +185,8 @@
                                                 Login Error!
                                             </h2>
 
-                                            <p class="text-sm text-gray-500">
-                                                Invalid email and password
+                                            <p class="text-sm text-start text-gray-500">
+                                                ${data.message}
                                             </p>
                                         </div>
                                     </div>

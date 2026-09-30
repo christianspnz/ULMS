@@ -39,7 +39,7 @@ requireRole(2);
         <div id="teamTableWrapper" class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-6 overflow-x-auto">
             <p class="text-gray-400 text-center py-10">Loading team progress...</p>
         </div>
-
+        <?php include '../feedback-button.php'; ?>
     </main>
 
     <script>

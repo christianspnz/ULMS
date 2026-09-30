@@ -71,6 +71,7 @@ body {
     cursor: pointer;
 }
 
+
 /* ---------- Mobile responsive ---------- */
 
 @media (max-width: 640px) {
@@ -130,6 +131,20 @@ body {
 
 /* Scrollbar */
 
+@keyframes scaleAnimation {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.scale-animation {
+    animation: scaleAnimation 1.5s ease-in-out infinite;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
     width: 8px;
 }
@@ -160,6 +175,9 @@ body {
 .popup-yellow{
     border: 3px solid #d0aa13;
 }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 .my-progress {
     width: 100%;
@@ -247,7 +265,7 @@ body {
 @layer base{
     
     body{
-        @apply flex flex-row justify-between bg-gradient-to-b from-white to-[#EDEDED] w-screen h-auto min-h-screen p-5;
+        @apply flex flex-row justify-center lg:justify-end bg-[#fbfcf8] w-screen h-auto min-h-screen p-5;
     }
     
     header{
@@ -255,11 +273,11 @@ body {
     }
     
     main{
-        @apply flex flex-col gap-y-3 px-2 lg:px-10 py-10 w-full h-auto lg:ml-80;
+        @apply flex flex-col gap-y-3 px-2 lg:px-10 py-10 w-[80%] h-auto;
     }
     
     footer{
-        @apply w-full h-auto overflow-hidden z-10 pb-5;
+        @apply w-full h-auto overflow-hidden z-10 ;
     }
 
 }
@@ -297,7 +315,7 @@ body {
     /* Sidebar */
 
     .sidebar{
-        @apply flex flex-col justify-between items-center w-[90%] lg:max-w-[20%] h-[90%] lg:h-[95%] bg-white border border-[#234CA1] rounded-3xl pt-16 pb-8 px-5 gap-y-10;
+        @apply flex flex-col justify-between items-center w-[90%] lg:max-w-[20%] h-[90%] lg:h-[95%] bg-white border border-[#234CA1] rounded-3xl py-8 px-5 gap-y-10;
     }
 
     .sidebar-nav{
@@ -317,7 +335,7 @@ body {
     }
     
     .logout-col{
-        @apply flex flex-col w-full min-w-0;
+        @apply flex flex-col w-full min-w-0 gap-y-1;
     }
 
     .user-icon {
@@ -333,11 +351,11 @@ body {
     }
 
     .user-info-name{
-        @apply text-[16px] font-eurostile-bold text-[#234CA1] w-full truncate whitespace-nowrap inline-block group-hover:underline cursor-pointer;
+        @apply text-[14px] font-eurostile-bold text-[#234CA1] w-full leading-none inline-block group-hover:underline cursor-pointer;
     }
     
     .user-info-subname{
-        @apply text-[13px] font-eurostile-bold text-[#828282] -mt-1.5 w-full truncate whitespace-nowrap inline-block;
+        @apply text-[12px] w-auto font-eurostile-bold text-[#828282] truncate whitespace-nowrap inline-block;
     }
     
     .logout-icon{
@@ -351,7 +369,11 @@ body {
     /* Login/Registration */
     
     .login-register-form{
-        @apply flex justify-center items-center h-full w-full p-10;
+        @apply flex justify-between items-center h-screen w-full p-10;
+    }
+
+    .login-registration-form{
+        @apply flex justify-center items-center h-full w-full;
     }
 
     .header-logo{
@@ -359,19 +381,19 @@ body {
     }
 
     .footer-marquee{
-        @apply flex flex-row items-center justify-between;
+        @apply flex flex-row items-center justify-between fixed bottom-0 left-0 bg-[#fbfcf8] border border-t-gray-200;
     }
 
     .landing-title-text{
-        @apply flex font-eurostile-black text-[32px] lg:text-[80px] text-[#234CA1];
+        @apply flex font-eurostile-black text-[44px] lg:text-[80px] text-[#234CA1];
     }
 
     .landing-title-subtext{
-        @apply font-eurostile-medium text-[28px] lg:text-[36px] text-[#D02027] uppercase -mt-4 ml-1;
+        @apply font-eurostile-medium text-[32px] lg:text-[36px] text-[#D02027] uppercase -mt-4 ml-1;
     }
 
     .landing-title-description{
-        @apply font-eurostile text-[14px] lg:text-[18px] text-[#234CA1] w-[80%] lg:w-[60%] ml-1;
+        @apply font-eurostile text-[16px] lg:text-[18px] text-[#234CA1] w-[80%] lg:w-[60%] ml-1;
     }
 
     .landing-buttons{
@@ -386,8 +408,20 @@ body {
         @apply bg-[#234CA1] text-white;
     }
 
-    .main-card{
+    /* .main-card{
         @apply w-[90%] md:w-[60%] lg:w-[30%] bg-white shadow-lg shadow-[inset_0_10px_6px_#234CA1] rounded-3xl p-10 flex flex-col gap-y-5 justify-between items-center border border-[#234CA1];
+    } */
+
+    .main-card-registration{
+        @apply w-full lg:w-[70%] bg-white lg:shadow-lg lg:shadow-[inset_0_10px_6px_#234CA1] rounded-3xl p-10 flex flex-col lg:flex-row gap-y-5 justify-between items-center lg:border border-[#234CA1] max-h-full overflow-x-hidden overflow-y-auto lg:overflow-visible lg:max-h-none;
+    }
+
+    .main-card{
+        @apply w-full lg:w-[45%] flex flex-col gap-y-5 md:px-28 lg:px-24 justify-center lg:justify-evenly items-center;
+    }
+
+    .main-card-divider{
+        @apply hidden lg:flex border h-[100%] rounded-xl border-[#234CA1];
     }
 
     .label-inputs-col{
@@ -407,11 +441,11 @@ body {
     }
 
     .login-register-title{
-        @apply text-[32px] font-eurostile-black text-[#234CA1];
+        @apply text-[40px] font-eurostile-black text-[#234CA1];
     }
 
     .login-register-subtitle{
-        @apply text-[12px] font-eurostile-bold text-[#828282] text-center -mt-3;
+        @apply text-[14px] font-eurostile-bold text-[#828282] text-center -mt-3;
     }
 
     .label-inputs{

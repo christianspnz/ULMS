@@ -276,7 +276,7 @@ try {
     ]);
 
     if ($data["status"] === "Pending") {
-        notifyPendingApproval($conn, $data["first_name"], $data["last_name"]);
+        notifyPendingApproval($conn, $user_id, $data["first_name"], $data["last_name"]);
     }
 
     exit;

@@ -10,9 +10,9 @@ include "hamburger-btn.php";
 ?>
 
 <aside id="sidebar" class="sidebar hidden lg:flex fixed lg:top-0 lg:left-0 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 lg:translate-y-0 lg:translate-x-0 z-40 lg:m-5">
-    <div class="flex flex-col lg:flex-row w-full justify-center items-center gap-x-2 gap-y-1">
-        <img src="../assets/ulh-logo.png" alt="UAAGI LMS Logo" class="w-14">
-        <img src="../assets/Logo.png" alt="UAAGI LMS Logo" class="w-40">
+    <div class="flex flex-wrap w-full justify-center items-center gap-x-1 gap-y-2 bg-">
+        <img src="../assets/ulh-logo.png" alt="UAAGI LMS Logo" class="w-14 lg:w-10">
+        <img src="../assets/Logo.png" alt="UAAGI LMS Logo" class="w-40 lg:w-32">
     </div>
     <nav class="sidebar-nav">
         <a href="courses.php" class="sidebar-text 
@@ -54,6 +54,24 @@ include "hamburger-btn.php";
             ?> ">
             <i data-lucide="square-user" class="w-5 h-5"></i>
             Users
+            <span id="sidebarPendingBadge" class="hidden users-badge">0</span>
+        </a>
+        <a href="feedback.php" class="sidebar-text 
+            <?= $currentPage === 'feedback.php'
+                ? 'bg-[#234CA1] text-white'
+                : 'text-[#234CA1] hover:bg-[#234CA1]/50 hover:text-white transition-colors duration-100'
+            ?> ">
+            <i data-lucide="message-square-quote" class="w-5 h-5"></i>
+            Feedback
+            <span id="sidebarPendingBadge" class="hidden users-badge">0</span>
+        </a>
+        <a href="bonus-questions.php" class="sidebar-text 
+            <?= $currentPage === 'bonus-questions.php'
+                ? 'bg-[#234CA1] text-white'
+                : 'text-[#234CA1] hover:bg-[#234CA1]/50 hover:text-white transition-colors duration-100'
+            ?> ">
+            <i data-lucide="message-circle-question-mark" class="w-5 h-5"></i>
+            Bonus Questions
             <span id="sidebarPendingBadge" class="hidden users-badge">0</span>
         </a>
     </nav>
@@ -153,7 +171,7 @@ include "hamburger-btn.php";
 
         try {
 
-            const res = await fetch("../php/users/get-pending-count.php");
+            const res = await fetch("../php/users/get-pending-counts.php");
             const data = await res.json();
 
             if (data.status !== "success") return;

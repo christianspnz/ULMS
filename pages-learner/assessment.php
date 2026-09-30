@@ -31,19 +31,20 @@ requireRole([1, 2]);
                 <span id="typeLabel">Assessment</span>
             </span>
             <?php include '../notification-bell.php'; ?>
-        </div> 
+        </div>
 
         <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
             <div id="assessmentContainer">
                 <p class="text-gray-400">Loading assessment...</p>
             </div>
         </div>
-
+        <?php include '../feedback-button.php'; ?>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
-        lucide.createIcons(); 0
+        lucide.createIcons();
+        0
         AOS.init({
             duration: 600,
             once: true // animate only the first time an element scrolls into view

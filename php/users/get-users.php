@@ -12,6 +12,8 @@ try {
     $dealershipIds = $_GET['dealerships'] ?? [];
     $designationIds = $_GET['designations'] ?? [];
     $status = $_GET['status'] ?? null;
+    $dateHiredFrom = $_GET['date_hired_from'] ?? null;
+    $dateHiredTo = $_GET['date_hired_to'] ?? null;
 
     $conditions = ["u.designation_id != 4", "u.status != 'Pending'"];
     $params = [];
@@ -20,18 +22,36 @@ try {
     if (!empty($dealershipIds) && is_array($dealershipIds)) {
         $placeholders = implode(",", array_fill(0, count($dealershipIds), "?"));
         $conditions[] = "u.dealership_id IN ({$placeholders})";
-        foreach ($dealershipIds as $id) { $params[] = $id; $types .= "i"; }
+        foreach ($dealershipIds as $id) {
+            $params[] = $id;
+            $types .= "i";
+        }
     }
 
     if (!empty($designationIds) && is_array($designationIds)) {
         $placeholders = implode(",", array_fill(0, count($designationIds), "?"));
         $conditions[] = "u.designation_id IN ({$placeholders})";
-        foreach ($designationIds as $id) { $params[] = $id; $types .= "i"; }
+        foreach ($designationIds as $id) {
+            $params[] = $id;
+            $types .= "i";
+        }
     }
 
     if ($status && in_array($status, ['Active', 'Inactive'])) {
         $conditions[] = "u.status = ?";
         $params[] = $status;
+        $types .= "s";
+    }
+
+    if ($dateHiredFrom) {
+        $conditions[] = "u.date_hired >= ?";
+        $params[] = $dateHiredFrom;
+        $types .= "s";
+    }
+
+    if ($dateHiredTo) {
+        $conditions[] = "u.date_hired <= ?";
+        $params[] = $dateHiredTo;
         $types .= "s";
     }
 
@@ -68,7 +88,6 @@ try {
         mysqli_stmt_execute($bStmt);
         $bResult = mysqli_stmt_get_result($bStmt);
         $row['brands'] = $bResult ? implode(', ', array_column($bResult->fetch_all(MYSQLI_ASSOC), 'brand_name')) : '';
-
     }
     unset($row);
 
@@ -83,15 +102,12 @@ try {
             $userBrandIds = $bResult ? array_column($bResult->fetch_all(MYSQLI_ASSOC), 'brand_id') : [];
 
             return count(array_intersect($userBrandIds, $brandIds)) > 0;
-
         });
 
         $rows = array_values($rows);
-
     }
 
     echo json_encode(["status" => "success", "users" => $rows]);
-
 } catch (Exception $e) {
     echo json_encode(["status" => "error", "message" => $e->getMessage()]);
 }

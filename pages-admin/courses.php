@@ -24,6 +24,7 @@ requireRole(3)
             </svg>
             Sample -->
         </span>
+    <?php include '../feedback-button.php'; ?>
     </main>
 </body>
 </html>

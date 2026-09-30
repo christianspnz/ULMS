@@ -11,6 +11,7 @@ if (empty($_SESSION['course_id'])) {
 
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,29 +23,34 @@ if (empty($_SESSION['course_id'])) {
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body class="h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
-        <span class="page-breadcrumbs">
-            Add Courses
-            <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
-            </svg>
-            Course Information
-            <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
-            </svg>
-            Training Modules
-            <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
-            </svg>
-            Assessment
-            <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor"/>
-            </svg>
-            Review & Publish
-        </span>
-        <?php  $currentStep = 4; include 'course-stepper.php'; ?>
+        <div class="flex justify-between items-center w-full">
+            <span class="page-breadcrumbs">
+                Add Courses
+                <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
+                </svg>
+                Course Information
+                <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
+                </svg>
+                Training Modules
+                <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
+                </svg>
+                Assessment
+                <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
+                </svg>
+                Review & Publish
+            </span>
+            <?php include '../notification-bell.php'; ?>
+        </div>
+        <?php $currentStep = 4;
+        include 'course-stepper.php'; ?>
         <div class="flex justify-between items-center w-full">
             <div>
                 <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
@@ -81,7 +87,7 @@ if (empty($_SESSION['course_id'])) {
 
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
-        lucide.createIcons(); 
+        lucide.createIcons();
         AOS.init({
             duration: 600,
             once: false // allow animations to replay, not just fire once ever
@@ -197,7 +203,10 @@ if (empty($_SESSION['course_id'])) {
                         </div>
                     </div>
                 `,
-                customClass: { popup: "my-popup popup-blue", htmlContainer: "!p-0 !m-0" },
+                customClass: {
+                    popup: "my-popup popup-blue",
+                    htmlContainer: "!p-0 !m-0"
+                },
                 showConfirmButton: false,
                 allowOutsideClick: false,
                 allowEscapeKey: false,
@@ -216,7 +225,9 @@ if (empty($_SESSION['course_id'])) {
 
             try {
 
-                const res = await fetch("../php/courses/publish-course.php", { method: "POST" });
+                const res = await fetch("../php/courses/publish-course.php", {
+                    method: "POST"
+                });
                 const data = await res.json();
 
                 if (data.status === "success") {
@@ -234,7 +245,10 @@ if (empty($_SESSION['course_id'])) {
                                 <button id="doneBtn" class="w-full h-12 bg-[#234CA1] text-white rounded-xl font-eurostile-bold">Done</button>
                             </div>
                         `,
-                        customClass: { popup: "my-popup popup-blue", htmlContainer: "!p-0 !m-0" },
+                        customClass: {
+                            popup: "my-popup popup-blue",
+                            htmlContainer: "!p-0 !m-0"
+                        },
                         showConfirmButton: false,
                         allowOutsideClick: false,
                         allowEscapeKey: false,
@@ -274,7 +288,10 @@ if (empty($_SESSION['course_id'])) {
                         <button id="pubErrOkBtn" class="w-full h-12 bg-[#D02027] text-white rounded-xl font-eurostile-bold">OK</button>
                     </div>
                 `,
-                customClass: { popup: "my-popup popup-red", htmlContainer: "!p-0 !m-0" },
+                customClass: {
+                    popup: "my-popup popup-red",
+                    htmlContainer: "!p-0 !m-0"
+                },
                 showConfirmButton: false,
                 allowOutsideClick: false,
                 allowEscapeKey: false,

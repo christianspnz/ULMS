@@ -37,7 +37,7 @@ requireRole([1, 2]);
                 <p class="text-gray-400">Loading assessment...</p>
             </div>
         </div>
-
+        <?php include '../feedback-button.php'; ?>
     </main>
 
     <script>

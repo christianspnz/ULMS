@@ -28,25 +28,28 @@ if (empty($_SESSION['course_id'])) {
 <body class="h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
-        <span class="page-breadcrumbs">
-            Add Courses
-            <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
-            </svg>
-            Course Information
-            <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
-            </svg>
-            Training Modules
-            <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
-            </svg>
-            Assessment
-            <!-- <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+        <div class="flex justify-between items-center w-full">
+            <span class="page-breadcrumbs">
+                Add Courses
+                <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
+                </svg>
+                Course Information
+                <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
+                </svg>
+                Training Modules
+                <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
+                </svg>
+                Assessment
+                <!-- <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor"/>
             </svg>
             Review & Publish -->
-        </span>
+            </span>
+            <?php include '../notification-bell.php'; ?>
+        </div>
         <?php $currentStep = 3;
         include 'course-stepper.php'; ?>
         <form id="assessmentForm" class="add-course-form" method="POST" action="../php/courses/save-step3.php">
@@ -141,7 +144,7 @@ if (empty($_SESSION['course_id'])) {
                 </div>
             </div>
 
-            <div  class="flex flex-col lg:flex-row gap-2 justify-end gap-x-5 w-full">
+            <div class="flex flex-col lg:flex-row gap-2 justify-end gap-x-5 w-full">
                 <button
                     type="button"
                     onclick="window.location.href='add-course-step2.php'"
@@ -386,7 +389,7 @@ if (empty($_SESSION['course_id'])) {
     </main>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
-        lucide.createIcons(); 
+        lucide.createIcons();
         AOS.init({
             duration: 600,
             once: false // allow animations to replay, not just fire once ever

@@ -39,7 +39,7 @@ function notifyNewCourse($conn, $courseId, $courseTitle)
 
     $title = "New Course Available";
     $message = "\"{$courseTitle}\" is now available to enroll in.";
-    $link = "courses.php";
+    $link = "courses.php?highlight_course=" . $courseId;
 
     foreach ($userIds as $uid) {
         insertNotification($conn, $uid, 'New Course', $title, $message, $link);
@@ -77,7 +77,7 @@ function notifyNewSchedule($conn, $scheduleId, $scheduleTitle, $audience)
 
     $title = "New Schedule Posted";
     $message = "\"{$scheduleTitle}\" has been added to the calendar.";
-    $link = "calendar.php";
+    $link = "calendar.php?open_schedule=" . $scheduleId;
 
     foreach ($candidateUsers as $uid) {
 
@@ -106,8 +106,7 @@ function notifyNewSchedule($conn, $scheduleId, $scheduleTitle, $audience)
 /**
  * Notify all Superadmins that a new user has registered and needs approval.
  */
-function notifyPendingApproval($conn, $firstName, $lastName)
-{
+function notifyPendingApproval($conn, $newUserId, $firstName, $lastName) {
 
     $stmt = mysqli_prepare($conn, "SELECT user_id FROM users WHERE designation_id = 4");
     mysqli_stmt_execute($stmt);
@@ -116,11 +115,12 @@ function notifyPendingApproval($conn, $firstName, $lastName)
 
     $title = "New Registration Pending";
     $message = "{$firstName} {$lastName} has registered and is awaiting approval.";
-    $link = "users.php?tab=pending";
+    $link = "users.php?tab=pending&highlight_user=" . $newUserId;
 
     foreach ($superadminIds as $uid) {
         insertNotification($conn, $uid, 'Pending Approval', $title, $message, $link);
     }
+
 }
 
 function insertNotification($conn, $userId, $type, $title, $message, $link)

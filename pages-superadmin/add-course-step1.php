@@ -23,13 +23,14 @@ requireRole(4);
 <body class="h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
-        <span class="page-breadcrumbs">
-            Add Courses
-            <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
-            </svg>
-            Course Information
-            <!-- <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+        <div class="flex justify-between items-center w-full">
+            <span class="page-breadcrumbs">
+                Add Courses
+                <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
+                </svg>
+                Course Information
+                <!-- <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor"/>
             </svg>
             Training Modules
@@ -41,8 +42,11 @@ requireRole(4);
                 <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor"/>
             </svg>
             Review & Publish -->
-        </span>
-        <?php $currentStep = 1; include 'course-stepper.php'; ?>
+            </span>
+            <?php include '../notification-bell.php'; ?>
+        </div>
+        <?php $currentStep = 1;
+        include 'course-stepper.php'; ?>
         <form id="courseForm" enctype="multipart/form-data" method="POST" class="add-course-form">
             <div class="flex justify-between items-center w-full">
                 <div>
@@ -128,7 +132,7 @@ requireRole(4);
     </main>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
-        lucide.createIcons(); 
+        lucide.createIcons();
         AOS.init({
             duration: 600,
             once: false // allow animations to replay, not just fire once ever

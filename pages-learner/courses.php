@@ -1,6 +1,11 @@
 <?php
 require "../php/auth-logout/auth.php";
-requireRole(1)
+requireRole(1);
+$triggerBonusPopup = isset($_SESSION['show_bonus_popup']) && $_SESSION['show_bonus_popup'] === true;
+
+if ($triggerBonusPopup) {
+    unset($_SESSION['show_bonus_popup']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -26,7 +31,7 @@ requireRole(1)
                 Courses
             </span>
             <?php include '../notification-bell.php'; ?>
-        </div> 
+        </div>
 
         <div class="flex justify-between items-center w-full">
             <div>
@@ -69,6 +74,8 @@ requireRole(1)
             </div>
         </div>
 
+        <?php include '../feedback-button.php'; ?>
+        <?php include '../bonus-question-modal.php'; ?>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
@@ -79,6 +86,7 @@ requireRole(1)
             once: false // allow animations to replay, not just fire once ever
         });
 
+
         window.addEventListener('pageshow', function(event) {
             if (event.persisted) {
                 AOS.refreshHard();
@@ -86,6 +94,63 @@ requireRole(1)
         });
         let allMyCourses = [];
         let activeTabStatus = "all";
+
+
+        function renderStreak(streak) {
+            const label = document.getElementById("streakLabel");
+            const dotsContainer = document.getElementById("streakDots");
+
+            const current = streak?.current ?? 0;
+            // current counts completed days in the current 5-day cycle (0-4 shown as filled, resets after bonus)
+            const filled = current % 5;
+
+            label.textContent = current > 0 ?
+                `${current} day${current === 1 ? '' : 's'}` :
+                "Log in to start";
+
+            dotsContainer.innerHTML = Array.from({
+                length: 5
+            }, (_, i) => {
+                const isFilled = i < filled;
+                return `<div class="flex-1 h-2 rounded-full ${isFilled ? 'bg-orange-400' : 'bg-white/15'}"></div>`;
+            }).join("");
+        }
+
+        async function claimDailyLogin() {
+            try {
+                const res = await fetch("../php/points/daily-login.php");
+                const data = await res.json();
+
+                if (data.status === "success" && !data.already_claimed) {
+                    await Swal.fire({
+                        html: `
+                            <div class="flex flex-col items-center gap-y-3 p-5 text-center">
+                                <i class="fa-solid fa-fire text-4xl text-orange-400"></i>
+                                <h2 class="text-2xl font-eurostile-bold text-[#234CA1] uppercase">Welcome back!</h2>
+                                <p class="text-gray-600">You earned <span class="font-bold text-emerald-600">+5 points</span> for logging in today.</p>
+                                ${data.bonus_awarded ? `<p class="text-gray-600">5-day streak complete — <span class="font-bold text-orange-500">+50 bonus points!</span> 🔥</p>` : ''}
+                                <button id="loginPointsOkBtn" class="w-full h-12 bg-[#234CA1] text-white rounded-xl font-eurostile-bold mt-2">Nice!</button>
+                            </div>
+                        `,
+                        customClass: {
+                            htmlContainer: "!p-0 !m-0"
+                        },
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            document.getElementById("loginPointsOkBtn").onclick = () => Swal.close();
+                        }
+                    });
+                }
+
+                // Show the bonus question after the login modal is closed
+                openBonusModal();
+
+            } catch (err) {
+                console.error("Error claiming daily login:", err);
+                openBonusModal();
+            }
+        }
 
         async function loadLearnerCourses() {
 
@@ -337,6 +402,42 @@ requireRole(1)
             return div.innerHTML;
         }
 
+        const urlParams = new URLSearchParams(window.location.search);
+        const highlightCourseId = urlParams.get('highlight_course');
+
+        if (highlightCourseId) {
+
+            // Available Courses loads asynchronously — wait for it, then scroll + highlight
+            const waitForCard = setInterval(() => {
+
+                const card = document.querySelector(`#availableCoursesGrid [data-course-id="${highlightCourseId}"]`);
+
+                if (card) {
+
+                    clearInterval(waitForCard);
+
+                    card.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    card.classList.add('ring-4', 'ring-[#234CA1]', 'ring-offset-2');
+
+                    setTimeout(() => {
+                        card.classList.remove('ring-4', 'ring-[#234CA1]', 'ring-offset-2');
+                    }, 3000);
+
+                }
+
+            }, 200);
+
+            setTimeout(() => clearInterval(waitForCard), 5000);
+
+        }
+
+        <?php if ($triggerBonusPopup): ?>
+            claimDailyLogin(); // shows +5 modal, then opens the bonus question
+        <?php endif; ?>
         loadLearnerCourses();
     </script>
 </body>

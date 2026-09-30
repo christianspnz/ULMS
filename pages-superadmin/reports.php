@@ -8,6 +8,12 @@ $allBrands = $brandsResult ? $brandsResult->fetch_all(MYSQLI_ASSOC) : [];
 
 $coursesResult = mysqli_query($conn, "SELECT course_id, course_title FROM courses ORDER BY course_title ASC");
 $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
+
+$designationsResult = mysqli_query($conn, "SELECT designation_id, designation_name FROM designations WHERE designation_id != 4 ORDER BY designation_name ASC");
+$allDesignations = $designationsResult ? $designationsResult->fetch_all(MYSQLI_ASSOC) : [];
+
+$dealershipsResult = mysqli_query($conn, "SELECT dealership_id, dealership_name FROM dealerships ORDER BY dealership_name ASC");
+$allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSOC) : [];
 ?>
 
 <!DOCTYPE html>
@@ -110,18 +116,31 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
 
                 </div>
 
-                <div class="mt-4">
-                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brands</label>
-                    <div class="flex flex-wrap gap-2">
-                        <?php foreach ($allBrands as $b): ?>
-                            <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
-                                <input type="checkbox" class="ct-brand-checkbox" value="<?= $b['brand_id'] ?>">
-                                <?= htmlspecialchars($b['brand_name']) ?>
-                            </label>
-                        <?php endforeach; ?>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div class="mt-4">
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brands</label>
+                        <div class="flex flex-wrap gap-2">
+                            <?php foreach ($allBrands as $b): ?>
+                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" class="ct-brand-checkbox" value="<?= $b['brand_id'] ?>">
+                                    <?= htmlspecialchars($b['brand_name']) ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealerships</label>
+                        <div div class="flex flex-wrap gap-2 max-h-24 overflow-y-auto">
+                            <?php foreach ($allDealerships as $d): ?>
+                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" class="ct-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
+                                    <?= htmlspecialchars($d['dealership_name']) ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
-
             </div>
 
             <!-- Report 1: Course Completion Rates -->
@@ -725,7 +744,270 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
 
         </div>
 
-        <!-- ============ Placeholder sections ============ -->
+        <!-- ============ SECTION: User & Team ============ -->
+        <div id="section-userTeam" class="report-section mt-6 hidden">
+
+            <!-- Filter bar -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Status</label>
+                        <select id="ut_status" class="text-inputs">
+                            <option value="">All Statuses</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Date Hired From</label>
+                        <input type="date" id="ut_hiredFrom" class="text-inputs">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Date Hired To</label>
+                        <input type="date" id="ut_hiredTo" class="text-inputs">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Designation</label>
+                        <div class="flex flex-wrap gap-2">
+                            <?php foreach ($allDesignations as $d): ?>
+                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" class="ut-designation-checkbox" value="<?= $d['designation_id'] ?>">
+                                    <?= htmlspecialchars($d['designation_name']) ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brand</label>
+                        <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
+                            <?php foreach ($allBrands as $b): ?>
+                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" class="ut-brand-checkbox" value="<?= $b['brand_id'] ?>">
+                                    <?= htmlspecialchars($b['brand_name']) ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealership</label>
+                        <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
+                            <?php foreach ($allDealerships as $d): ?>
+                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" class="ut-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
+                                    <?= htmlspecialchars($d['dealership_name']) ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-4">
+                    <button type="button" id="ut_applyBtn" class="bg-[#234CA1] text-white rounded-lg px-8 py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
+                </div>
+
+            </div>
+
+            <div class="max-w-full h-auto mt-5">
+                <!-- User Directory Export -->
+                <div class="w-full bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">User Directory</h3>
+                        <div class="flex gap-x-2">
+                            <button type="button" id="exportUserDirCsvBtn" class="no-print bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-csv"></i> CSV
+                            </button>
+                            <button type="button" onclick="openPrintReport('userdirectory')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto max-h-96">
+                        <table class="max-w-full w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Name</th>
+                                    <th class="text-left py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Designation</th>
+                                    <th class="text-left py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Brand</th>
+                                    <th class="text-left py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Dealership</th>
+                                    <th class="text-left py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Email</th>
+                                    <th class="text-center py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Hired</th>
+                                    <th class="text-center py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userDirectoryTableBody">
+                                <tr>
+                                    <td colspan="7" class="text-center text-gray-400 py-10">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Team Progress Matrix -->
+                <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+
+                    <div class="flex justify-between items-center mb-2">
+                        <div>
+                            <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Team Progress Matrix</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">Hover a cell to see course and status details</p>
+                        </div>
+                        <button type="button" onclick="openPrintReport('teammatrix')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                            <i class="fa-solid fa-file-pdf"></i> PDF
+                        </button>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="flex items-center gap-x-4 mb-4 mt-3">
+                        <div class="flex items-center gap-x-1.5">
+                            <span class="w-3 h-3 rounded-sm bg-green-500"></span>
+                            <span class="text-xs text-gray-500">Completed</span>
+                        </div>
+                        <div class="flex items-center gap-x-1.5">
+                            <span class="w-3 h-3 rounded-sm bg-yellow-400"></span>
+                            <span class="text-xs text-gray-500">In Progress</span>
+                        </div>
+                        <div class="flex items-center gap-x-1.5">
+                            <span class="w-3 h-3 rounded-sm bg-gray-300"></span>
+                            <span class="text-xs text-gray-500">Not Started</span>
+                        </div>
+                        <div class="flex items-center gap-x-1.5">
+                            <span class="w-3 h-3 rounded-sm bg-red-100"></span>
+                            <span class="text-xs text-gray-500">Not Enrolled</span>
+                        </div>
+                    </div>
+
+                    <div id="teamMatrixWrapper" class="overflow-x-auto">
+                        <p class="text-gray-400 text-sm text-center py-10">Loading...</p>
+                    </div>
+
+                </div>
+
+                <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
+
+                    <!-- Inactive Users -->
+                    <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Inactive Users</h3>
+                            <button type="button" onclick="openPrintReport('inactive')" class="no-print bg-[#D02027] text-white px-3 py-1.5 rounded-lg text-xs font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto max-h-96">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Name</th>
+                                        <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Dealership</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inactiveUsersTableBody">
+                                    <tr>
+                                        <td colspan="2" class="text-center text-gray-400 py-10">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- New Hires Onboarding -->
+                    <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-eurostile-bold text-[#234CA1]">New Hires Onboarding</h3>
+                            <button type="button" onclick="openPrintReport('newhires')" class="no-print bg-[#D02027] text-white px-3 py-1.5 rounded-lg text-xs font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto max-h-96">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Name</th>
+                                        <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Hired</th>
+                                        <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Progress</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="newHiresTableBody">
+                                    <tr>
+                                        <td colspan="3" class="text-center text-gray-400 py-10">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ============ SECTION: System-Wide Analytics ============ -->
+        <div id="section-systemWide" class="report-section mt-6 hidden">
+
+            <!-- Filter bar -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
+                        <input type="date" id="sw_dateFrom" class="text-inputs">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
+                        <input type="date" id="sw_dateTo" class="text-inputs">
+                    </div>
+                    <div class="flex items-end">
+                        <button type="button" id="sw_applyBtn" class="w-full bg-[#234CA1] text-white rounded-lg py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Headline Stats -->
+            <div id="systemOverviewCards" class="grid grid-cols-2 lg:grid-cols-4 gap-5 mt-5">
+                <div class="col-span-full text-center text-gray-400 py-10">Loading overview...</div>
+            </div>
+
+            <!-- Activity Heatmap -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Activity by Day of Week</h3>
+                    <select id="sw_heatmapMetric" class="text-inputs w-44">
+                        <option value="enrollments">Enrollments</option>
+                        <option value="completions">Completions</option>
+                        <option value="logins">Logins</option>
+                    </select>
+                </div>
+                <canvas id="activityHeatmapChart" height="70"></canvas>
+            </div>
+
+            <!-- Growth Over Time -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                <h3 class="text-xl font-eurostile-bold text-[#234CA1] mb-4">Growth Over Time</h3>
+                <canvas id="growthChart" height="80"></canvas>
+            </div>
+
+            <!-- Brand / Dealership Comparison -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5 max-h-96">
+
+                <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                    <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Completion Rate by Brand</h3>
+                    <div id="brandComparisonList" class="space-y-3">
+                        <p class="text-gray-400 text-sm">Loading...</p>
+                    </div>
+                </div>
+
+                <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                    <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Completion Rate by Dealership</h3>
+                    <div id="dealershipComparisonList" class="space-y-3 max-h-80 overflow-y-auto">
+                        <p class="text-gray-400 text-sm">Loading...</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
         <?php
         $placeholders = [
             'assessment' => 'Assessment & Performance Reports',
@@ -807,6 +1089,10 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
 
             document.querySelectorAll(".ct-brand-checkbox:checked").forEach(cb => {
                 params.append("brands[]", cb.value);
+            });
+
+            document.querySelectorAll(".ct-dealership-checkbox:checked").forEach(cb => {
+                params.append("dealerships[]", cb.value);
             });
 
             return params;
@@ -1554,6 +1840,220 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
             }
         }
 
+        let currentUserDirectoryData = [];
+
+        function getUserTeamFilterParams() {
+            const params = new URLSearchParams();
+            const status = document.getElementById("ut_status").value;
+            const hiredFrom = document.getElementById("ut_hiredFrom").value;
+            const hiredTo = document.getElementById("ut_hiredTo").value;
+            if (status) params.append("status", status);
+            if (hiredFrom) params.append("date_hired_from", hiredFrom);
+            if (hiredTo) params.append("date_hired_to", hiredTo);
+            document.querySelectorAll(".ut-designation-checkbox:checked").forEach(cb => params.append("designations[]", cb.value));
+            document.querySelectorAll(".ut-brand-checkbox:checked").forEach(cb => params.append("brands[]", cb.value));
+            document.querySelectorAll(".ut-dealership-checkbox:checked").forEach(cb => params.append("dealerships[]", cb.value));
+            return params;
+        }
+
+        async function loadUserDirectory() {
+            const tbody = document.getElementById("userDirectoryTableBody");
+            try {
+                const params = getUserTeamFilterParams();
+                const res = await fetch(`../php/users/get-users.php?${params.toString()}`);
+                const data = await res.json();
+                if (data.status !== "success") {
+                    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-red-500 py-10">${data.message}</td></tr>`;
+                    return;
+                }
+
+                currentUserDirectoryData = data.users;
+
+                if (data.users.length === 0) {
+
+                    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-gray-400 py-10">No users match these filters.</td></tr>`;
+                    return;
+                }
+
+                const statusColors = {
+                    "Active": "bg-green-100 text-green-700",
+                    "Inactive": "bg-gray-100 text-gray-500"
+                };
+
+                tbody.innerHTML = data.users.map(u => `
+            <tr class="border-b border-gray-100">
+                <td class="py-2 px-3 whitespace-nowrap">${escapeHtml(u.first_name)} ${escapeHtml(u.last_name)}</td>
+                <td class="py-2 px-3 whitespace-nowrap">${escapeHtml(u.designation_name ?? '')}</td>
+                <td class="py-2 px-3 whitespace-nowrap text-xs">${escapeHtml(u.brands || '—')}</td>
+                <td class="py-2 px-3 whitespace-nowrap">${escapeHtml(u.dealership_name ?? '')}</td>
+                <td class="py-2 px-3 whitespace-nowrap text-xs">${escapeHtml(u.email)}</td>
+                <td class="py-2 px-3 whitespace-nowrap text-center text-xs">${u.date_hired ?? '—'}</td>
+                <td class="py-2 px-3 whitespace-nowrap text-center">
+                    <span class="text-xs font-bold uppercase px-2 py-1 rounded-full ${statusColors[u.status] ?? ''}">${u.status}</span>
+                </td>
+            </tr>
+        `).join("");
+
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-red-500 py-10">Failed to load.</td></tr>`;
+            }
+        }
+
+        async function loadTeamProgressMatrix() {
+            const wrapper = document.getElementById("teamMatrixWrapper");
+            try {
+                const params = getUserTeamFilterParams();
+                const res = await fetch(`../php/reports/get-team-progress-matrix.php?${params.toString()}`);
+                const data = await res.json();
+
+                if (data.status !== "success") {
+                    wrapper.innerHTML = `<p class="text-red-500 text-sm text-center py-10">${data.message}</p>`;
+                    return;
+                }
+                if (data.users.length === 0) {
+                    wrapper.innerHTML = `<p class="text-gray-400 text-sm text-center py-10">No users match these filters.</p>`;
+                    return;
+                }
+                if (data.courses.length === 0) {
+                    wrapper.innerHTML = `<p class="text-gray-400 text-sm text-center py-10">No published courses to show.</p>`;
+                    return;
+                }
+
+                const cellColor = {
+                    "Completed": "bg-green-500",
+                    "In Progress": "bg-yellow-400",
+                    "Not Started": "bg-gray-300"
+                };
+
+                let html = `<div class="min-w-max">`;
+
+                // Header row — course initials as compact column labels
+                html += `<div class="flex items-center gap-1 mb-1 pl-40">`;
+                data.courses.forEach(c => {
+                    const initials = c.course_title.split(' ').map(w => w[0]).join('').substring(0, 3).toUpperCase();
+                    html += `<div class="w-7 text-center" title="${escapeHtml(c.course_title)}">
+                    <span class="text-[9px] font-bold text-gray-400 uppercase">${initials}</span>
+                </div>`;
+                });
+                html += `</div>`;
+
+                // One compact row per learner
+                data.users.forEach(u => {
+
+                    const initials = `${(u.first_name || '')[0] || ''}${(u.last_name || '')[0] || ''}`.toUpperCase();
+
+                    html += `<div class="flex items-center gap-1 py-1 border-t border-gray-50 first:border-t-0">`;
+
+                    html += `<div class="w-40 flex items-center gap-2 shrink-0">
+                    <div class="w-7 h-7 rounded-full bg-[#234CA1] text-white flex items-center justify-center text-[10px] font-bold shrink-0">${initials}</div>
+                    <span class="text-sm text-gray-700 truncate">${escapeHtml(u.first_name)} ${escapeHtml(u.last_name)}</span>
+                </div>`;
+
+                    data.courses.forEach(c => {
+
+                        const entry = data.progress[u.user_id]?.[c.course_id];
+                        const color = entry ? (cellColor[entry.status] ?? 'bg-gray-300') : 'bg-red-100';
+                        const tooltip = entry ? `${c.course_title}: ${entry.status}` : `${c.course_title}: Not Enrolled`;
+
+                        html += `<div class="w-7 h-7 flex items-center justify-center shrink-0">
+                    <span class="w-4 h-4 rounded-sm ${color} cursor-default hover:scale-125 transition-transform" title="${escapeHtml(tooltip)}"></span>
+                </div>`;
+
+                    });
+
+                    html += `</div>`;
+
+                });
+
+                html += `</div>`;
+
+                wrapper.innerHTML = html;
+
+            } catch (err) {
+                console.error(err);
+                wrapper.innerHTML = `<p class="text-red-500 text-sm text-center py-10">Failed to load.</p>`;
+            }
+        }
+
+        async function loadInactiveUsers() {
+            const tbody = document.getElementById("inactiveUsersTableBody");
+            try {
+                const params = getUserTeamFilterParams();
+                const res = await fetch(`../php/reports/get-inactive-users.php?${params.toString()}`);
+                const data = await res.json();
+                if (data.status !== "success") {
+                    tbody.innerHTML = `<tr><td colspan="2" class="text-center text-red-500 py-10">${data.message}</td></tr>`;
+                    return;
+                }
+                if (data.users.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="2" class="text-center text-gray-400 py-10">No inactive users found.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.users.map(u => `
+            <tr class="border-b border-gray-100">
+                <td class="py-2 px-3">${escapeHtml(u.first_name)} ${escapeHtml(u.last_name)}</td>
+                <td class="py-2 px-3 text-xs text-gray-500">${escapeHtml(u.dealership_name ?? '—')}</td>
+            </tr>
+        `).join("");
+
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="2" class="text-center text-red-500 py-10">Failed to load.</td></tr>`;
+            }
+        }
+
+        async function loadNewHires() {
+            const tbody = document.getElementById("newHiresTableBody");
+            try {
+                const params = getUserTeamFilterParams();
+                const res = await fetch(`../php/reports/get-new-hires-onboarding.php?${params.toString()}`);
+                const data = await res.json();
+                if (data.status !== "success") {
+                    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-red-500 py-10">${data.message}</td></tr>`;
+                    return;
+                }
+                if (data.hires.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-gray-400 py-10">No new hires in this range.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = data.hires.map(h => `
+            <tr class="border-b border-gray-100">
+                <td class="py-2 px-3">${escapeHtml(h.first_name)} ${escapeHtml(h.last_name)}</td>
+                <td class="py-2 px-3 text-center text-xs text-gray-400">${h.date_hired}</td>
+                <td class="py-2 px-3 text-center font-eurostile-bold text-[#234CA1]">${h.completed}/${h.total_enrolled} (${h.completion_rate}%)</td>
+            </tr>
+        `).join("");
+
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="3" class="text-center text-red-500 py-10">Failed to load.</td></tr>`;
+            }
+        }
+
+        document.getElementById("ut_applyBtn").addEventListener("click", () => {
+            loadUserDirectory();
+            loadTeamProgressMatrix();
+            loadInactiveUsers();
+            loadNewHires();
+        });
+
+        document.getElementById("exportUserDirCsvBtn").addEventListener("click", () => {
+            exportCsv(
+                currentUserDirectoryData,
+                ["Last Name", "First Name", "Middle Name", "Designation", "Brand", "Dealership", "Email", "Contact", "Date Hired", "Status"],
+                ["last_name", "first_name", "middle_name", "designation_name", "brands", "dealership_name", "email", "contact_number", "date_hired", "status"],
+                "user-directory"
+            );
+        });
+
+        loadUserDirectory();
+        loadTeamProgressMatrix();
+        loadInactiveUsers();
+        loadNewHires();
+
         document.getElementById("at_applyBtn").addEventListener("click", () => {
             loadScheduleLoad();
             loadAttendanceRate();
@@ -1572,7 +2072,276 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
 
         document.getElementById("en_staleApplyBtn").addEventListener("click", loadStaleEnrollments);
 
+        let heatmapChartInstance = null;
+        let growthChartInstance = null;
+
+        function getSystemWideFilterParams() {
+            const params = new URLSearchParams();
+            const dateFrom = document.getElementById("sw_dateFrom").value;
+            const dateTo = document.getElementById("sw_dateTo").value;
+            if (dateFrom) params.append("date_from", dateFrom);
+            if (dateTo) params.append("date_to", dateTo);
+            return params;
+        }
+
+        async function loadSystemOverview() {
+            const container = document.getElementById("systemOverviewCards");
+            try {
+                const res = await fetch("../php/reports/get-system-overview.php");
+                const data = await res.json();
+                if (data.status !== "success") {
+                    container.innerHTML = `<p class="col-span-full text-red-500 text-center py-10">${data.message}</p>`;
+                    return;
+                }
+
+                container.innerHTML = `
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                <p class="text-3xl font-eurostile-black text-[#234CA1]">${data.total_users}</p>
+                <p class="text-gray-500 text-sm mt-1">Active Users</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                <p class="text-3xl font-eurostile-black text-[#234CA1]">${data.total_courses}</p>
+                <p class="text-gray-500 text-sm mt-1">Published Courses</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                <p class="text-3xl font-eurostile-black text-[#234CA1]">${data.total_enrollments}</p>
+                <p class="text-gray-500 text-sm mt-1">Total Enrollments</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                <p class="text-3xl font-eurostile-black text-[#234CA1]">${data.overall_completion_rate}%</p>
+                <p class="text-gray-500 text-sm mt-1">Overall Completion Rate</p>
+            </div>
+        `;
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<p class="col-span-full text-red-500 text-center py-10">Failed to load.</p>`;
+            }
+        }
+
+        async function loadActivityHeatmap() {
+            try {
+                const params = getSystemWideFilterParams();
+                const metric = document.getElementById("sw_heatmapMetric").value;
+                params.append("metric", metric);
+
+                const res = await fetch(`../php/reports/get-activity-heatmap.php?${params.toString()}`);
+                const data = await res.json();
+                if (data.status !== "success") return;
+
+                const labels = data.data.map(d => d.day);
+                const values = data.data.map(d => d.total);
+
+                if (heatmapChartInstance) heatmapChartInstance.destroy();
+
+                const ctx = document.getElementById("activityHeatmapChart").getContext("2d");
+                heatmapChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: metric,
+                            data: values,
+                            backgroundColor: '#234CA1',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function loadGrowthOverTime() {
+            try {
+                const params = getSystemWideFilterParams();
+                const res = await fetch(`../php/reports/get-growth-over-time.php?${params.toString()}`);
+                const data = await res.json();
+                if (data.status !== "success") return;
+
+                const allMonths = [...new Set([...data.user_growth.map(u => u.month), ...data.course_growth.map(c => c.month)])].sort();
+
+                const userMap = Object.fromEntries(data.user_growth.map(u => [u.month, u.total]));
+                const courseMap = Object.fromEntries(data.course_growth.map(c => [c.month, c.total]));
+
+                const userValues = allMonths.map(m => userMap[m] ?? 0);
+                const courseValues = allMonths.map(m => courseMap[m] ?? 0);
+
+                if (growthChartInstance) growthChartInstance.destroy();
+
+                const ctx = document.getElementById("growthChart").getContext("2d");
+                growthChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: allMonths,
+                        datasets: [{
+                                label: 'New Users',
+                                data: userValues,
+                                borderColor: '#234CA1',
+                                backgroundColor: 'rgba(35,76,161,0.08)',
+                                fill: true,
+                                tension: 0.3
+                            },
+                            {
+                                label: 'New Courses',
+                                data: courseValues,
+                                borderColor: '#D02027',
+                                backgroundColor: 'rgba(208,32,39,0.08)',
+                                fill: true,
+                                tension: 0.3
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        const brandColorPalette = [
+            { bg: 'bg-blue-500', dot: 'bg-blue-500' },
+            { bg: 'bg-red-500', dot: 'bg-red-500' },
+            { bg: 'bg-purple-500', dot: 'bg-purple-500' },
+            { bg: 'bg-teal-500', dot: 'bg-teal-500' },
+            { bg: 'bg-orange-500', dot: 'bg-orange-500' },
+            { bg: 'bg-pink-500', dot: 'bg-pink-500' },
+            { bg: 'bg-indigo-500', dot: 'bg-indigo-500' },
+            { bg: 'bg-lime-500', dot: 'bg-lime-500' }
+        ];
+
+        const brandColorMap = {};
+
+        function getBrandColor(brandName) {
+
+            if (!brandColorMap[brandName]) {
+                const index = Object.keys(brandColorMap).length % brandColorPalette.length;
+                brandColorMap[brandName] = brandColorPalette[index];
+            }
+
+            return brandColorMap[brandName];
+
+        }
+
+        async function loadBrandDealershipComparison() {
+            const brandList = document.getElementById("brandComparisonList");
+            const dealershipList = document.getElementById("dealershipComparisonList");
+            try {
+                const params = getSystemWideFilterParams();
+                const res = await fetch(`../php/reports/get-brand-dealership-comparison.php?${params.toString()}`);
+                const data = await res.json();
+                if (data.status !== "success") { brandList.innerHTML = `<p class="text-red-500 text-sm">${data.message}</p>`; dealershipList.innerHTML = ""; return; }
+
+                brandList.innerHTML = data.by_brand.length === 0 ? `<p class="text-gray-400 text-sm">No data available.</p>` :
+                    data.by_brand.map(b => {
+
+                        const color = getBrandColor(b.brand_name);
+
+                        return `
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="flex items-center gap-2 font-medium text-gray-700">
+                                        <span class="w-2.5 h-2.5 rounded-full ${color.dot} shrink-0"></span>
+                                        ${escapeHtml(b.brand_name)}
+                                    </span>
+                                    <span class="text-gray-400">${b.completed}/${b.total_enrolled} · ${b.completion_rate}%</span>
+                                </div>
+                                <div class="w-full bg-gray-100 rounded-full h-2">
+                                    <div class="${color.bg} h-2 rounded-full" style="width: ${b.completion_rate}%"></div>
+                                </div>
+                            </div>
+                        `;
+
+                    }).join("");
+
+                dealershipList.innerHTML = data.by_dealership.length === 0 ? `<p class="text-gray-400 text-sm">No data available.</p>` :
+                data.by_dealership.map(d => {
+
+                    const totalEnrolled = d.total_enrolled;
+
+                    // Each segment's width = that brand's COMPLETED count as a share of
+                    // the dealership's TOTAL enrolled — so the bar's total filled length
+                    // equals the overall completion rate, just color-coded by brand.
+                    const segmentsHtml = (d.segments || []).map(seg => {
+
+                        const color = getBrandColor(seg.brand_name);
+                        const widthPct = totalEnrolled > 0 ? (seg.completed / totalEnrolled) * 100 : 0;
+
+                        if (widthPct === 0) return ''; // skip brands with zero completions — nothing to show
+
+                        return `<div class="${color.bg} h-2"
+                                    style="width: ${widthPct}%"
+                                    title="${escapeHtml(seg.brand_name)}: ${seg.completed} completed">
+                                </div>`;
+
+                    }).join("");
+
+                    const dotsHtml = (d.segments || []).map(seg => {
+                        const c = getBrandColor(seg.brand_name);
+                        return `<span class="w-2 h-2 rounded-full ${c.dot}" title="${escapeHtml(seg.brand_name)}"></span>`;
+                    }).join("");
+
+                    return `
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <div>
+                                    <span class="font-medium text-gray-700">${escapeHtml(d.dealership_name)}</span>
+                                    ${dotsHtml ? `<span class="flex items-center gap-1 mt-0.5">${dotsHtml}</span>` : ''}
+                                </div>
+                                <span class="text-gray-400 shrink-0">${d.completed}/${d.total_enrolled} · ${d.completion_rate}%</span>
+                            </div>
+                            <div class="w-full bg-gray-100 rounded-full h-2 flex overflow-hidden">
+                                ${segmentsHtml}
+                            </div>
+                        </div>
+                    `;
+
+                }).join("");
+
+            } catch (err) { console.error(err); brandList.innerHTML = `<p class="text-red-500 text-sm">Failed to load.</p>`; dealershipList.innerHTML = ""; }
+        }
+
+        document.getElementById("sw_applyBtn").addEventListener("click", () => {
+            loadActivityHeatmap();
+            loadGrowthOverTime();
+            loadBrandDealershipComparison();
+        });
+
+        document.getElementById("sw_heatmapMetric").addEventListener("change", loadActivityHeatmap);
+
         // Initial load
+        loadSystemOverview();
+        loadActivityHeatmap();
+        loadGrowthOverTime();
+        loadBrandDealershipComparison();
         loadEnrollmentTrends();
         loadEnrollmentStatusBreakdown();
         loadCompletionTimeReport();

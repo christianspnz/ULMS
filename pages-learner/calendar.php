@@ -44,7 +44,7 @@ requireRole(1);
             </div>
 
         </div>
-
+        <?php include '../feedback-button.php'; ?>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
@@ -480,6 +480,36 @@ requireRole(1);
             window.reloadCalendar = () => calendar.refetchEvents();
 
         });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const openScheduleId = urlParams.get('open_schedule');
+
+        if (openScheduleId) {
+
+            // Wait for FullCalendar to finish loading events before trying to find one
+            calendar.on('eventsSet', function() {
+
+                const event = calendar.getEventById(openScheduleId);
+
+                if (event) {
+
+                    calendar.gotoDate(event.start);
+
+                    // Reuse the same eventClick logic that runs when a user clicks a schedule directly
+                    setTimeout(() => {
+                        calendar.trigger('eventClick', {
+                            event,
+                            el: null,
+                            jsEvent: null,
+                            view: calendar.view
+                        });
+                    }, 300);
+
+                }
+
+            });
+
+        }
     </script>
 </body>
 

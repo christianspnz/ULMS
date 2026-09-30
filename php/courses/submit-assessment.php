@@ -2,6 +2,7 @@
 
 require "../../config/config.php";
 require "../auth-logout/auth.php";
+require_once __DIR__ . "/../points/points-helpers.php";
 requireRole([1, 2]);
 
 header("Content-Type: application/json");
@@ -136,6 +137,7 @@ try {
             "UPDATE enrollments SET status = 'Completed', completed_at = NOW()
              WHERE user_id = ? AND course_id = ?"
         );
+        awardPoints($conn, $userId, 50, 'Course Completion', $courseId);
         mysqli_stmt_bind_param($updStmt, "ii", $userId, $courseId);
         mysqli_stmt_execute($updStmt);
 

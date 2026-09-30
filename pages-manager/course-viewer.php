@@ -51,7 +51,7 @@ requireRole([1, 2]);
             </div>
 
         </div>
-
+        <?php include '../feedback-button.php'; ?>
     </main>
 
     <script>

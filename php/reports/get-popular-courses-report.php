@@ -12,6 +12,7 @@ try {
     $dateTo = $_GET['date_to'] ?? null;
     $status = $_GET['course_status'] ?? null;
     $brandIds = $_GET['brands'] ?? [];
+    $dealershipIds = $_GET['dealerships'] ?? [];
 
     $conditions = [];
     $params = [];
@@ -37,11 +38,22 @@ try {
         $conditions[] = "c.status = 'Published'";
     }
 
+    // Moved here — BEFORE the query runs
+    if (!empty($dealershipIds) && is_array($dealershipIds)) {
+        $placeholders = implode(",", array_fill(0, count($dealershipIds), "?"));
+        $conditions[] = "u.dealership_id IN ({$placeholders})";
+        foreach ($dealershipIds as $id) {
+            $params[] = $id;
+            $types .= "i";
+        }
+    }
+
     $whereSql = "WHERE " . implode(" AND ", $conditions);
 
     $sql = "SELECT c.course_id, c.course_title, COUNT(e.enrollment_id) as total_enrolled
             FROM courses c
             LEFT JOIN enrollments e ON e.course_id = c.course_id
+            LEFT JOIN users u ON u.user_id = e.user_id
             {$whereSql}
             GROUP BY c.course_id, c.course_title
             ORDER BY total_enrolled DESC";
@@ -68,11 +80,9 @@ try {
             $courseBrandIds = $bResult ? array_column($bResult->fetch_all(MYSQLI_ASSOC), 'brand_id') : [];
 
             return empty($courseBrandIds) || count(array_intersect($courseBrandIds, $brandIds)) > 0;
-
         });
 
         $rows = array_values($rows);
-
     }
 
     usort($rows, fn($a, $b) => $b['total_enrolled'] <=> $a['total_enrolled']);
@@ -81,9 +91,7 @@ try {
         "status" => "success",
         "ranked_courses" => $rows
     ]);
-
 } catch (Exception $e) {
 
     echo json_encode(["status" => "error", "message" => $e->getMessage()]);
-
 }

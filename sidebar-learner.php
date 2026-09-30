@@ -10,9 +10,9 @@ include "hamburger-btn.php";
 ?>
 
 <aside id="sidebar" class="sidebar hidden lg:flex fixed lg:top-0 lg:left-0 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 lg:translate-y-0 lg:translate-x-0 z-40 lg:m-5">
-    <div class="flex flex-col lg:flex-row w-full justify-center items-center gap-x-2 gap-y-1">
-        <img src="../assets/ulh-logo.png" alt="UAAGI LMS Logo" class="w-14">
-        <img src="../assets/Logo.png" alt="UAAGI LMS Logo" class="w-40">
+    <div class="flex flex-col lg:flex-row w-full justify-center items-center gap-x-1 gap-y-1">
+        <img src="../assets/ulh-logo.png" alt="UAAGI LMS Logo" class="w-14 lg:w-10">
+        <img src="../assets/Logo.png" alt="UAAGI LMS Logo" class="w-40 lg:w-32">
     </div>
     <nav class="sidebar-nav">
         <a href="courses.php" class="sidebar-text 
@@ -30,6 +30,14 @@ include "hamburger-btn.php";
             ?> ">
             <i data-lucide="calendar-days" class="w-5 h-5"></i>
             Calendar
+        </a>
+        <a href="leaderboard.php" class="sidebar-text 
+            <?= $currentPage === 'leaderboard.php'
+                ? 'bg-[#234CA1] text-white'
+                : 'text-[#234CA1] hover:bg-[#234CA1]/50 hover:text-white transition-colors duration-100'
+            ?> ">
+            <i data-lucide="trophy" class="w-5 h-5"></i>
+            Leaderboard
         </a>
         <a href="contacts.php" class="sidebar-text 
             <?= $currentPage === 'contacts.php'
@@ -59,17 +67,17 @@ include "hamburger-btn.php";
                     <?= htmlspecialchars($user["first_name"] . " " . $user["last_name"]); ?>
                 </span>
 
-                <span class="user-info-subname">
-                    <?= htmlspecialchars($user["designation_name"]); ?>
-                </span>
-
-                <span class="user-info-subname" title="<?= htmlspecialchars($user["brands"]); ?>">
-                    <?= htmlspecialchars($brandText); ?>
-                </span>
-
-                <span class="user-info-subname">
-                    <?= htmlspecialchars($user["dealership_name"]); ?>
-                </span>
+                <div class="leading-none">
+                    <span class="user-info-subname">
+                        <?= htmlspecialchars($user["designation_name"]); ?>
+                    </span>
+    
+                    <div class="flex items-start">
+                        <span class="user-info-subname" title="<?= htmlspecialchars($user["brands"]); ?>">
+                            <?= htmlspecialchars($brandText); ?> — <?= htmlspecialchars($user["dealership_name"]); ?>
+                        </span>
+                    </div>
+                </div>
             </div>
         </a>
         <a href="#" id="logoutBtn" class="logout-btn">

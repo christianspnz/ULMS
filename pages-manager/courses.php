@@ -5,6 +5,7 @@ requireRole(2);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,7 @@ requireRole(2);
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
     <?php include '../sidebar-manager.php'; ?>
     <main>
@@ -25,7 +27,7 @@ requireRole(2);
                 Courses
             </span>
             <?php include '../notification-bell.php'; ?>
-        </div> 
+        </div>
 
         <div class="flex justify-between items-center w-full mt-3">
             <div>
@@ -59,7 +61,7 @@ requireRole(2);
                 Loading available courses...
             </div>
         </div>
-
+    <?php include '../feedback-button.php'; ?>   
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
@@ -190,9 +192,9 @@ requireRole(2);
 
             const myGrid = document.getElementById("myCoursesGrid");
 
-            const filtered = activeTabStatus === "all"
-                ? allMyCourses
-                : allMyCourses.filter(c => c.enrollment_status === activeTabStatus);
+            const filtered = activeTabStatus === "all" ?
+                allMyCourses :
+                allMyCourses.filter(c => c.enrollment_status === activeTabStatus);
 
             if (filtered.length === 0) {
                 myGrid.innerHTML = `<div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">No courses in this category.</div>`;
@@ -307,7 +309,10 @@ requireRole(2);
                                         <button id="enrollErrOkBtn" class="w-full h-12 bg-[#D02027] text-white rounded-xl font-eurostile-bold">OK</button>
                                     </div>
                                 `,
-                                customClass: { popup: "my-popup popup-red", htmlContainer: "!p-0 !m-0" },
+                                customClass: {
+                                    popup: "my-popup popup-red",
+                                    htmlContainer: "!p-0 !m-0"
+                                },
                                 showConfirmButton: false,
                                 allowOutsideClick: false,
                                 allowEscapeKey: false,
@@ -415,8 +420,40 @@ requireRole(2);
             return div.innerHTML;
         }
 
-        loadLearnerCourses();
+        const urlParams = new URLSearchParams(window.location.search);
+        const highlightCourseId = urlParams.get('highlight_course');
 
+        if (highlightCourseId) {
+
+            // Available Courses loads asynchronously — wait for it, then scroll + highlight
+            const waitForCard = setInterval(() => {
+
+                const card = document.querySelector(`#availableCoursesGrid [data-course-id="${highlightCourseId}"]`);
+
+                if (card) {
+
+                    clearInterval(waitForCard);
+
+                    card.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    card.classList.add('ring-4', 'ring-[#234CA1]', 'ring-offset-2');
+
+                    setTimeout(() => {
+                        card.classList.remove('ring-4', 'ring-[#234CA1]', 'ring-offset-2');
+                    }, 3000);
+
+                }
+
+            }, 200);
+
+            setTimeout(() => clearInterval(waitForCard), 5000);
+
+        }
+        loadLearnerCourses();
     </script>
 </body>
+
 </html>

@@ -13,6 +13,7 @@ try {
     $dateType = $_GET['date_type'] ?? 'created'; // 'created' or 'published'
     $status = $_GET['course_status'] ?? null;
     $brandIds = $_GET['brands'] ?? [];
+    $dealershipIds = $_GET['dealerships'] ?? [];
 
     $dateColumn = $dateType === 'published' ? 'c.updated_at' : 'c.created_at';
 
@@ -95,11 +96,30 @@ try {
             $courseBrandIds = $bResult ? array_column($bResult->fetch_all(MYSQLI_ASSOC), 'brand_id') : [];
 
             return empty($courseBrandIds) || count(array_intersect($courseBrandIds, $brandIds)) > 0;
-
         });
 
         $rows = array_values($rows);
+    }
 
+    if (!empty($dealershipIds) && is_array($dealershipIds)) {
+
+        $rows = array_values(array_filter($rows, function ($row) use ($conn, $dealershipIds) {
+
+            $stmt = mysqli_prepare(
+                $conn,
+                "SELECT DISTINCT bd.dealership_id
+             FROM course_brands cb
+             JOIN brand_dealerships bd ON bd.brand_id = cb.brand_id
+             WHERE cb.course_id = ?"
+            );
+            mysqli_stmt_bind_param($stmt, "i", $row['course_id']);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            $courseDealershipIds = $result ? array_column($result->fetch_all(MYSQLI_ASSOC), 'dealership_id') : [];
+
+            // No brand restriction = no dealership restriction either = visible to all
+            return empty($courseDealershipIds) || count(array_intersect($courseDealershipIds, $dealershipIds)) > 0;
+        }));
     }
 
     // Strip temp marker before responding
@@ -112,9 +132,7 @@ try {
         "status" => "success",
         "courses" => $rows
     ]);
-
 } catch (Exception $e) {
 
     echo json_encode(["status" => "error", "message" => $e->getMessage()]);
-
 }

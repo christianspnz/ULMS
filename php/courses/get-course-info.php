@@ -31,7 +31,7 @@ try {
         $conn,
         "SELECT brand_id FROM course_brands WHERE course_id = ?"
     );
-    mysqli_stmt_bind_param($bStmt, "i", $courseId);
+    mysqli_stmt_bind_param($bStmt, "i", $courseId);                                                                                                                                                                                                                                
     mysqli_stmt_execute($bStmt);
     $bResult = mysqli_stmt_get_result($bStmt);
     $brandRows = $bResult ? $bResult->fetch_all(MYSQLI_ASSOC) : [];
