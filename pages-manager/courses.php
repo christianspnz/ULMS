@@ -1,6 +1,26 @@
 <?php
+require "../config/config.php";
 require "../php/auth-logout/auth.php";
 requireRole(2);
+
+$activeTab = $_GET['status'] ?? 'Published';
+$allowedTabs = ['Draft', 'Published', 'Archived'];
+
+if (!in_array($activeTab, $allowedTabs)) {
+    $activeTab = 'Published';
+}
+
+$stmt = mysqli_prepare(
+    $conn,
+    "SELECT course_id, course_title, course_description, thumbnail, status, created_at, updated_at
+     FROM courses
+     WHERE status IN ('Draft', 'Published', 'Archived')
+     ORDER BY updated_at DESC"
+);
+
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$courses = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +31,7 @@ requireRole(2);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
     <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
-    <title>UEH - Managers</title>
+    <title>UTH - Manager</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
@@ -19,51 +39,141 @@ requireRole(2);
 </head>
 
 <body>
-    <?php include '../sidebar-manager.php'; ?>
+    <?php include('../sidebar-manager.php') ?>
     <main>
 
-        <div class="flex justify-between items-center w-full">
-            <span class="page-breadcrumbs">
-                Courses
-            </span>
-            <?php include '../notification-bell.php'; ?>
-        </div>
+        <div class="sticky top-0 z-20 bg-[#fbfcf8] pb-3 -mx-1 px-1">
 
-        <div class="flex justify-between items-center w-full mt-3">
-            <div>
-                <h2 class="text-3xl font-eurostile-black text-[#234CA1]">My Courses</h2>
-                <p class="font-eurostile text-gray-500 mt-1">Continue where you left off.</p>
+            <div class="flex justify-between items-center w-full">
+                <span class="page-breadcrumbs">
+                    Courses
+                </span>
+                <?php include '../notification-bell.php'; ?>
             </div>
-        </div>
 
-        <div class="flex gap-x-2 border-b border-gray-200 mt-3 mb-3 w-full lg:w-auto overflow-x-auto" id="myCoursesTabs">
-            <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-[#234CA1] text-[#234CA1]" data-status="all">All</button>
-            <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1]" data-status="Not Started">Not Started</button>
-            <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1]" data-status="In Progress">In Progress</button>
-            <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1]" data-status="Completed">Completed</button>
-        </div>
-
-        <div id="myCoursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">
-                Loading your courses...
+            <div class="flex flex-col lg:flex-row gap-y-2 justify-between items-start lg:items-center w-full">
+                <div>
+                    <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
+                        Course Management
+                    </h2>
+                    <p class="font-eurostile text-gray-500 mt-1">
+                        View, edit, and manage all courses.
+                    </p>
+                </div>
+                <a href="new-course.php"
+                    class="bg-[#234CA1] px-6 py-3 text-white rounded-lg font-eurostile-bold uppercase flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i>
+                    Add Course
+                </a>
             </div>
+            <!-- Tabs -->
+            <div id="courseTabs" class="relative flex overflow-x-auto gap-x-2 bg-gray-100 w-auto rounded-lg mt-5 p-1">
+                <span id="tabSlider" class="absolute top-1 bottom-1 left-1 rounded-md bg-[#FFFFFF] shadow-sm transition-all duration-300 ease-in-out pointer-events-none"></span>
+                <?php foreach ($allowedTabs as $tab): ?>
+                    <button type="button"
+                        onclick="switchTab('<?= $tab ?>')"
+                        id="tab-btn-<?= $tab ?>"
+                        class="universal-tabs relative z-10 !bg-transparent px-5 py-2.5 rounded-md font-eurostile-bold uppercase text-sm whitespace-nowrap transition-colors duration-300 ease-in-out <?= $activeTab === $tab ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>"
+                        data-tab="<?= $tab ?>">
+                        <?= htmlspecialchars($tab) ?>
+                    </button>
+                <?php endforeach; ?>
+            </div>
+
         </div>
 
-        <div class="flex justify-between items-center w-full mt-10">
-            <div>
-                <h2 class="text-3xl font-eurostile-black text-[#234CA1]">Available Courses</h2>
-                <p class="text-gray-500">Courses available for your brand.</p>
-            </div>
-        </div>
+        <!-- Course Grid -->
+        <?php foreach ($allowedTabs as $tab): ?>
+            <?php
+            $tabCourses = array_filter(
+                $courses,
+                fn($course) => $course['status'] === $tab
+            );
+            ?>
 
-        <div id="availableCoursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
-            <div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">
-                Loading available courses...
+            <div id="panel-<?= $tab ?>"
+                class="tab-panel grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6 <?= $activeTab === $tab ? '' : 'hidden' ?>">
+
+                <?php if (empty($tabCourses)): ?>
+                    <div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">
+                        No <?= strtolower($tab) ?> courses found.
+                    </div>
+                <?php else: ?>
+                    <?php foreach ($tabCourses as $course): ?>
+                        <div class="flex flex-col justify-between bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden course-card"
+                            data-course-id="<?= $course['course_id'] ?>">
+                            <div class="h-40 bg-gray-100 overflow-hidden border-b border-gray-200">
+                                <?php if (!empty($course['thumbnail'])): ?>
+                                    <img src="../uploads/thumbnails/<?= htmlspecialchars($course['thumbnail']) ?>"
+                                        class="w-full h-full object-cover" alt="Course thumbnail">
+                                <?php else: ?>
+                                    <div class="w-full h-full flex items-center justify-center text-gray-300">
+                                        <i class="fa-solid fa-image text-4xl"></i>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="flex flex-col justify-between h-52 p-5">
+                                <div>
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-lg font-eurostile-bold text-[#234CA1]">
+                                            <?= htmlspecialchars($course['course_title']) ?>
+                                        </h3>
+                                        <span class="text-xs font-bold uppercase px-2 py-1 rounded-full
+                                    <?= $course['status'] === 'Published' ? 'bg-green-100 text-green-700' : '' ?>
+                                    <?= $course['status'] === 'Draft' ? 'bg-yellow-100 text-yellow-700' : '' ?>
+                                    <?= $course['status'] === 'Archived' ? 'bg-gray-100 text-gray-500' : '' ?>">
+                                            <?= $course['status'] ?>
+                                        </span>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-2 line-clamp-2">
+                                        <?= htmlspecialchars($course['course_description'] ?? '') ?>
+                                    </p>
+                                    <p class="text-xs text-gray-400 mt-2">
+                                        Last updated: <?= date('M j, Y', strtotime($course['updated_at'])) ?>
+                                    </p>
+                                </div>
+                                <div class="flex gap-x-3 mt-4">
+
+                                    <a href="edit-course.php?course_id=<?= $course['course_id'] ?>"
+                                        class="flex-1 text-center bg-[#234CA1] text-white rounded-lg py-2 text-sm font-eurostile-bold">
+                                        <i class="fa-solid fa-pen mr-1"></i> Edit
+                                    </a>
+
+                                    <?php if ($course['status'] === 'Draft'): ?>
+
+                                        <button type="button"
+                                            class="hard-delete-btn flex-1 bg-[#D02027] text-white rounded-lg py-2 text-sm font-eurostile-bold"
+                                            data-course-id="<?= $course['course_id'] ?>">
+                                            <i class="fa-solid fa-trash mr-1"></i> Delete
+                                        </button>
+
+                                    <?php elseif ($course['status'] === 'Archived'): ?>
+
+                                        <button type="button"
+                                            class="restore-btn flex-1 bg-green-600 text-white rounded-lg py-2 text-sm font-eurostile-bold"
+                                            data-course-id="<?= $course['course_id'] ?>">
+                                            <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Publish
+                                        </button>
+
+                                    <?php else: ?>
+
+                                        <button type="button"
+                                            class="archive-btn flex-1 bg-[#d0aa13] text-white rounded-lg py-2 text-sm font-eurostile-bold"
+                                            data-course-id="<?= $course['course_id'] ?>">
+                                            <i class="fa-solid fa-box-archive mr-1"></i> Archive
+                                        </button>
+
+                                    <?php endif; ?>
+
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
-        </div>
-    <?php include '../feedback-button.php'; ?>   
+        <?php endforeach; ?>
+
     </main>
-
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
         lucide.createIcons();
@@ -72,387 +182,311 @@ requireRole(2);
             once: false // allow animations to replay, not just fire once ever
         });
 
+        let currentTab = <?= json_encode($activeTab) ?>;
+
+        function moveTabSlider(tabName) {
+            const button = document.getElementById(`tab-btn-${tabName}`);
+            const slider = document.getElementById('tabSlider');
+            if (!button || !slider) return;
+            const tabs = document.getElementById('courseTabs');
+            if (!tabs) return;
+            slider.style.width = `${button.offsetWidth}px`;
+            slider.style.transform = `translateX(${button.offsetLeft - 4}px)`;
+        }
+
+        function switchTab(tabName, updateUrl = true) {
+            const allowedTabs = ['Draft', 'Published', 'Archived'];
+            if (!allowedTabs.includes(tabName) || tabName === currentTab) return;
+
+            currentTab = tabName;
+
+            document.querySelectorAll('.universal-tabs').forEach(button => {
+                const active = button.dataset.tab === tabName;
+                button.classList.toggle('universal-tabs-active', active);
+                button.classList.toggle('universal-tabs-inactive', !active);
+            });
+
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.toggle('hidden', panel.id !== `panel-${tabName}`);
+            });
+
+            moveTabSlider(tabName);
+
+            if (updateUrl) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('status', tabName);
+                history.pushState({ status: tabName }, '', url);
+            }
+        }
+
+        moveTabSlider(currentTab);
+
+        window.addEventListener('resize', () => moveTabSlider(currentTab));
+
+        window.addEventListener('popstate', () => {
+            const tab = new URLSearchParams(window.location.search).get('status');
+            const validTab = ['Draft', 'Published', 'Archived'].includes(tab) ? tab : 'Published';
+            if (validTab !== currentTab) switchTab(validTab, false);
+        });
+
         window.addEventListener('pageshow', function(event) {
             if (event.persisted) {
                 AOS.refreshHard();
             }
         });
-        // ---------- TAB SWITCHING (My Courses vs Team Progress) ----------
-
-        document.querySelectorAll(".main-tab-btn").forEach(btn => {
-
+        document.querySelectorAll(".archive-btn").forEach(btn => {
             btn.addEventListener("click", () => {
-
-                document.querySelectorAll(".main-tab-btn").forEach(b => {
-                    b.classList.remove("border-[#234CA1]", "text-[#234CA1]");
-                    b.classList.add("border-transparent", "text-gray-400");
-                });
-
-                btn.classList.add("border-[#234CA1]", "text-[#234CA1]");
-                btn.classList.remove("border-transparent", "text-gray-400");
-
-                document.querySelectorAll(".section-panel").forEach(panel => panel.classList.add("hidden"));
-
-                const section = btn.dataset.section;
-
-                if (section === "myCourses") {
-                    document.getElementById("myCoursesSection").classList.remove("hidden");
-                } else {
-                    document.getElementById("teamProgressSection").classList.remove("hidden");
-                    loadTeamProgress();
-                }
-
-            });
-
-        });
-
-        // ---------- MY COURSES (identical logic to the learner page) ----------
-
-        let allMyCourses = [];
-        let activeTabStatus = "all";
-
-        async function loadLearnerCourses() {
-
-            const myGrid = document.getElementById("myCoursesGrid");
-            const availGrid = document.getElementById("availableCoursesGrid");
-
-            try {
-
-                const res = await fetch("../php/courses/get-learner-courses.php");
-                const data = await res.json();
-
-                if (data.status !== "success") {
-                    myGrid.innerHTML = `<div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-red-500">${data.message}</div>`;
-                    availGrid.innerHTML = "";
-                    return;
-                }
-
-                allMyCourses = data.my_courses;
-                renderMyCourses();
-
-                if (data.available_courses.length === 0) {
-
-                    availGrid.innerHTML = `<div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">No new courses available right now.</div>`;
-
-                } else {
-
-                    availGrid.innerHTML = data.available_courses.map(course => `
-
-                        <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden" data-course-id="${course.course_id}">
-
-                            <div class="h-40 bg-gray-100 overflow-hidden">
-                                ${course.thumbnail
-                                    ? `<img src="../uploads/thumbnails/${escapeHtml(course.thumbnail)}" class="w-full h-full object-cover" alt="Course thumbnail">`
-                                    : `<div class="w-full h-full flex items-center justify-center text-gray-300"><i class="fa-solid fa-image text-4xl"></i></div>`
-                                }
+                const courseId = btn.dataset.courseId;
+                Swal.fire({
+                    html: `
+                        <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
+                            <div class="flex flex-col lg:flex-row items-center lg:items-start gap-5 p-5">
+                                <i class="fa-solid fa-circle-question text-[#d0aa13] text-6xl"></i>
+                                <div class="text-start">
+                                    <h2 class="text-2xl font-eurostile-bold text-[#d0aa13] uppercase">Archive Course?</h2>
+                                    <p class="text-sm text-gray-500">This will archive the course and hide it from learners and managers. You can restore it later if needed.</p>
+                                </div>
                             </div>
-
-                            <div class="p-5">
-                                <h3 class="text-lg font-eurostile-bold text-[#234CA1]">${escapeHtml(course.course_title)}</h3>
-                                <p class="text-sm text-gray-500 mt-1 line-clamp-2">${escapeHtml(course.course_description ?? "")}</p>
-                                <button type="button"
-                                        class="enroll-btn w-full bg-[#D02027] text-white rounded-lg py-2 text-sm font-eurostile-bold mt-4"
-                                        data-course-id="${course.course_id}">
-                                    Enroll Now
-                                </button>
+                            <div class="flex gap-x-3 w-full">
+                                <button id="cancelArchiveBtn" class="flex-1 h-12 bg-gray-200 text-gray-600 rounded-xl font-eurostile-bold">Cancel</button>
+                                <button id="confirmArchiveBtn" class="flex-1 h-12 bg-[#d0aa13] text-white rounded-xl font-eurostile-bold">Archive</button>
                             </div>
-
                         </div>
-
-                    `).join("");
-
-                    attachEnrollHandlers();
-
-                }
-
-            } catch (err) {
-                console.error(err);
-                myGrid.innerHTML = `<div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-red-500">Failed to load courses.</div>`;
-                availGrid.innerHTML = "";
-            }
-
-        }
-
-        function getStatusBadgeClass(status) {
-
-            switch (status) {
-                case "Completed":
-                    return "bg-green-100 text-green-700";
-                case "In Progress":
-                    return "bg-yellow-100 text-yellow-700";
-                case "Not Started":
-                    return "bg-gray-100 text-gray-500";
-                default:
-                    return "bg-blue-100 text-blue-700";
-            }
-
-        }
-
-        function renderMyCourses() {
-
-            const myGrid = document.getElementById("myCoursesGrid");
-
-            const filtered = activeTabStatus === "all" ?
-                allMyCourses :
-                allMyCourses.filter(c => c.enrollment_status === activeTabStatus);
-
-            if (filtered.length === 0) {
-                myGrid.innerHTML = `<div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">No courses in this category.</div>`;
-                return;
-            }
-
-            myGrid.innerHTML = filtered.map(course => `
-
-                <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
-
-                    <div class="h-40 bg-gray-100 overflow-hidden border-b border-gray-200">
-                        ${course.thumbnail
-                            ? `<img src="../uploads/thumbnails/${escapeHtml(course.thumbnail)}" class="w-full h-full object-cover" alt="Course thumbnail">`
-                            : `<div class="w-full h-full flex items-center justify-center text-gray-300"><i class="fa-solid fa-image text-4xl"></i></div>`
-                        }
-                    </div>
-
-                    <div class="flex flex-col justify-between h-52 p-5">
-                        <div class="flex flex-col justify-between">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-lg font-eurostile-bold text-[#234CA1]">
-                                ${escapeHtml(course.course_title)}
-                                </h3>
-                                <span class="text-xs font-bold uppercase px-2 py-1 rounded-full ${getStatusBadgeClass(course.enrollment_status)}">
-                                    ${escapeHtml(course.enrollment_status)}
-                                </span>
-                            </div>
-
-                            <p class="text-sm text-gray-500 mt-1 line-clamp-2">
-                                ${escapeHtml(course.course_description ?? "")}
-                            </p>
-                        </div>
-                        <div class="mt-3">
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-[#234CA1] h-2 rounded-full" style="width: ${course.progress}%"></div>
-                            </div>
-                            <p class="text-xs text-gray-400 mt-1">${course.progress}% complete</p>
-                        </div>
-
-                        <a href="course-viewer.php?course_id=${course.course_id}"
-                           class="block text-center bg-[#234CA1] text-white rounded-lg py-2 text-sm font-eurostile-bold mt-4">
-                            <i class="fa-solid fa-play mr-1"></i>
-                            ${course.progress > 0 ? "Continue" : "Start"}
-                        </a>
-                    </div>
-
-                </div>
-
-            `).join("");
-
-        }
-
-        document.querySelectorAll(".my-tab-btn").forEach(btn => {
-
-            btn.addEventListener("click", () => {
-
-                activeTabStatus = btn.dataset.status;
-
-                document.querySelectorAll(".my-tab-btn").forEach(b => {
-                    b.classList.remove("border-[#234CA1]", "text-[#234CA1]");
-                    b.classList.add("border-transparent", "text-gray-400");
-                });
-
-                btn.classList.add("border-[#234CA1]", "text-[#234CA1]");
-                btn.classList.remove("border-transparent", "text-gray-400");
-
-                renderMyCourses();
-
-            });
-
-        });
-
-        function attachEnrollHandlers() {
-
-            document.querySelectorAll(".enroll-btn").forEach(btn => {
-
-                btn.addEventListener("click", async () => {
-
-                    const courseId = btn.dataset.courseId;
-
-                    btn.disabled = true;
-                    btn.textContent = "Enrolling...";
-
-                    try {
-
-                        const formData = new FormData();
-                        formData.append("course_id", courseId);
-
-                        const res = await fetch("../php/courses/enroll-course.php", {
-                            method: "POST",
-                            body: formData
-                        });
-
-                        const data = await res.json();
-
-                        if (data.status === "success") {
-
-                            loadLearnerCourses();
-
-                        } else {
-
-                            Swal.fire({
-                                html: `
-                                    <div class="flex flex-col justify-center items-start gap-y-3">
-                                        <div class="flex flex-col lg:flex-row items-start gap-5 p-5">
-                                            <i class="fa-solid fa-circle-exclamation text-[#D02027] text-6xl"></i>
-                                            <div class="text-start">
-                                                <h2 class="text-2xl font-eurostile-bold text-[#D02027] uppercase">Enrollment Failed!</h2>
-                                                <p class="text-sm text-gray-500">${data.message}</p>
-                                            </div>
-                                        </div>
-                                        <button id="enrollErrOkBtn" class="w-full h-12 bg-[#D02027] text-white rounded-xl font-eurostile-bold">OK</button>
-                                    </div>
-                                `,
-                                customClass: {
-                                    popup: "my-popup popup-red",
-                                    htmlContainer: "!p-0 !m-0"
-                                },
-                                showConfirmButton: false,
-                                allowOutsideClick: false,
-                                allowEscapeKey: false,
-                                heightAuto: false,
-                                didOpen: () => {
-                                    document.getElementById("enrollErrOkBtn").onclick = () => Swal.close();
-                                }
-                            });
-
-                            btn.disabled = false;
-                            btn.textContent = "Enroll Now";
-
-                        }
-
-                    } catch (err) {
-                        console.error(err);
-                        btn.disabled = false;
-                        btn.textContent = "Enroll Now";
+                    `,
+                    customClass: {
+                        popup: "my-popup popup-yellow",
+                        htmlContainer: "!p-0 !m-0"
+                    },
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    heightAuto: false,
+                    didOpen: () => {
+                        document.getElementById("cancelArchiveBtn").onclick = () => Swal.close();
+                        document.getElementById("confirmArchiveBtn").onclick = () => confirmArchive(courseId);
                     }
+                });
+            });
+        });
 
+        document.querySelectorAll(".hard-delete-btn").forEach(btn => {
+
+            btn.addEventListener("click", () => {
+
+                const courseId = btn.dataset.courseId;
+
+                Swal.fire({
+                    html: `
+                        <div class="flex flex-col justify-center items-start gap-y-3">
+                            <div class="flex flex-col lg:flex-row items-start gap-5 p-5">
+                                <i class="fa-solid fa-triangle-exclamation text-[#D02027] text-6xl"></i>
+                                <div class="text-start">
+                                    <h2 class="text-2xl font-eurostile-bold text-[#D02027] uppercase">Delete Permanently?</h2>
+                                    <p class="text-sm text-gray-500">This draft — including its modules, files, and assessment — will be permanently deleted. This cannot be undone.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-x-3 w-full">
+                                <button id="cancelHardDeleteBtn" class="flex-1 h-12 bg-gray-200 text-gray-600 rounded-xl font-eurostile-bold">Cancel</button>
+                                <button id="confirmHardDeleteBtn" class="flex-1 h-12 bg-[#D02027] text-white rounded-xl font-eurostile-bold">Delete Permanently</button>
+                            </div>
+                        </div>
+                    `,
+                    customClass: {
+                        popup: "my-popup popup-red",
+                        htmlContainer: "!p-0 !m-0"
+                    },
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    heightAuto: false,
+                    didOpen: () => {
+                        document.getElementById("cancelHardDeleteBtn").onclick = () => Swal.close();
+                        document.getElementById("confirmHardDeleteBtn").onclick = () => confirmHardDelete(courseId);
+                    }
                 });
 
             });
 
-        }
+        });
 
-        // ---------- TEAM PROGRESS ----------
+        async function confirmHardDelete(courseId) {
 
-        let teamProgressLoaded = false;
-
-        async function loadTeamProgress() {
-
-            if (teamProgressLoaded) return; // avoid re-fetching every tab switch
-            teamProgressLoaded = true;
-
-            const list = document.getElementById("teamProgressList");
+            Swal.close();
 
             try {
 
-                const res = await fetch("../php/courses/get-team-progress.php");
+                const formData = new FormData();
+                formData.append("course_id", courseId);
+
+                const res = await fetch("../php/courses/delete-course.php", {
+                    method: "POST",
+                    body: formData
+                });
+
                 const data = await res.json();
 
-                if (data.status !== "success") {
-                    list.innerHTML = `<div class="bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-red-500">${data.message}</div>`;
-                    return;
-                }
+                if (data.status === "success") {
 
-                if (data.team.length === 0) {
-                    list.innerHTML = `<div class="bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">No team members found.</div>`;
-                    return;
-                }
+                    document.querySelector(`.course-card[data-course-id="${courseId}"]`).remove();
 
-                list.innerHTML = data.team.map(member => `
+                } else {
 
-                    <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
-
-                        <div class="bg-[#234CA1] px-6 py-4">
-                            <h3 class="text-white text-lg font-eurostile-bold">
-                                ${escapeHtml(member.first_name)} ${escapeHtml(member.last_name)}
-                            </h3>
-                        </div>
-
-                        <div class="p-5">
-
-                            ${member.courses.length === 0
-                                ? `<p class="text-gray-400 italic text-sm">Not enrolled in any courses yet.</p>`
-                                : `
-                                    <div class="space-y-3">
-                                        ${member.courses.map(c => `
-                                            <div class="border rounded-lg p-3 flex justify-between items-center">
-                                                <div>
-                                                    <p class="font-medium text-sm">${escapeHtml(c.course_title)}</p>
-                                                    <div class="w-40 bg-gray-200 rounded-full h-1.5 mt-1">
-                                                        <div class="bg-[#234CA1] h-1.5 rounded-full" style="width: ${c.progress}%"></div>
-                                                    </div>
-                                                </div>
-                                                <span class="text-xs font-bold uppercase px-2 py-1 rounded-full
-                                                    ${c.status === 'Completed' ? 'bg-green-100 text-green-700' : ''}
-                                                    ${c.status === 'In Progress' ? 'bg-yellow-100 text-yellow-700' : ''}
-                                                    ${c.status === 'Not Started' ? 'bg-gray-100 text-gray-500' : ''}">
-                                                    ${escapeHtml(c.status)}
-                                                </span>
-                                            </div>
-                                        `).join("")}
+                    Swal.fire({
+                        html: `
+                            <div class="flex flex-col justify-center items-start gap-y-3">
+                                <div class="flex flex-col lg:flex-row items-start gap-5 p-5">
+                                    <i class="fa-solid fa-circle-exclamation text-[#D02027] text-6xl"></i>
+                                    <div class="text-start">
+                                        <h2 class="text-2xl font-eurostile-bold text-[#D02027] uppercase">Delete Failed!</h2>
+                                        <p class="text-sm text-gray-500">${data.message}</p>
                                     </div>
-                                `
-                            }
-
-                        </div>
-
-                    </div>
-
-                `).join("");
-
-            } catch (err) {
-                console.error(err);
-                list.innerHTML = `<div class="bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-red-500">Failed to load team progress.</div>`;
-            }
-
-        }
-
-        function escapeHtml(str) {
-            const div = document.createElement("div");
-            div.textContent = str ?? "";
-            return div.innerHTML;
-        }
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const highlightCourseId = urlParams.get('highlight_course');
-
-        if (highlightCourseId) {
-
-            // Available Courses loads asynchronously — wait for it, then scroll + highlight
-            const waitForCard = setInterval(() => {
-
-                const card = document.querySelector(`#availableCoursesGrid [data-course-id="${highlightCourseId}"]`);
-
-                if (card) {
-
-                    clearInterval(waitForCard);
-
-                    card.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
+                                </div>
+                                <button id="hardDeleteErrOkBtn" class="w-full h-12 bg-[#D02027] text-white rounded-xl font-eurostile-bold">OK</button>
+                            </div>
+                        `,
+                        customClass: {
+                            popup: "my-popup popup-red",
+                            htmlContainer: "!p-0 !m-0"
+                        },
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        heightAuto: false,
+                        didOpen: () => {
+                            document.getElementById("hardDeleteErrOkBtn").onclick = () => Swal.close();
+                        }
                     });
 
-                    card.classList.add('ring-4', 'ring-[#234CA1]', 'ring-offset-2');
-
-                    setTimeout(() => {
-                        card.classList.remove('ring-4', 'ring-[#234CA1]', 'ring-offset-2');
-                    }, 3000);
-
                 }
 
-            }, 200);
-
-            setTimeout(() => clearInterval(waitForCard), 5000);
+            } catch (err) {
+                console.error(err);
+            }
 
         }
-        loadLearnerCourses();
+        async function confirmArchive(courseId) {
+            Swal.close();
+            try {
+                const formData = new FormData();
+                formData.append("course_id", courseId);
+                const res = await fetch("../php/courses/archive-course.php", {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.status === "success") {
+                    document.querySelector(`.course-card[data-course-id="${courseId}"]`).remove();
+                } else {
+                    Swal.fire({
+                        html: `
+                            <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
+                                <div class="flex flex-col lg:flex-row items-center lg:items-start gap-5 p-5">
+                                    <i class="fa-solid fa-circle-exclamation text-[#D02027] text-6xl"></i>
+                                    <div class="text-start">
+                                        <h2 class="text-2xl font-eurostile-bold text-[#D02027] uppercase">Delete Failed!</h2>
+                                        <p class="text-sm text-gray-500">${data.message}</p>
+                                    </div>
+                                </div>
+                                <button id="archErrOkBtn" class="w-full h-12 bg-[#D02027] text-white rounded-xl font-eurostile-bold">OK</button>
+                            </div>
+                        `,
+                        customClass: {
+                            popup: "my-popup popup-red",
+                            htmlContainer: "!p-0 !m-0"
+                        },
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        heightAuto: false,
+                        didOpen: () => {
+                            document.getElementById("archErrOkBtn").onclick = () => Swal.close();
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        document.querySelectorAll(".restore-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const courseId = btn.dataset.courseId;
+                Swal.fire({
+                    html: `
+                <div class="flex flex-col justify-center items-start gap-y-3">
+                    <div class="flex flex-col lg:flex-row items-start gap-5 p-5">
+                        <i class="fa-solid fa-circle-question text-[#234CA1] text-6xl"></i>
+                        <div class="text-start">
+                            <h2 class="text-2xl font-eurostile-bold text-[#234CA1] uppercase">Publish Course?</h2>
+                            <p class="text-sm text-gray-500">This will restore the course and make it visible to learners and managers again.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-x-3 w-full">
+                        <button id="cancelRestoreBtn" class="flex-1 h-12 bg-gray-200 text-gray-600 rounded-xl font-eurostile-bold">Cancel</button>
+                        <button id="confirmRestoreBtn" class="flex-1 h-12 bg-[#234CA1] text-white rounded-xl font-eurostile-bold">Publish</button>
+                    </div>
+                </div>
+            `,
+                    customClass: {
+                        popup: "my-popup popup-blue",
+                        htmlContainer: "!p-0 !m-0"
+                    },
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    heightAuto: false,
+                    didOpen: () => {
+                        document.getElementById("cancelRestoreBtn").onclick = () => Swal.close();
+                        document.getElementById("confirmRestoreBtn").onclick = () => confirmRestore(courseId);
+                    }
+                });
+            });
+        });
+
+        async function confirmRestore(courseId) {
+            Swal.close();
+            try {
+                const formData = new FormData();
+                formData.append("course_id", courseId);
+                const res = await fetch("../php/courses/restore-course.php", {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.status === "success") {
+
+                    document.querySelector(`.course-card[data-course-id="${courseId}"]`).remove();
+                } else {
+                    Swal.fire({
+                        html: `
+                            <div class="flex flex-col justify-center items-start gap-y-3">
+                                <div class="flex flex-col lg:flex-row items-start gap-5 p-5">
+                                    <i class="fa-solid fa-circle-exclamation text-[#D02027] text-6xl"></i>
+                                    <div class="text-start">
+                                        <h2 class="text-2xl font-eurostile-bold text-[#D02027] uppercase">Publish Failed!</h2>
+                                        <p class="text-sm text-gray-500">${data.message}</p>
+                                    </div>
+                                </div>
+                                <button id="restoreErrOkBtn" class="w-full h-12 bg-[#D02027] text-white rounded-xl font-eurostile-bold">OK</button>
+                            </div>
+                        `,
+                        customClass: {
+                            popup: "my-popup popup-red",
+                            htmlContainer: "!p-0 !m-0"
+                        },
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        heightAuto: false,
+                        didOpen: () => {
+                            document.getElementById("restoreErrOkBtn").onclick = () => Swal.close();
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
     </script>
 </body>
 

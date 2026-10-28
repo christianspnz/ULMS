@@ -28,10 +28,12 @@ mysqli_stmt_close($stmt);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/output.css">
     <link rel="icon" type="image/png" href="./assets/ulh-logo.png" class="w-24">
-    <title>UEH</title>
+    <title>UTH - Registration</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <?php include 'datepicker-theme.php'; ?>
 </head>
 
 <body class="m-0 p-0 h-screen flex items-center justify-center">
@@ -151,7 +153,7 @@ mysqli_stmt_close($stmt);
                                 </svg>
                             </button>
 
-                            <div class="dropdown-menu absolute left-0 z-50 hidden w-full mt-2 bg-white border border-[#234CA1] rounded-2xl shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
+                            <div class="dropdown-menu absolute left-0 z-50 hidden w-full mt-2 bg-white border border-[#234CA1] rounded-2xl shadow-lg max-h-60 overflow-y-auto ">
 
                                 <?php
                                 $sql = "SELECT * FROM brands ORDER BY brand_name";
@@ -209,7 +211,7 @@ mysqli_stmt_close($stmt);
 
                             <input type="hidden" name="dealership_id" class="selected-id">
 
-                            <div id="dealershipMenu" class="dropdown-menu absolute left-0 z-50 hidden w-full mt-2 overflow-hidden bg-white border border-[#234CA1] rounded-md shadow-lg overflow-y-auto max-h-60 custom-scrollbar">
+                            <div id="dealershipMenu" class="dropdown-menu absolute left-0 z-50 hidden w-full mt-2 overflow-hidden bg-white border border-[#234CA1] rounded-md shadow-lg overflow-y-auto max-h-60 ">
 
                                 <div class="px-4 py-3 text-gray-500 text-center">
                                     Please select at least one brand first.
@@ -248,6 +250,7 @@ mysqli_stmt_close($stmt);
                             id="dateofbirth"
                             name="dateofbirth"
                             placeholder="05/01/2002"
+                            data-max="today"
                             class="text-inputs">
 
                     </div>
@@ -261,6 +264,7 @@ mysqli_stmt_close($stmt);
                             type="date"
                             name="datehired"
                             placeholder="05/01/2023"
+                            data-max="today"
                             class="text-inputs">
 
                     </div>
@@ -385,7 +389,7 @@ mysqli_stmt_close($stmt);
             // SINGLE SELECT
             //------------------------------------------------
 
-            const selected = dropdown.querySelector(".selected-option");
+            const selected = dropdown.querySelector(" .selected-option");
             const hidden = dropdown.querySelector(".selected-id");
 
             dropdown.querySelectorAll(".dropdown-item").forEach(item => {
@@ -441,10 +445,10 @@ mysqli_stmt_close($stmt);
                 // If no brands are selected
                 if (selectedBrands.length === 0) {
                     document.getElementById("dealershipMenu").innerHTML = `
-                        <div class="px-4 py-3 text-center text-gray-500">
-                            Please select at least one brand first.
-                        </div>
-                    `;
+        <div class="px-4 py-3 text-center text-gray-500">
+            Please select at least one brand first.
+        </div>
+        `;
                     return;
                 }
 
@@ -463,14 +467,14 @@ mysqli_stmt_close($stmt);
                         menu.innerHTML = "";
                         data.forEach(dealer => {
                             menu.innerHTML += `
-                            <button
-                                type="button"
-                                class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white"
-                                data-id="${dealer.dealership_id}"
-                                data-value="${dealer.dealership_name}">
-                                ${dealer.dealership_name}
-                            </button>
-                        `;
+        <button
+            type="button"
+            class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white"
+            data-id="${dealer.dealership_id}"
+            data-value="${dealer.dealership_name}">
+            ${dealer.dealership_name}
+        </button>
+        `;
                         });
                         attachDealershipEvents();
                     });
@@ -516,28 +520,28 @@ mysqli_stmt_close($stmt);
 
                         Swal.fire({
                             html: `
-                            <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
-                                <div class="flex flex-col lg:flex-row items-center justify-center gap-x-5 p-5">
-                                    <i class="fa-solid fa-circle-check text-[#234CA1] text-6xl"></i>
+        <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-x-5 p-5">
+                <i class="fa-solid fa-circle-check text-[#234CA1] text-6xl"></i>
 
-                                    <div class="flex flex-col justify-center items-center lg:items-start">
-                                        <h2 class="text-2xl font-bold text-[#234CA1] uppercase">
-                                            Registration Successful!
-                                        </h2>
+                <div class="flex flex-col justify-center items-center lg:items-start">
+                    <h2 class="text-2xl font-bold text-[#234CA1] uppercase">
+                        Registration Successful!
+                    </h2>
 
-                                        <p class="text-sm text-gray-500 text-center lg:text-left">
-                                            Please check your email for your temporary password and proceed to login once your registration has been approved.
-                                        </p>
-                                    </div>
-                                </div>
+                    <p class="text-sm text-gray-500 text-center lg:text-left">
+                        Please check your email for your temporary password and proceed to login once your registration has been approved.
+                    </p>
+                </div>
+            </div>
 
-                                <button
-                                    id="proceedBtn"
-                                    class="w-full h-12 bg-[#234CA1] text-white rounded-xl font-bold hover:bg-[#1B3D82] transition">
-                                    Proceed to Login
-                                </button>
-                            </div>
-                        `,
+            <button
+                id="proceedBtn"
+                class="w-full h-12 bg-[#234CA1] text-white rounded-xl font-bold hover:bg-[#1B3D82] transition">
+                Proceed to Login
+            </button>
+        </div>
+        `,
                             customClass: {
                                 popup: "my-popup popup-blue",
                                 htmlContainer: "!p-0 !m-0"
@@ -556,28 +560,28 @@ mysqli_stmt_close($stmt);
 
                         Swal.fire({
                             html: `
-                            <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
-                                <div class="flex flex-col lg:flex-row items-center justify-center gap-x-5 p-5">
-                                    <i class="fa-solid fa-circle-xmark text-[#D02027] text-6xl"></i>
+        <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-x-5 p-5">
+                <i class="fa-solid fa-circle-xmark text-[#D02027] text-6xl"></i>
 
-                                    <div class="flex flex-col justify-center items-center lg:items-start">
-                                        <h2 class="text-2xl font-bold text-[#D02027] uppercase">
-                                            Registration Failed!
-                                        </h2>
+                <div class="flex flex-col justify-center items-center lg:items-start">
+                    <h2 class="text-2xl font-bold text-[#D02027] uppercase">
+                        Registration Failed!
+                    </h2>
 
-                                        <p class="text-sm text-gray-500 text-center lg:text-left">
-                                            ${data.message}
-                                        </p>
-                                    </div>
-                                </div>
+                    <p class="text-sm text-gray-500 text-center lg:text-left">
+                        ${data.message}
+                    </p>
+                </div>
+            </div>
 
-                                <button
-                                    id="retryBtn"
-                                    class="w-full h-12 bg-[#D02027] text-white rounded-xl font-bold">
-                                    Try Again
-                                </button>
-                            </div>
-                        `,
+            <button
+                id="retryBtn"
+                class="w-full h-12 bg-[#D02027] text-white rounded-xl font-bold">
+                Try Again
+            </button>
+        </div>
+        `,
                             customClass: {
                                 popup: "my-popup popup-red",
                                 htmlContainer: "!p-0 !m-0"
@@ -595,28 +599,28 @@ mysqli_stmt_close($stmt);
 
                     Swal.fire({
                         html: `
-                        <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
-                            <div class="flex flex-col lg:flex-row items-center justify-center gap-x-5 p-5">
-                                <i class="fa-solid fa-circle-xmark text-[#D02027] text-6xl"></i>
+        <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-x-5 p-5">
+                <i class="fa-solid fa-circle-xmark text-[#D02027] text-6xl"></i>
 
-                                <div class="flex flex-col justify-center items-center lg:items-start">
-                                    <h2 class="text-2xl font-bold text-[#D02027] uppercase">
-                                        Registration Failed!
-                                    </h2>
+                <div class="flex flex-col justify-center items-center lg:items-start">
+                    <h2 class="text-2xl font-bold text-[#D02027] uppercase">
+                        Registration Failed!
+                    </h2>
 
-                                    <p class="text-sm text-gray-500 text-center lg:text-left">
-                                        Something went wrong!
-                                    </p>
-                                </div>
-                            </div>
+                    <p class="text-sm text-gray-500 text-center lg:text-left">
+                        Something went wrong!
+                    </p>
+                </div>
+            </div>
 
-                            <button
-                                id="retryBtn"
-                                class="w-full h-12 bg-[#D02027] text-white rounded-xl font-bold">
-                                Try Again
-                            </button>
-                        </div>
-                    `,
+            <button
+                id="retryBtn"
+                class="w-full h-12 bg-[#D02027] text-white rounded-xl font-bold">
+                Try Again
+            </button>
+        </div>
+        `,
                         customClass: {
                             popup: "my-popup popup-red",
                             htmlContainer: "!p-0 !m-0"

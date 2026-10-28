@@ -14,7 +14,7 @@
  */
 function getVisibleSchedules($conn, $userId, $designationId, $baseWhere = '', $tailSql = 'ORDER BY event_date ASC, start_time ASC') {
 
-    $selectCols = "SELECT schedule_id, title, description, schedule_type, audience, event_date, start_time, end_time FROM schedules";
+    $selectCols = "SELECT schedule_id, title, description, schedule_type, meeting_link, location, certificate_template_id, issue_certificate, audience, event_date, start_time, end_time FROM schedules";
 
     // Super Admin — no filtering at all
     if ($designationId == 4) {

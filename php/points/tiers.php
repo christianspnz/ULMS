@@ -1,45 +1,20 @@
 <?php
-function getTierForPoints(int $points): array
+function getAllTiers(): array
 {
     // Must be sorted ascending by 'min'
-    $tiers = [
-        [
-            'name' => 'Novice',
-            'min' => 0,
-            'color' => '#94a3b8',
-            'icon' => 'fa-seedling'
-        ],
-        [
-            'name' => 'Rookie',
-            'min' => 300,
-            'color' => '#60a5fa',
-            'icon' => 'fa-shield-halved'
-        ],
-        [
-            'name' => 'Veteran',
-            'min' => 600,
-            'color' => '#34d399',
-            'icon' => 'fa-medal'
-        ],
-        [
-            'name' => 'Expert',
-            'min' => 900,
-            'color' => '#a78bfa',
-            'icon' => 'fa-chess-knight'
-        ],
-        [
-            'name' => 'Master',
-            'min' => 1500,
-            'color' => '#fbbf24',
-            'icon' => 'fa-crown'
-        ],
-        [
-            'name' => 'Legend',
-            'min' => 3000,
-            'color' => '#f87171',
-            'icon' => 'fa-fire'
-        ],
+    return [
+        ['name' => 'Novice',  'min' => 0,    'color' => '#94a3b8', 'icon' => 'fa-seedling'],
+        ['name' => 'Rookie',  'min' => 300,  'color' => '#60a5fa', 'icon' => 'fa-shield-halved'],
+        ['name' => 'Veteran', 'min' => 600,  'color' => '#34d399', 'icon' => 'fa-medal'],
+        ['name' => 'Expert',  'min' => 900,  'color' => '#a78bfa', 'icon' => 'fa-chess-knight'],
+        ['name' => 'Master',  'min' => 1500, 'color' => '#fbbf24', 'icon' => 'fa-crown'],
+        ['name' => 'Legend',  'min' => 3000, 'color' => '#f87171', 'icon' => 'fa-fire'],
     ];
+}
+
+function getTierForPoints(int $points): array
+{
+    $tiers = getAllTiers();
 
     $idx = 0;
     foreach ($tiers as $i => $t) {

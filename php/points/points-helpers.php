@@ -1,6 +1,7 @@
 <?php
 
-function awardPoints($conn, $userId, $points, $source, $referenceId = null) {
+function awardPoints($conn, $userId, $points, $source, $referenceId = null)
+{
 
     $stmt = mysqli_prepare(
         $conn,
@@ -31,7 +32,8 @@ function awardPoints($conn, $userId, $points, $source, $referenceId = null) {
     updateLeaderboardRankHistory($conn);
 }
 
-function updateLeaderboardRankHistory($conn) {
+function updateLeaderboardRankHistory($conn)
+{
 
     // -----------------------------------------
     // TODAY'S LIVE LEADERBOARD
@@ -65,7 +67,8 @@ function updateLeaderboardRankHistory($conn) {
     );
 }
 
-function getLiveLeaderboard($conn, $dateCondition = "") {
+function getLiveLeaderboard($conn, $dateCondition = "")
+{
 
     $sql = "SELECT
                 u.user_id,
@@ -113,7 +116,8 @@ function getLiveLeaderboard($conn, $dateCondition = "") {
     return $leaderboard;
 }
 
-function updateRankHistory($conn, $period, $leaderboard) {
+function updateRankHistory($conn, $period, $leaderboard)
+{
 
     foreach ($leaderboard as $entry) {
 
@@ -137,7 +141,7 @@ function updateRankHistory($conn, $period, $leaderboard) {
         if (!$stmt) {
             throw new Exception(
                 "Failed to prepare rank history query: " .
-                mysqli_error($conn)
+                    mysqli_error($conn)
             );
         }
 
@@ -220,7 +224,7 @@ function saveRankHistory(
     if (!$stmt) {
         throw new Exception(
             "Failed to prepare rank history insert: " .
-            mysqli_error($conn)
+                mysqli_error($conn)
         );
     }
 
@@ -237,7 +241,7 @@ function saveRankHistory(
     if (!mysqli_stmt_execute($stmt)) {
         throw new Exception(
             "Failed to save rank history: " .
-            mysqli_stmt_error($stmt)
+                mysqli_stmt_error($stmt)
         );
     }
 
@@ -246,7 +250,8 @@ function saveRankHistory(
 
 // Ensures a question is assigned for today (or a given date), picking a
 // random active question if none has been assigned yet.
-function getOrAssignDailyQuestion($conn, $date) {
+function getOrAssignDailyQuestion($conn, $date)
+{
 
     $checkStmt = mysqli_prepare($conn, "SELECT question_id FROM daily_bonus_question WHERE question_date = ?");
     mysqli_stmt_bind_param($checkStmt, "s", $date);
@@ -272,5 +277,54 @@ function getOrAssignDailyQuestion($conn, $date) {
     mysqli_stmt_execute($insertStmt);
 
     return $picked['question_id'];
+}
 
+define('COURSE_COMPLETION_POINTS', 50);
+
+// Awards course completion points once per learner per course. Returns the points given (0 if already awarded).
+function awardCourseCompletionPoints($conn, $userId, $courseId)
+{
+
+    $stmt = mysqli_prepare(
+        $conn,
+        "SELECT 1 FROM points_ledger WHERE user_id = ? AND source = 'Course Completion' AND reference_id = ? LIMIT 1"
+    );
+    mysqli_stmt_bind_param($stmt, "ii", $userId, $courseId);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $alreadyAwarded = $result && $result->num_rows > 0;
+    mysqli_stmt_close($stmt);
+
+    if ($alreadyAwarded) {
+        return 0;
+    }
+
+    awardPoints($conn, $userId, COURSE_COMPLETION_POINTS, 'Course Completion', $courseId);
+
+    return COURSE_COMPLETION_POINTS;
+}
+
+define('ATTENDANCE_POINTS', 50); // placeholder: set whatever you like
+
+// Awards attendance points once per learner per schedule. Returns the points given (0 if already awarded).
+function awardAttendancePoints($conn, $userId, $scheduleId)
+{
+
+    $stmt = mysqli_prepare(
+        $conn,
+        "SELECT 1 FROM points_ledger WHERE user_id = ? AND source = 'Schedule Attendance' AND reference_id = ? LIMIT 1"
+    );
+    mysqli_stmt_bind_param($stmt, "ii", $userId, $scheduleId);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $alreadyAwarded = $result && $result->num_rows > 0;
+    mysqli_stmt_close($stmt);
+
+    if ($alreadyAwarded) {
+        return 0;
+    }
+
+    awardPoints($conn, $userId, ATTENDANCE_POINTS, 'Schedule Attendance', $scheduleId);
+
+    return ATTENDANCE_POINTS;
 }

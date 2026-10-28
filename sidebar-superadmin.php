@@ -7,73 +7,104 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 include "../php/login/user_info.php";
 
 include "hamburger-btn.php";
+
+// Define DRY classes for navigation states
+$activeClass   = 'bg-[#234CA1] text-white';
+$inactiveClass = 'text-[#234CA1] hover:bg-[#EEF3FF] hover:text-[#234CA1] transition-colors duration-100';
+
+// Helper function to check active state cleanly
+function isActive(array|string $pages, string $current): bool
+{
+    if (is_array($pages)) {
+        return in_array($current, $pages, true);
+    }
+    return $current === $pages;
+}
 ?>
 
-<aside id="sidebar" class="sidebar hidden lg:flex fixed lg:top-0 lg:left-0 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 lg:translate-y-0 lg:translate-x-0 z-40 lg:m-5">
-    <div class="flex flex-wrap w-full justify-center items-center gap-x-1 gap-y-2 bg-">
+<aside id="sidebar" class="sidebar hidden lg:flex fixed lg:top-0 lg:left-0 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 lg:translate-y-0 lg:translate-x-0 z-40 lg:m-5 overflow-hidden">
+    <div class="flex flex-wrap w-full justify-center items-center gap-x-1 gap-y-2 shrink-0">
         <img src="../assets/ulh-logo.png" alt="UAAGI LMS Logo" class="w-14 lg:w-10">
         <img src="../assets/Logo.png" alt="UAAGI LMS Logo" class="w-40 lg:w-32">
     </div>
-    <nav class="sidebar-nav">
-        <a href="courses.php" class="sidebar-text 
-            <?= $currentPage === 'courses.php'
-                ? 'bg-[#234CA1] text-white'
-                : 'text-[#234CA1] hover:bg-[#234CA1]/50 hover:text-white transition-colors duration-100'
-            ?> ">
-            <i data-lucide="layers" class="w-5 h-5"></i>
+    <nav class="sidebar-nav no-scrollbar">
+        <span class="sidebar-section-label">Learning Management</span>
+        <!-- Courses -->
+        <a href="courses.php" class="sidebar-text <?= isActive('courses.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="layers" class="sidebar-icon"></i>
             Courses
         </a>
-        <a href="new-course.php" class="sidebar-text 
-            <?= ($currentPage === 'add-course-step1.php') || ($currentPage === 'add-course-step2.php') || ($currentPage === 'add-course-step3.php') || ($currentPage === 'add-course-step4.php')
-                ? 'bg-[#234CA1] text-white'
-                : 'text-[#234CA1] hover:bg-[#234CA1]/50 hover:text-white transition-colors duration-100'
-            ?> ">
-            <i data-lucide="layers-plus" class="w-5 h-5"></i>
+
+        <!-- Add Courses (Multiple steps handled cleanly) -->
+        <a href="new-course.php" class="sidebar-text <?= isActive(['add-course-step1.php', 'add-course-step2.php', 'add-course-step3.php', 'add-course-step4.php'], $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="layers-plus" class="sidebar-icon"></i>
             Add Courses
         </a>
-        <a href="schedule.php" class="sidebar-text 
-            <?= $currentPage === 'schedule.php'
-                ? 'bg-[#234CA1] text-white'
-                : 'text-[#234CA1] hover:bg-[#234CA1]/50 hover:text-white transition-colors duration-100'
-            ?> ">
-            <i data-lucide="calendar-plus" class="w-5 h-5"></i>
+
+        <!-- Schedules -->
+        <a href="schedule.php" class="sidebar-text <?= isActive('schedule.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="calendar-plus" class="sidebar-icon"></i>
             Schedules
         </a>
-        <a href="reports.php" class="sidebar-text 
-            <?= $currentPage === 'reports.php'
-                ? 'bg-[#234CA1] text-white'
-                : 'text-[#234CA1] hover:bg-[#234CA1]/50 hover:text-white transition-colors duration-100'
-            ?> ">
-            <i data-lucide="clipboard-pen" class="w-5 h-5"></i>
-            Reports
-        </a>
-        <a href="users.php" class="sidebar-text 
-            <?= $currentPage === 'users.php'
-                ? 'bg-[#234CA1] text-white'
-                : 'text-[#234CA1] hover:bg-[#234CA1]/50 hover:text-white transition-colors duration-100'
-            ?> ">
-            <i data-lucide="square-user" class="w-5 h-5"></i>
+
+        <div class="sidebar-divider"></div>
+
+        <span class="sidebar-section-label">Administration</span>
+        <!-- Users -->
+        <a href="users.php" class="sidebar-text <?= isActive(['users.php'], $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="square-user" class="sidebar-icon"></i>
             Users
             <span id="sidebarPendingBadge" class="hidden users-badge">0</span>
         </a>
-        <a href="feedback.php" class="sidebar-text 
-            <?= $currentPage === 'feedback.php'
-                ? 'bg-[#234CA1] text-white'
-                : 'text-[#234CA1] hover:bg-[#234CA1]/50 hover:text-white transition-colors duration-100'
-            ?> ">
-            <i data-lucide="message-square-quote" class="w-5 h-5"></i>
+
+        <div class="sidebar-divider"></div>
+
+        <span class="sidebar-section-label">Analytics & Performance</span>
+        <!-- Reports -->
+        <a href="reports.php" class="sidebar-text <?= isActive(['reports.php', 'learner-profile.php'], $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="clipboard-pen" class="sidebar-icon"></i>
+            Reports
+        </a>
+
+        <!-- Leaderboard -->
+        <a href="leaderboard.php" class="sidebar-text <?= isActive('leaderboard.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="podium" class="sidebar-icon"></i>
+            Leaderboard
+        </a>
+
+        <!-- Certificates -->
+        <a href="certificate-templates.php" class="sidebar-text <?= isActive('certificate-templates.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="award" class="sidebar-icon"></i>
+            Certificates
+        </a>
+
+        <a href="issued-certificates.php" class="sidebar-text <?= isActive('issued-certificates.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="award" class="sidebar-icon"></i>
+            Issued Certificates
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <span class="sidebar-section-label">Engagement & Feedback</span>
+        <!-- Feedback -->
+        <a href="feedback.php" class="sidebar-text <?= isActive('feedback.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="message-square-quote" class="sidebar-icon"></i>
             Feedback
-            <span id="sidebarPendingBadge" class="hidden users-badge">0</span>
         </a>
-        <a href="bonus-questions.php" class="sidebar-text 
-            <?= $currentPage === 'bonus-questions.php'
-                ? 'bg-[#234CA1] text-white'
-                : 'text-[#234CA1] hover:bg-[#234CA1]/50 hover:text-white transition-colors duration-100'
-            ?> ">
-            <i data-lucide="message-circle-question-mark" class="w-5 h-5"></i>
+
+        <!-- Course Feedback -->
+        <a href="course-feedback.php" class="sidebar-text <?= isActive('course-feedback.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="message-square-text" class="sidebar-icon"></i>
+            Course Feedback
+        </a>
+
+        <!-- Bonus Questions -->
+        <a href="bonus-questions.php" class="sidebar-text <?= isActive('bonus-questions.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="message-circle-question-mark" class="sidebar-icon"></i>
             Bonus Questions
-            <span id="sidebarPendingBadge" class="hidden users-badge">0</span>
         </a>
+
+
     </nav>
     <div class="logout-container">
         <div class="logout-row group">
@@ -91,19 +122,11 @@ include "hamburger-btn.php";
                 <span class="user-info-subname">
                     <?= htmlspecialchars($user["designation_name"]); ?>
                 </span>
-
-                <!-- <span class="user-info-subname" title="<?= htmlspecialchars($user["brands"]); ?>">
-                    <?= htmlspecialchars($brandText); ?>
-                </span>
-
-                <span class="user-info-subname">
-                    <?= htmlspecialchars($user["dealership_name"]); ?>
-                </span> -->
             </div>
         </div>
         <a href="#" id="logoutBtn" class="logout-btn">
             <span class="logout-icon">
-                <i data-lucide="log-out" class="w-5 h-5"></i>
+                <i data-lucide="log-out" class="sidebar-icon"></i>
                 Logout
             </span>
         </a>
@@ -168,16 +191,13 @@ include "hamburger-btn.php";
     });
 
     async function updatePendingBadge() {
-
         try {
-
             const res = await fetch("../php/users/get-pending-counts.php");
             const data = await res.json();
 
             if (data.status !== "success") return;
 
             const badge = document.getElementById("sidebarPendingBadge");
-
             if (!badge) return;
 
             if (data.count > 0) {
@@ -186,13 +206,11 @@ include "hamburger-btn.php";
             } else {
                 badge.classList.add("hidden");
             }
-
         } catch (err) {
             console.error(err);
         }
-
     }
 
     updatePendingBadge();
-    setInterval(updatePendingBadge, 45000); // poll every 45 seconds
+    setInterval(updatePendingBadge, 45000);
 </script>

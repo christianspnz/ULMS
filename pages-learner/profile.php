@@ -21,7 +21,7 @@ $sidebarFile = match ($designationId) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
     <link rel="icon" type="image/png" href="../assets/ulh-logo.png">
-    <title>UEH - My Profile</title>
+    <title>UTH - Profile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
@@ -47,11 +47,11 @@ $sidebarFile = match ($designationId) {
         </div>
 
         <!-- MAIN GRID -->
-        <div class="grid grid-cols-1 xl:grid-cols-[0.8fr_1.2fr] gap-4 items-start">
-            <!-- LEFT : PROFILE SUMMARY -->
-            <div class="space-y-4">
+        <div class="grid grid-cols-1 gap-4 items-start">
+            <!--PROFILE SUMMARY -->
+            <div class="flex flex-col lg:flex-row w-full items-center justify-center gap-4">
                 <!-- PROFILE CARD -->
-                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                <div class="bg-white w-full lg:w-[45%] rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                     <!-- BLUE HEADER -->
                     <div class="h-32 bg-gradient-to-r from-[#234CA1] to-[#3563C4] relative">
                         <div class="absolute inset-0 opacity-10">
@@ -61,10 +61,10 @@ $sidebarFile = match ($designationId) {
                     </div>
 
                     <!-- PROFILE CONTENT -->
-                    <div class="px-5 pb-5">
+                    <div class="px-5 pb-10">
                         <!-- AVATAR -->
-                        <div class="relative w-32 h-32 mx-auto -mt-16">
-                            <div class="w-32 h-32 rounded-full bg-white p-1.5 shadow-lg">
+                        <div class="relative w-40 h-40 mx-auto -mt-20">
+                            <div class="w-40 h-40 rounded-full bg-white p-1.5 shadow-lg">
                                 <div
                                     id="profileAvatar"
                                     class="w-full h-full rounded-full overflow-hidden bg-[#234CA1] text-white flex items-center justify-center text-3xl font-bold">
@@ -99,68 +99,66 @@ $sidebarFile = match ($designationId) {
                                 <span>—</span>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <!-- PROFILE DETAILS -->
+                <div class="w-full lg:w-[55%] flex justify-center flex-col bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+                    <div class="flex items-center justify-between mb-1">
+                        <div>
+                            <h3 class="font-bold text-gray-800 text-sm">Profile Details</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">Account information</p>
+                        </div>
+                        <i data-lucide="id-card" class=" text-gray-400 text-xs w-6 h-6"></i>
+                    </div>
 
-                        <!-- PROFILE DETAILS -->
-                        <div class="mt-5 pt-4 border-t border-gray-100">
-                            <div class="flex items-center justify-between mb-1">
-                                <div>
-                                    <h3 class="font-bold text-gray-800 text-sm">Profile Details</h3>
-                                    <p class="text-xs text-gray-400 mt-0.5">Account information</p>
-                                </div>
-                                <i data-lucide="id-card" class=" text-gray-400 text-xs w-6 h-6"></i>
+                    <div class="space-y-4">
+                        <!-- BRAND -->
+                        <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
+                            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                <i data-lucide="car-front" class=" text-[#234CA1] text-xs w-4 h-4"></i>
                             </div>
+                            <div class="min-w-0">
+                                <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Brand</p>
+                                <p id="profileBrands" class="text-sm text-gray-700 font-medium truncate">—</p>
+                            </div>
+                        </div>
 
-                            <div class="space-y-4">
-                                <!-- BRAND -->
-                                <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
-                                    <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                                        <i data-lucide="car-front" class=" text-[#234CA1] text-xs w-4 h-4"></i>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Brand</p>
-                                        <p id="profileBrands" class="text-sm text-gray-700 font-medium truncate">—</p>
-                                    </div>
-                                </div>
+                        <!-- DEALERSHIP -->
+                        <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
+                            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                <i data-lucide="building-2" class=" text-[#234CA1] text-xs w-4 h-4"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Dealership</p>
+                                <p id="profileDealership" class="text-sm text-gray-700 font-medium truncate">—</p>
+                            </div>
+                        </div>
 
-                                <!-- DEALERSHIP -->
-                                <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
-                                    <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                                        <i data-lucide="building-2" class=" text-[#234CA1] text-xs w-4 h-4"></i>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Dealership</p>
-                                        <p id="profileDealership" class="text-sm text-gray-700 font-medium truncate">—</p>
-                                    </div>
-                                </div>
+                        <!-- BIRTHDATE -->
+                        <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
+                            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                <i data-lucide="cake" class=" text-[#234CA1] text-xs w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Birthdate</p>
+                                <p id="profileBirthdate" class="text-sm text-gray-700 font-medium">—</p>
+                            </div>
+                        </div>
 
-                                <!-- BIRTHDATE -->
-                                <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
-                                    <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                                        <i data-lucide="cake" class=" text-[#234CA1] text-xs w-4 h-4"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Birthdate</p>
-                                        <p id="profileBirthdate" class="text-sm text-gray-700 font-medium">—</p>
-                                    </div>
-                                </div>
-
-                                <!-- DATE HIRED -->
-                                <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
-                                    <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                                        <i data-lucide="calendar" class=" text-[#234CA1] text-xs w-4 h-4"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Date Hired</p>
-                                        <p id="profileHireDate" class="text-sm text-gray-700 font-medium">—</p>
-                                    </div>
-                                </div>
+                        <!-- DATE HIRED -->
+                        <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
+                            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                <i data-lucide="calendar" class=" text-[#234CA1] text-xs w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Date Hired</p>
+                                <p id="profileHireDate" class="text-sm text-gray-700 font-medium">—</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- RIGHT : SETTINGS -->
+            <!--SETTINGS -->
             <div class="space-y-4">
                 <!-- PERSONAL INFORMATION -->
                 <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
@@ -196,29 +194,29 @@ $sidebarFile = match ($designationId) {
                             </div>
                         </div>
 
-                        <!-- CONTACT -->
-                        <div>
-                            <label class="text-xs font-bold text-gray-600 uppercase tracking-wide block mb-2">Contact Information</label>
-                            <div>
+                        <label class="text-xs font-bold text-gray-600 uppercase tracking-wide block mb-2">Contact Information</label>
+                        <div class="flex flex-col lg:flex-row justify-between gap-3">
+                            <!-- CONTACT -->
+                            <div class="w-full">
                                 <label class="text-[11px] text-gray-400 mb-1 block">Contact Number</label>
                                 <div class="relative">
                                     <i data-lucide="phone" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm w-4 h-4"></i>
                                     <input id="profile_contact" type="text" maxlength="11" class="text-inputs w-full pl-10">
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- EMAIL -->
-                        <div>
-                            <label class="text-xs font-bold text-gray-600 uppercase tracking-wide block mb-2">Account Email</label>
-                            <div class="relative">
-                                <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm w-4 h-4"></i>
-                                <input id="profile_emailReadonly" type="email" disabled class="text-inputs w-full pl-10 bg-gray-50 text-gray-400 cursor-not-allowed">
+                            <!-- EMAIL -->
+                            <div class="w-full">
+                                <label class="text-[11px] text-gray-400 mb-1 block">Account Email</label>
+                                <div class="relative">
+                                    <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm w-4 h-4"></i>
+                                    <input id="profile_emailReadonly" type="email" disabled class="text-inputs w-full pl-10 bg-gray-50 text-gray-400 cursor-not-allowed">
+                                </div>
+                                <p class="flex text-[11px] text-gray-400 mt-2">
+                                    <i data-lucide="lock" class="mr-1 w-4 h-4"></i>
+                                    Email address cannot be changed.
+                                </p>
                             </div>
-                            <p class="flex text-[11px] text-gray-400 mt-2">
-                                <i data-lucide="lock" class="mr-1 w-4 h-4"></i>
-                                Email address cannot be changed.
-                            </p>
                         </div>
 
                         <!-- SAVE -->
@@ -234,36 +232,38 @@ $sidebarFile = match ($designationId) {
                     </div>
                 </div>
 
-                <!-- ACCOUNT STATUS -->
-                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
-                    <div class="flex items-center gap-4">
-                        <div class="w-11 h-11 rounded-xl bg-green-50 flex items-center justify-center">
-                            <i data-lucide="shield-check" class=" text-green-600 text-xs w-6 h-6"></i>
+                <div class="flex flex-col lg:flex-row gap-3">
+                    <!-- ACCOUNT STATUS -->
+                    <div class="w-full bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-11 h-11 rounded-xl bg-green-50 flex items-center justify-center">
+                                <i data-lucide="shield-check" class=" text-green-600 text-xs w-6 h-6"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-eurostile-bold text-gray-800">Account Security</h3>
+                                <p class="text-xs text-gray-400 mt-0.5">Your account is protected</p>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-full bg-green-50 text-green-600 text-[11px] font-bold">Active</span>
                         </div>
-                        <div class="flex-1">
-                            <h3 class="font-eurostile-bold text-gray-800">Account Security</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">Your account is protected</p>
-                        </div>
-                        <span class="px-2.5 py-1 rounded-full bg-green-50 text-green-600 text-[11px] font-bold">Active</span>
                     </div>
+    
+                    <!-- CHANGE PASSWORD TRIGGER -->
+                    <button
+                        type="button"
+                        id="openChangePasswordBtn"
+                        class="w-full bg-white rounded-2xl border border-gray-200 shadow-sm p-4 flex items-center justify-between hover:border-[#234CA1]/30 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-4">
+                            <div class="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center">
+                                <i data-lucide="lock" class="text-[#D02027] w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h2 class="font-eurostile-bold text-gray-800">Change Password</h2>
+                                <p class="text-xs text-gray-400 mt-1 w-40 md:w-full">Keep your account secure with a strong password.</p>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="text-gray-300 w-5 h-5 shrink-0"></i>
+                    </button>
                 </div>
-
-                <!-- CHANGE PASSWORD TRIGGER -->
-                <button
-                    type="button"
-                    id="openChangePasswordBtn"
-                    class="w-full bg-white rounded-2xl border border-gray-200 shadow-sm p-4 flex items-center justify-between hover:border-[#234CA1]/30 hover:shadow-md transition text-left">
-                    <div class="flex items-center gap-4">
-                        <div class="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center">
-                            <i data-lucide="lock" class="text-[#D02027] w-4 h-4"></i>
-                        </div>
-                        <div>
-                            <h2 class="font-eurostile-bold text-gray-800">Change Password</h2>
-                            <p class="text-xs text-gray-400 mt-1">Keep your account secure with a strong password.</p>
-                        </div>
-                    </div>
-                    <i data-lucide="chevron-right" class="text-gray-300 w-5 h-5 shrink-0"></i>
-                </button>
             </div>
             <!-- CHANGE PASSWORD MODAL -->
             <div id="changePasswordModalOverlay" class="hidden fixed inset-0 bg-black/50 z-50 items-center justify-center p-4">

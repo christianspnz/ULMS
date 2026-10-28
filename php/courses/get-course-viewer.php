@@ -98,9 +98,47 @@ try {
         return $result ? ((int) $result->fetch_assoc()['cnt'] > 0) : false;
     }
 
-    $preTestAttempted = assessmentAttempted($conn, $courseId, $userId, 'Pre-Test');
+        $preTestAttempted = assessmentAttempted($conn, $courseId, $userId, 'Pre-Test');
     $postTestAttempted = assessmentAttempted($conn, $courseId, $userId, 'Post-Test');
     $allModulesCompleted = count($modules) > 0 && !in_array(false, array_column($modules, 'completed'), true);
+
+    // ---------- COMPLETION STATE ----------
+
+    $courseCompleted = ($enrollment['status'] ?? '') === 'Completed';
+    $completionPoints = 0;
+
+    if ($courseCompleted) {
+
+        $ptsStmt = mysqli_prepare(
+            $conn,
+            "SELECT COALESCE(SUM(points), 0) AS pts
+             FROM points_ledger
+             WHERE user_id = ? AND source = 'Course Completion' AND reference_id = ?"
+        );
+
+        if ($ptsStmt) {
+            mysqli_stmt_bind_param($ptsStmt, "ii", $userId, $courseId);
+            mysqli_stmt_execute($ptsStmt);
+            $ptsResult = mysqli_stmt_get_result($ptsStmt);
+            $completionPoints = $ptsResult ? (int) $ptsResult->fetch_assoc()['pts'] : 0;
+            mysqli_stmt_close($ptsStmt);
+        }
+    }
+
+    // ---------- HAS THE LEARNER RATED THIS COURSE? ----------
+
+    $hasFeedback = false;
+    $fbStmt = mysqli_prepare($conn, "SELECT 1 FROM course_feedback WHERE user_id = ? AND course_id = ? LIMIT 1");
+
+    if ($fbStmt) { // false if the feedback table doesn't exist yet; the page still loads
+        mysqli_stmt_bind_param($fbStmt, "ii", $userId, $courseId);
+        mysqli_stmt_execute($fbStmt);
+        $fbResult = mysqli_stmt_get_result($fbStmt);
+        $hasFeedback = $fbResult && $fbResult->num_rows > 0;
+        mysqli_stmt_close($fbStmt);
+    }
+
+    if (ob_get_length()) ob_clean(); // drop any stray output so the JSON stays valid
 
     echo json_encode([
         "status" => "success",
@@ -109,9 +147,14 @@ try {
         "enrollment" => $enrollment,
         "pre_test_attempted" => $preTestAttempted,
         "post_test_attempted" => $postTestAttempted,
-        "all_modules_completed" => $allModulesCompleted
+        "all_modules_completed" => $allModulesCompleted,
+        "course_completed" => $courseCompleted,
+        "completion_points" => $completionPoints,
+        "has_feedback" => $hasFeedback
     ]);
-} catch (Exception $e) {
+} catch (Throwable $e) {
+
+    if (ob_get_length()) ob_clean();
 
     echo json_encode([
         "status" => "error",

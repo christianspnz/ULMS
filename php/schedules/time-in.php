@@ -36,7 +36,10 @@ try {
         throw new Exception("Time In is not available yet. It opens 5 minutes before the scheduled start time.");
     }
 
-    // Check if they already have a record (i.e. this is a re-Time-In after an accidental Time Out)
+    if ($now >= $eventEnd) {
+        throw new Exception("This event has already ended, so Time In is closed.");
+    }
+
     $checkStmt = mysqli_prepare(
         $conn,
         "SELECT time_in, time_out FROM schedule_attendance WHERE schedule_id = ? AND user_id = ?"
@@ -46,14 +49,14 @@ try {
     $checkResult = mysqli_stmt_get_result($checkStmt);
     $existing = $checkResult ? $checkResult->fetch_assoc() : null;
 
+    // Already timed in and not timed out: don't overwrite the original time_in
+    if ($existing && $existing['time_in'] && !$existing['time_out']) {
+        throw new Exception("You have already timed in.");
+    }
+
     if ($existing && $existing['time_in'] && $existing['time_out']) {
 
-        // Re-Time-In case — only allowed while the event hasn't ended yet
-        if ($now >= $eventEnd) {
-            throw new Exception("This event has already ended — you can no longer time back in.");
-        }
-
-        // Clear the previous time_out, keep the original time_in untouched
+        // Re-Time-In after an accidental Time Out (the event is still running)
         $stmt = mysqli_prepare(
             $conn,
             "UPDATE schedule_attendance
@@ -61,10 +64,9 @@ try {
              WHERE schedule_id = ? AND user_id = ?"
         );
         mysqli_stmt_bind_param($stmt, "ii", $scheduleId, $userId);
-
     } else {
 
-        // First-time Time In
+        // First-time Time In (also covers "Not Attending" learners who changed their mind)
         $stmt = mysqli_prepare(
             $conn,
             "INSERT INTO schedule_attendance (schedule_id, user_id, time_in, attendance_status)
@@ -72,19 +74,14 @@ try {
              ON DUPLICATE KEY UPDATE time_in = NOW(), attendance_status = 'Present'"
         );
         mysqli_stmt_bind_param($stmt, "ii", $scheduleId, $userId);
-
     }
 
-    $success = mysqli_stmt_execute($stmt);
-
-    if (!$success) {
+    if (!mysqli_stmt_execute($stmt)) {
         throw new Exception("Failed to record time in.");
     }
 
     echo json_encode(["status" => "success", "message" => "Timed in successfully.", "time" => date("h:i A")]);
-
 } catch (Exception $e) {
 
     echo json_encode(["status" => "error", "message" => $e->getMessage()]);
-
 }

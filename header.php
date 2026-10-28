@@ -4,13 +4,14 @@
 
         <a href="index.php" class="flex items-center">
             <img data-aos="fade-right" data-aos-delay="300" data-aos-easing="ease-in-sine" src="./assets/ulh-logo.png" alt="UAAGI LMS Logo" id="navLogoIcon" class="w-12 mr-1 transition-all duration-500">
-            <img data-aos="fade-right" data-aos-delay="150" data-aos-easing="ease-in-sine" src="./assets/Logo.png" alt="UAAGI LMS Logo" id="navLogoText" class="w-32 flex transition-all duration-500">
+            <img data-aos="fade-right" data-aos-delay="150" data-aos-easing="ease-in-sine" src="./assets/Logo.png" alt="UAAGI LMS Logo" id="navLogoText" class="navLogoText w-32 flex transition-all duration-500">
         </a>
 
         <div class="hidden lg:flex w-auto items-center gap-x-8">
             <a href="#feedback" class="nav-link text-[#234CA1] font-eurostile-bold text-base hover:text-[#D02027] transition-colors relative pb-1" data-section="feedback">Feedback</a>
             <a href="#howItWorks" class="nav-link text-[#234CA1] font-eurostile-bold text-base hover:text-[#D02027] transition-colors relative pb-1" data-section="howItWorks">How It Works</a>
             <a href="#whoItsFor" class="nav-link text-[#234CA1] font-eurostile-bold text-base hover:text-[#D02027] transition-colors relative pb-1" data-section="whoItsFor">Who It's For</a>
+            <a href="#leaderboard" class="nav-link text-[#234CA1] font-eurostile-bold text-base hover:text-[#D02027] transition-colors relative pb-1" data-section="leaderboard">Leaderboard</a>
             <a href="#faq" class="nav-link text-[#234CA1] font-eurostile-bold text-base hover:text-[#D02027] transition-colors relative pb-1" data-section="faq">FAQ</a>
             <a href="#contact" class="nav-link text-[#234CA1] font-eurostile-bold text-base hover:text-[#D02027] transition-colors relative pb-1" data-section="contact">Contact</a>
         </div>
@@ -24,11 +25,12 @@
 
         <!-- Buttons container - flex row on desktop, dropdown on mobile -->
         <div id="nav-buttons" class="nav-buttons gap-x-5 items-center w-full absolute justify-end top-full right-0 py-0 gap-y-5">
-            <div class="bg-[#fbfcf8] flex items-start flex-col w-full md:flex-row px-10 pb-8 lg:p-0 gap-y-5 rounded-xl border-b border-[#DEDEDE] md:border-0  gap-x-3">
+            <div class=" bg-[#fbfcf8] flex items-start flex-col w-full md:flex-row px-10 pb-8 lg:p-0 gap-y-5 rounded-3xl border-b border-l border-r border-[#DEDEDE] md:border-0  gap-x-3">
 
                 <a href="#feedback" class="nav-link-mobile md:hidden text-[#234CA1] font-eurostile-bold text-base" data-section="feedback">Feedback</a>
                 <a href="#howItWorks" class="nav-link-mobile md:hidden text-[#234CA1] font-eurostile-bold text-base" data-section="howItWorks">How It Works</a>
                 <a href="#whoItsFor" class="nav-link-mobile md:hidden text-[#234CA1] font-eurostile-bold text-base" data-section="whoItsFor">Who It's For</a>
+                <a href="#leaderboard" class="nav-link-mobile md:hidden text-[#234CA1] font-eurostile-bold text-base" data-section="leaderboard">Leaderboard</a>
                 <a href="#faq" class="nav-link-mobile md:hidden text-[#234CA1] font-eurostile-bold text-base" data-section="faq">FAQ</a>
                 <a href="#contact" class="nav-link-mobile md:hidden text-[#234CA1] font-eurostile-bold text-base" data-section="contact">Contact</a>
 
@@ -56,6 +58,7 @@
         const navbar = document.getElementById("mainNavbar");
         const navInner = document.getElementById("navInner");
         const navLogoIcon = document.getElementById("navLogoIcon");
+        const navLogoText = document.getElementById("navLogoText");
 
         let isScrolled = false;
 
@@ -73,7 +76,7 @@
             if (scrolled) {
 
                 navbar.classList.remove("w-full", "top-0");
-                navbar.classList.add("w-[92%]", "lg:w-[65%]", "max-w-4xl", "top-4");
+                navbar.classList.add("w-[92%]", "lg:w-[80%]", "max-w-4xl", "top-4");
 
                 navInner.classList.add("rounded-3xl", "border", "border-gray-200", "shadow-lg");
                 navInner.classList.remove("lg:px-20");
@@ -82,18 +85,20 @@
                 navInner.classList.add("py-4");
                 navLogoIcon.classList.remove("w-12");
                 navLogoIcon.classList.add("w-9");
+                navLogoText.classList.add("hidden");
 
             } else {
 
                 navbar.classList.add("w-full", "top-0");
-                navbar.classList.remove("w-[92%]", "lg:w-[65%]", "max-w-4xl", "top-4");
+                navbar.classList.remove("w-[92%]", "lg:w-[80%]", "max-w-4xl", "top-4");
                 navInner.classList.remove("rounded-3xl", "border", "border-gray-200", "shadow-lg");
                 navInner.classList.add("lg:px-20", "px-10");
                 navInner.classList.remove("py-4");
                 navInner.classList.add("py-8");
                 navLogoIcon.classList.add("w-12");
                 navLogoIcon.classList.remove("w-9");
-
+                navLogoText.classList.remove("hidden");
+                navContainer.classList.remove("p-8");
             }
 
             updateActiveSection();
@@ -102,7 +107,7 @@
 
         // ---------- Scrollspy ----------
 
-        const sectionIds = ["feedback", "howItWorks", "whoItsFor", "faq", "contact"];
+        const sectionIds = ["feedback", "howItWorks", "whoItsFor", "leaderboard", "faq", "contact"];
         const sections = sectionIds
             .map(id => document.getElementById(id))
             .filter(el => el !== null);

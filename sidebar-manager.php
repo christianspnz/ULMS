@@ -7,6 +7,19 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 include "../php/login/user_info.php";
 
 include "hamburger-btn.php";
+
+// Define DRY classes for navigation states
+$activeClass   = 'bg-[#234CA1] text-white';
+$inactiveClass = 'text-[#234CA1] hover:bg-[#EEF3FF] hover:text-[#234CA1] transition-colors duration-100';
+
+// Helper function to check active state cleanly (supports single strings or arrays of pages)
+function isActive(array|string $pages, string $current): bool
+{
+    if (is_array($pages)) {
+        return in_array($current, $pages, true);
+    }
+    return $current === $pages;
+}
 ?>
 <aside id="sidebar" class="sidebar hidden lg:flex fixed lg:top-0 lg:left-0 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 lg:translate-y-0 lg:translate-x-0 z-40 lg:m-5">
     <div class="flex flex-col lg:flex-row w-full justify-center items-center gap-x-1 gap-y-1">
@@ -14,36 +27,27 @@ include "hamburger-btn.php";
         <img src="../assets/Logo.png" alt="UAAGI LMS Logo" class="w-40 lg:w-32">
     </div>
     <nav class="sidebar-nav">
-        <a href="courses.php" class="sidebar-text 
-            <?= ($currentPage === 'courses.php') || ($currentPage === 'course-viewer.php') || ($currentPage === 'assessment.php')
-                ? 'bg-[#234CA1] text-white'
-                : 'text-[#234CA1] hover:bg-[#234CA1]/50 hover:text-white transition-colors duration-100'
-            ?> ">
-            <i data-lucide="layers" class="w-5 h-5"></i>
+        <!-- Courses (Handles multiple related pages cleanly) -->
+        <a href="courses.php" class="sidebar-text <?= isActive(['courses.php', 'course-viewer.php', 'assessment.php'], $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="layers" class="sidebar-icon"></i>
             Courses
         </a>
-        <a href="reports.php" class="sidebar-text 
-            <?= $currentPage === 'reports.php'
-                ? 'bg-[#234CA1] text-white'
-                : 'text-[#234CA1] hover:bg-[#234CA1]/50 hover:text-white transition-colors duration-100'
-            ?> ">
-            <i data-lucide="clipboard-pen" class="w-5 h-5"></i>
+
+        <!-- Reports -->
+        <a href="reports.php" class="sidebar-text <?= isActive('reports.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="clipboard-pen" class="sidebar-icon"></i>
             Reports
         </a>
-        <a href="calendar.php" class="sidebar-text 
-            <?= $currentPage === 'calendar.php'
-                ? 'bg-[#234CA1] text-white'
-                : 'text-[#234CA1] hover:bg-[#234CA1]/50 hover:text-white transition-colors duration-100'
-            ?> ">
-            <i data-lucide="calendar" class="w-5 h-5"></i>
+
+        <!-- Calendar -->
+        <a href="calendar.php" class="sidebar-text <?= isActive('calendar.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="calendar" class="sidebar-icon"></i>
             Calendar
         </a>
-        <a href="contacts.php" class="sidebar-text 
-            <?= $currentPage === 'contacts.php'
-                ? 'bg-[#234CA1] text-white'
-                : 'text-[#234CA1] hover:bg-[#234CA1]/50 hover:text-white transition-colors duration-100'
-            ?> ">
-            <i data-lucide="notebook-tabs" class="w-5 h-5"></i>
+
+        <!-- Contact Us -->
+        <a href="contacts.php" class="sidebar-text <?= isActive('contacts.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="notebook-tabs" class="sidebar-icon"></i>
             Contact Us
         </a>
     </nav>
@@ -66,25 +70,22 @@ include "hamburger-btn.php";
                     <?= htmlspecialchars($user["first_name"] . " " . $user["last_name"]); ?>
                 </span>
 
-                <span class="user-info-subname">
-                    <?= htmlspecialchars($user["designation_name"]); ?>
-                </span>
+                <div class="leading-none">
+                    <span class="user-info-subname">
+                        <?= htmlspecialchars($user["designation_name"]); ?>
+                    </span>
 
-                <span class="user-info-subname" title="<?= htmlspecialchars($user["brands"]); ?>">
-                    <?= htmlspecialchars($brandText); ?>
-                </span>
-
-                <span class="user-info-subname">
-                    <?= htmlspecialchars($user["dealership_name"]); ?>
-                </span>
+                    <div class="flex items-start">
+                        <span class="user-info-subname" title="<?= htmlspecialchars($user["brands"]); ?>">
+                            <?= htmlspecialchars($brandText); ?> — <?= htmlspecialchars($user["dealership_name"]); ?>
+                        </span>
+                    </div>
+                </div>
             </div>
         </a>
         <a href="#" id="logoutBtn" class="logout-btn">
             <span class="logout-icon">
-                <!-- <svg height="20" width="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 21q-.825 0-1.413-.588T3 19V5q0-.825.588-1.413T5 3h7v2H5v14h7v2H5Zm11-4l-1.375-1.45l2.55-2.55H9v-2h8.175l-2.55-2.55L16 7l5 5l-5 5Z" fill="currentColor" />
-                </svg> -->
-                <i data-lucide="log-out" class="w-5 h-5"></i>
+                <i data-lucide="log-out" class="sidebar-icon"></i>
                 Logout
             </span>
         </a>

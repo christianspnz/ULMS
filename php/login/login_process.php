@@ -55,7 +55,7 @@ $_SESSION["designation_id"] = $user["designation_id"];
 
 switch ($user["designation_id"]) {
     case 1:
-        $redirect = "./pages-learner/courses.php";
+        $redirect = "./pages-learner/dashboard.php";
         break;
     case 2:
         $redirect = "./pages-manager/courses.php";

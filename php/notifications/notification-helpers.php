@@ -46,7 +46,10 @@ function notifyNewCourse($conn, $courseId, $courseTitle)
     }
 }
 
-function notifyNewSchedule($conn, $scheduleId, $scheduleTitle, $audience)
+/**
+ * Everyone a schedule applies to (audience + brand + dealership scoping).
+ */
+function getScheduleRecipientIds($conn, $scheduleId, $audience)
 {
 
     $bStmt = mysqli_prepare($conn, "SELECT brand_id FROM schedule_brands WHERE schedule_id = ?");
@@ -75,9 +78,7 @@ function notifyNewSchedule($conn, $scheduleId, $scheduleTitle, $audience)
     $userResult = mysqli_stmt_get_result($userStmt);
     $candidateUsers = $userResult ? array_column($userResult->fetch_all(MYSQLI_ASSOC), 'user_id') : [];
 
-    $title = "New Schedule Posted";
-    $message = "\"{$scheduleTitle}\" has been added to the calendar.";
-    $link = "calendar.php?open_schedule=" . $scheduleId;
+    $recipients = [];
 
     foreach ($candidateUsers as $uid) {
 
@@ -99,14 +100,76 @@ function notifyNewSchedule($conn, $scheduleId, $scheduleTitle, $audience)
             if (!in_array($userDealershipId, $scheduleDealershipIds)) continue;
         }
 
+        $recipients[] = $uid;
+    }
+
+    return $recipients;
+}
+
+function getDeclinedUserIds($conn, $scheduleId)
+{
+
+    $stmt = mysqli_prepare(
+        $conn,
+        "SELECT user_id FROM schedule_attendance WHERE schedule_id = ? AND rsvp_status = 'Not Attending'"
+    );
+    mysqli_stmt_bind_param($stmt, "i", $scheduleId);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    return $result ? array_column($result->fetch_all(MYSQLI_ASSOC), 'user_id') : [];
+}
+
+function notifyNewSchedule($conn, $scheduleId, $scheduleTitle, $audience)
+{
+
+    $title = "New Schedule Posted";
+    $message = "\"{$scheduleTitle}\" has been added to the calendar.";
+    $link = "calendar.php?open_schedule=" . $scheduleId;
+
+    foreach (getScheduleRecipientIds($conn, $scheduleId, $audience) as $uid) {
         insertNotification($conn, $uid, 'New Schedule', $title, $message, $link);
+    }
+}
+
+/**
+ * Tell everyone the schedule applies to (except learners who already declined) that something changed.
+ */
+function notifyScheduleUpdated($conn, $scheduleId, $scheduleTitle, $audience, $changeSummary)
+{
+
+    $declined = getDeclinedUserIds($conn, $scheduleId);
+
+    $title = "Schedule Updated";
+    $message = "\"{$scheduleTitle}\" was updated: {$changeSummary}.";
+    $link = "calendar.php?open_schedule=" . $scheduleId;
+
+    foreach (getScheduleRecipientIds($conn, $scheduleId, $audience) as $uid) {
+        if (in_array($uid, $declined)) continue;
+        insertNotification($conn, $uid, 'Schedule Updated', $title, $message, $link);
+    }
+}
+
+function notifyScheduleReminder($conn, $scheduleId, $scheduleTitle, $audience, $startLabel)
+{
+
+    $declined = getDeclinedUserIds($conn, $scheduleId);
+
+    $title = "Starting Soon";
+    $message = "\"{$scheduleTitle}\" starts at {$startLabel}. Time In opens 5 minutes before the start.";
+    $link = "calendar.php?open_schedule=" . $scheduleId;
+
+    foreach (getScheduleRecipientIds($conn, $scheduleId, $audience) as $uid) {
+        if (in_array($uid, $declined)) continue;
+        insertNotification($conn, $uid, 'Schedule Reminder', $title, $message, $link);
     }
 }
 
 /**
  * Notify all Superadmins that a new user has registered and needs approval.
  */
-function notifyPendingApproval($conn, $newUserId, $firstName, $lastName) {
+function notifyPendingApproval($conn, $newUserId, $firstName, $lastName)
+{
 
     $stmt = mysqli_prepare($conn, "SELECT user_id FROM users WHERE designation_id = 4");
     mysqli_stmt_execute($stmt);
@@ -120,7 +183,6 @@ function notifyPendingApproval($conn, $newUserId, $firstName, $lastName) {
     foreach ($superadminIds as $uid) {
         insertNotification($conn, $uid, 'Pending Approval', $title, $message, $link);
     }
-
 }
 
 function insertNotification($conn, $userId, $type, $title, $message, $link)

@@ -5,8 +5,7 @@
         <button
             type="button"
             id="closeBonusBtn"
-            class="absolute top-5 right-5 w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition"
-        >
+            class="absolute top-5 right-5 w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition">
             <i class="fa-solid fa-xmark"></i>
         </button>
 
@@ -18,7 +17,6 @@
 </div>
 
 <script>
-
     const bonusOverlay = document.getElementById("bonusModalOverlay");
 
     function openBonusModal() {
@@ -183,8 +181,7 @@
             formData.append("selected_answer", answer);
 
             const res = await fetch(
-                "../php/points/submit-bonus-answer.php",
-                {
+                "../php/points/submit-bonus-answer.php", {
                     method: "POST",
                     body: formData
                 }
@@ -237,14 +234,38 @@
 
             } else if (data.attempts_remaining > 0) {
 
-                Swal.fire({
-                    icon: "error",
-                    title: "Not Quite",
-                    text: `That's not correct. You have ${data.attempts_remaining} attempt(s) left.`,
-                    confirmButtonColor: "#234CA1"
-                });
+                content.innerHTML = `
+                    <div class="text-center py-6">
+                        <i class="fa-solid fa-circle-xmark text-red-400 text-5xl mb-4"></i>
 
-                loadBonusQuestion();
+                        <h2 class="text-xl font-eurostile-bold text-[#234CA1] mb-2">
+                            Not Quite
+                        </h2>
+
+                        <p class="text-gray-500 text-sm mb-6">
+                            That's not correct. You have
+                            <span class="font-eurostile-bold text-[#D02027]">
+                                ${data.attempts_remaining}
+                            </span>
+                            attempt(s) left.
+                        </p>
+
+                        <button
+                            id="confirmBonusAttemptBtn"
+                            type="button"
+                            class="bg-[#234CA1] hover:bg-[#1B3B80] text-white
+                                font-semibold text-sm px-8 py-3 rounded-lg
+                                transition-colors duration-200"
+                        >
+                            Confirm
+                        </button>
+                    </div>
+                `;
+
+                document.getElementById("confirmBonusAttemptBtn")
+                    .addEventListener("click", () => {
+                        loadBonusQuestion();
+                    });
 
             } else {
 
@@ -284,5 +305,4 @@
 
         return div.innerHTML;
     }
-
 </script>

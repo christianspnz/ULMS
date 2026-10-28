@@ -3,6 +3,13 @@ require "../config/config.php";
 require "../php/auth-logout/auth.php";
 requireRole(4);
 
+$activeTab = $_GET['tab'] ?? 'all';
+$allowedTabs = ['all', 'pending'];
+
+if (!in_array($activeTab, $allowedTabs)) {
+    $activeTab = 'all';
+}
+
 $brandsResult = mysqli_query($conn, "SELECT brand_id, brand_name FROM brands ORDER BY brand_name ASC");
 $allBrands = $brandsResult ? $brandsResult->fetch_all(MYSQLI_ASSOC) : [];
 
@@ -24,7 +31,7 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
     <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
-    <title>UEH - Accounts</title>
+    <title>UTH - Accounts</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
@@ -48,9 +55,12 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
         </div>
 
         <!-- Tabs -->
-        <div class="flex gap-x-2 border-b border-gray-200 mt-5" id="userTabs">
-            <button type="button" class="user-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-[#234CA1] text-[#234CA1]" data-tab="all">All Users</button>
-            <button type="button" class="user-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] flex items-center gap-2" data-tab="pending">
+        <div id="userTabs" class="relative flex overflow-x-auto gap-x-2 bg-gray-100  max-w-full rounded-lg mt-5 p-1">
+            <span id="userTabSlider" class="absolute top-1 bottom-1 left-1 rounded-md bg-[#FFFFFF] shadow-sm transition-all duration-300 ease-in-out pointer-events-none"></span>
+            <button type="button" id="user-tab-all" data-tab="all" class="universal-tabs relative z-10 !bg-transparent whitespace-nowrap transition-colors duration-300 <?= $activeTab === 'all' ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>">
+                All Users
+            </button>
+            <button type="button" id="user-tab-pending" data-tab="pending" class="universal-tabs relative z-10 !bg-transparent whitespace-nowrap flex items-center gap-2 transition-colors duration-300 <?= $activeTab === 'pending' ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>">
                 Pending Approvals
                 <?php if ($pendingCount > 0): ?>
                     <span id="pendingBadge" class="bg-[#D02027] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"><?= $pendingCount ?></span>
@@ -59,7 +69,7 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
         </div>
 
         <!-- ============ ALL USERS TAB ============ -->
-        <div id="tab-all" class="user-tab-panel mt-6">
+        <div id="tab-all" class="user-tab-panel mt-6 <?= $activeTab === 'all' ? '' : 'hidden' ?>">
 
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
 
@@ -154,7 +164,7 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
             </div>
         </div>
         <!-- ============ PENDING APPROVALS TAB ============ -->
-        <div id="tab-pending" class="user-tab-panel mt-6 hidden">
+        <div id="tab-pending" class="user-tab-panel mt-6 <?= $activeTab === 'pending' ? '' : 'hidden' ?>">
 
             <div id="pendingList" class="space-y-4 overflow-x-auto max-h-96 overflow-y-auto">
                 <p class="text-gray-400 text-center py-10">Loading...</p>
@@ -167,6 +177,7 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
         lucide.createIcons();
+        let activeTabStatus = "<?= htmlspecialchars($activeTab) ?>";
         AOS.init({
             duration: 600,
             once: false // allow animations to replay, not just fire once ever
@@ -178,28 +189,69 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
             }
         });
 
-        // ---------- Tab switching ----------
 
-        document.querySelectorAll(".user-tab-btn").forEach(btn => {
+        const userTabNames = ['all', 'pending'];
+        let currentUserTab = <?= json_encode($activeTab) ?>;
 
-            btn.addEventListener("click", () => {
+        function moveUserTabSlider(tab) {
+            const container = document.getElementById('userTabs');
+            const slider = document.getElementById('userTabSlider');
+            const button = document.getElementById(`user-tab-${tab}`);
 
-                document.querySelectorAll(".user-tab-btn").forEach(b => {
-                    b.classList.remove("border-[#234CA1]", "text-[#234CA1]");
-                    b.classList.add("border-transparent", "text-gray-400");
-                });
+            if (!container || !slider || !button) return;
 
-                btn.classList.add("border-[#234CA1]", "text-[#234CA1]");
-                btn.classList.remove("border-transparent", "text-gray-400");
+            slider.style.width = `${button.offsetWidth}px`;
+            slider.style.transform = `translateX(${button.offsetLeft - 4}px)`;
+        }
 
-                document.querySelectorAll(".user-tab-panel").forEach(p => p.classList.add("hidden"));
-                document.getElementById(`tab-${btn.dataset.tab}`).classList.remove("hidden");
+        function switchUserTab(tab, updateUrl = true) {
+            if (!userTabNames.includes(tab)) return;
 
-                if (btn.dataset.tab === "pending") loadPendingUsers();
+            currentUserTab = tab;
 
+            document.querySelectorAll('#userTabs [data-tab]').forEach(button => {
+                const isActive = button.dataset.tab === tab;
+
+                button.classList.toggle('universal-tabs-active', isActive);
+                button.classList.toggle('universal-tabs-inactive', !isActive);
             });
 
+            document.querySelectorAll('.user-tab-panel').forEach(panel => {
+                panel.classList.toggle('hidden', panel.id !== `tab-${tab}`);
+            });
+
+            moveUserTabSlider(tab);
+
+            if (updateUrl) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('tab', tab);
+                history.pushState({
+                    tab
+                }, '', url);
+            }
+
+            if (tab === 'pending') {
+                loadPendingUsers();
+            }
+        }
+
+        document.querySelectorAll('#userTabs [data-tab]').forEach(button => {
+            button.addEventListener('click', () => {
+                switchUserTab(button.dataset.tab);
+            });
         });
+
+        moveUserTabSlider(currentUserTab);
+
+        window.addEventListener('resize', () => {
+            moveUserTabSlider(currentUserTab);
+        });
+
+        window.addEventListener('popstate', () => {
+            const tab = new URLSearchParams(window.location.search).get('tab');
+            switchUserTab(userTabNames.includes(tab) ? tab : 'all', false);
+        });
+
 
         // ---------- All Users ----------
 
@@ -719,23 +771,21 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
 
         loadUsers();
 
+
         const urlParams = new URLSearchParams(window.location.search);
         const requestedTab = urlParams.get('tab');
         const highlightUserId = urlParams.get('highlight_user');
 
         if (requestedTab === 'pending') {
-
-            // Programmatically click the Pending Approvals tab button to reuse existing switch logic
-            document.querySelector('.user-tab-btn[data-tab="pending"]').click();
+            switchUserTab('pending', false);
 
             if (highlightUserId) {
-
                 const waitForRow = setInterval(() => {
-
-                    const row = document.querySelector(`[data-user-id="${highlightUserId}"]`);
+                    const row = document.querySelector(
+                        `#pendingList [data-user-id="${CSS.escape(highlightUserId)}"]`
+                    );
 
                     if (row) {
-
                         clearInterval(waitForRow);
 
                         row.scrollIntoView({
@@ -743,20 +793,24 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
                             block: 'center'
                         });
 
-                        row.classList.add('ring-4', 'ring-[#234CA1]', 'ring-offset-2');
+                        row.classList.add(
+                            'ring-4',
+                            'ring-[#234CA1]',
+                            'ring-offset-2'
+                        );
 
                         setTimeout(() => {
-                            row.classList.remove('ring-4', 'ring-[#234CA1]', 'ring-offset-2');
+                            row.classList.remove(
+                                'ring-4',
+                                'ring-[#234CA1]',
+                                'ring-offset-2'
+                            );
                         }, 3000);
-
                     }
-
                 }, 200);
 
                 setTimeout(() => clearInterval(waitForRow), 5000);
-
             }
-
         }
     </script>
 </body>

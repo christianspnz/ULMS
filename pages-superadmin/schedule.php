@@ -3,6 +3,14 @@ require "../config/config.php";
 require "../php/auth-logout/auth.php";
 requireRole(4);
 
+$tplResult = mysqli_query(
+    $conn,
+    "SELECT t.template_id, t.name, COALESCE(b.brand_name, '') AS brand_name
+     FROM certificate_templates t LEFT JOIN brands b ON b.brand_id = t.brand_id
+     WHERE t.archived_at IS NULL ORDER BY t.name"
+);
+$certTemplates = $tplResult ? $tplResult->fetch_all(MYSQLI_ASSOC) : [];
+
 $brandsResult = mysqli_query($conn, "SELECT brand_id, brand_name FROM brands ORDER BY brand_name ASC");
 $allBrands = $brandsResult ? $brandsResult->fetch_all(MYSQLI_ASSOC) : [];
 
@@ -18,57 +26,79 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
     <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
-    <title>UEH - Schedule</title>
+    <title>UTH - Schedule</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <?php include '../calendar-theme.php'; ?>
+    <?php include '../schedule-alerts.php'; ?>
     <style>
-        .fc-event {
-            cursor: pointer;
-        }
-
-        .fc-daygrid-day {
+        /* Admins click an empty day to add a schedule */
+        .fc .fc-daygrid-day {
             cursor: pointer;
         }
     </style>
+    <?php include '../datepicker-theme.php'; ?>
 </head>
 
-<body class="h-auto">
+<body class="bg-slate-50 text-slate-800 antialiased h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
 
         <div class="flex justify-between items-center w-full">
-            <span class="page-breadcrumbs">
-                Schedule
-            </span>
+            <span class="page-breadcrumbs">Schedule</span>
             <?php include '../notification-bell.php'; ?>
-        </div> 
+        </div>
 
-        <!-- <div data-aos="fade-right" data-aos-delay="200" data-aos-easing="ease-in-out" class="flex justify-between items-center w-full">
-            <div>
-                <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
-                    Schedule
-                </h2>
-                <p class="font-eurostile text-gray-500 mt-1">
-                    Manage company-wide events and announcements.
-                </p>
+        <!-- HERO -->
+        <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg mt-5">
+            <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+            <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+            <div class="hero-grid absolute inset-0 pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                <div class="space-y-2 min-w-0">
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                        <i class="fa-solid fa-calendar-days"></i> Schedule Management
+                    </span>
+                    <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Training Schedule</h1>
+                    <p class="text-slate-300 text-sm max-w-xl">Plan sessions, share meeting links and track attendance. Click a date on the calendar, or use the button.</p>
+                </div>
+
+                <button type="button" id="addScheduleBtn"
+                    class="shrink-0 w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 h-12 rounded-xl bg-white text-[#234CA1] hover:bg-gray-100 font-eurostile-bold text-sm transition-colors">
+                    <i class="fa-solid fa-plus"></i> Add Schedule
+                </button>
             </div>
-        </div> -->
+        </section>
 
-        <div class="flex flex-col lg:flex-row gap-5 mt-5">
+        <!-- STATS -->
+        <div id="statCards" class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mt-5"></div>
 
-            <div class="w-full lg:w-[65%] bg-white rounded-2xl shadow-md border border-gray-200 p-3 md:p-6">
+        <!-- CALENDAR + UPCOMING -->
+        <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] gap-5 mt-5 items-start">
+
+            <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-3 sm:p-5">
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-1 pb-3 text-xs text-gray-500">
+                    <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#234CA1]"></span>Online</span>
+                    <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#7c3aed]"></span>Face-to-Face</span>
+                    <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#D02027]"></span>Live now</span>
+                    <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>Ended</span>
+                </div>
                 <div id="calendar"></div>
-            </div>
+            </section>
 
-            <div class="w-full lg:w-[35%] bg-white rounded-2xl shadow-md border border-gray-200 p-4 md:p-6 h-fit">
-                <h3 class="text-lg md:text-xl font-eurostile-bold text-[#234CA1] mb-4">Upcoming Schedules</h3>
-                <div id="upcomingSchedulesList" class="space-y-3">
+            <aside class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-4 sm:p-5 xl:sticky xl:top-5">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Upcoming Schedules</h3>
+                    <span id="upcomingCount" class="font-mono text-[11px] font-bold px-2 py-1 rounded-md bg-slate-100 text-slate-500">0</span>
+                </div>
+                <div id="upcomingSchedulesList" class="space-y-4 xl:max-h-[640px] xl:overflow-y-auto pr-1">
                     <p class="text-gray-400 text-sm">Loading...</p>
                 </div>
-            </div>
+            </aside>
 
         </div>
 
@@ -76,10 +106,10 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
 
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
-        lucide.createIcons(); 
+        lucide.createIcons();
         AOS.init({
             duration: 600,
-            once: false // allow animations to replay, not just fire once ever
+            once: false
         });
 
         window.addEventListener('pageshow', function(event) {
@@ -87,29 +117,45 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                 AOS.refreshHard();
             }
         });
+
         let editingScheduleId = null;
         const allBrands = <?= json_encode($allBrands) ?>;
+        const allCertTemplates = <?= json_encode($certTemplates) ?>;
         const allDealerships = <?= json_encode($allDealerships) ?>;
+
+        const isoToday = () => {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+        };
 
         document.addEventListener("DOMContentLoaded", function() {
 
-            const calendarEl = document.getElementById("calendar");
+            let wasMobile = calIsMobile();
 
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: window.innerWidth < 768 ? "listWeek" : "dayGridMonth",
-                headerToolbar: {
-                    left: "prev,next today",
-                    center: "title",
-                    right: window.innerWidth < 768 ? "dayGridMonth,listWeek" : "dayGridMonth,timeGridWeek"
+            const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
+                initialView: wasMobile ? "listMonth" : "dayGridMonth",
+                headerToolbar: calToolbar(wasMobile),
+                buttonText: CAL_BUTTON_TEXT,
+                firstDay: 1,
+                height: "auto",
+                dayMaxEvents: 3,
+                nowIndicator: true,
+                noEventsContent: "No schedules to display",
+                eventTimeFormat: {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    meridiem: "short"
                 },
-                height: window.innerWidth < 768 ? "auto" : 550,
-                windowResize: function(arg) {
-                    if (window.innerWidth < 768) {
-                        calendar.changeView("listWeek");
-                    } else {
-                        calendar.changeView("dayGridMonth");
-                    }
+                eventDataTransform: calEventTransform,
+
+                windowResize: function() {
+                    const nowMobile = calIsMobile();
+                    if (nowMobile === wasMobile) return; // phones fire resize when the address bar hides
+                    wasMobile = nowMobile;
+                    calendar.setOption("headerToolbar", calToolbar(nowMobile));
+                    calendar.changeView(nowMobile ? "listMonth" : "dayGridMonth");
                 },
+
                 events: async function(info, successCallback, failureCallback) {
 
                     try {
@@ -117,7 +163,38 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                         const data = await res.json();
 
                         if (data.status === "success") {
+
                             successCallback(data.events);
+
+                            const s = calComputeStats(data.events);
+
+                            calRenderStats("statCards", [{
+                                    icon: "fa-calendar-day",
+                                    label: "Today",
+                                    value: s.today,
+                                    tint: "bg-blue-50 text-[#234CA1]"
+                                },
+                                {
+                                    icon: "fa-calendar-week",
+                                    label: "This Week",
+                                    value: s.week,
+                                    tint: "bg-cyan-50 text-cyan-600"
+                                },
+                                {
+                                    icon: "fa-tower-broadcast",
+                                    label: "Live Now",
+                                    value: s.live,
+                                    tint: "bg-red-50 text-[#D02027]",
+                                    pulse: s.live > 0
+                                },
+                                {
+                                    icon: "fa-calendar",
+                                    label: "This Month",
+                                    value: s.month,
+                                    tint: "bg-emerald-50 text-emerald-600"
+                                }
+                            ]);
+
                         } else {
                             failureCallback(data.message);
                         }
@@ -126,6 +203,7 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                     }
 
                 },
+
                 dateClick: function(info) {
 
                     const clickedDate = new Date(info.dateStr + "T00:00:00");
@@ -164,6 +242,7 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                     openScheduleModal(info.dateStr);
 
                 },
+
                 eventClick: function(info) {
                     openScheduleModal(
                         info.event.startStr.split("T")[0],
@@ -171,12 +250,6 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                     );
                 }
             });
-
-            function escapeHtml(str) {
-                const div = document.createElement("div");
-                div.textContent = str ?? "";
-                return div.innerHTML;
-            }
 
             async function loadUpcomingSchedules() {
 
@@ -188,96 +261,12 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                     const data = await res.json();
 
                     if (data.status !== "success") {
-                        list.innerHTML = `<p class="text-red-500 text-sm">${data.message}</p>`;
+                        list.innerHTML = `<p class="text-red-500 text-sm">${calEscape(data.message)}</p>`;
                         return;
                     }
 
-                    if (data.schedules.length === 0) {
-                        list.innerHTML = `<p class="text-gray-400 text-sm">No upcoming schedules.</p>`;
-                        return;
-                    }
-
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-
-                    const tomorrow = new Date(today);
-                    tomorrow.setDate(tomorrow.getDate() + 1);
-
-                    // Group by date
-                    const groups = {};
-
-                    data.schedules.forEach(s => {
-
-                        const eventDate = new Date(s.event_date + "T00:00:00");
-                        let label;
-
-                        if (eventDate.getTime() === today.getTime()) {
-                            label = "TODAY";
-                        } else if (eventDate.getTime() === tomorrow.getTime()) {
-                            label = "TOMORROW";
-                        } else {
-                            label = eventDate.toLocaleDateString(undefined, {
-                                weekday: 'long',
-                                month: 'short',
-                                day: 'numeric'
-                            }).toUpperCase();
-                        }
-
-                        if (!groups[label]) groups[label] = [];
-                        groups[label].push(s);
-
-                    });
-
-                    list.innerHTML = Object.entries(groups).map(([label, items]) => `
-
-                        <div>
-                            <p class="text-xs font-eurostile-bold text-gray-400 mb-2">${label}</p>
-                            <div class="space-y-2">
-                                ${items.map(s => `
-                                    <button type="button"
-                                            class="upcoming-schedule-item w-full text-left border rounded-lg px-4 py-3 hover:bg-blue-50 transition"
-                                            data-schedule-id="${s.schedule_id}">
-                                        <p class="text-sm font-medium text-[#234CA1]">
-                                            ${escapeHtml(s.title)}
-                                            <span class="ml-1 text-xs font-bold uppercase px-2 py-0.5 rounded-full ${s.schedule_type === 'Online' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}">
-                                                ${s.schedule_type}
-                                            </span>
-                                        </p>
-                                        <p class="text-xs text-gray-400 mt-1">
-                                            ${formatTime(s.start_time)} - ${formatTime(s.end_time)}
-                                        </p>
-                                    </button>
-                                `).join("")}
-                            </div>
-                        </div>
-
-                    `).join("");
-
-                    // Clicking an upcoming item jumps the calendar to that event and opens it
-                    document.querySelectorAll(".upcoming-schedule-item").forEach(btn => {
-
-                        btn.addEventListener("click", () => {
-
-                            const scheduleId = btn.dataset.scheduleId;
-                            const calendarApi = window.calendarInstance;
-                            const event = calendarApi.getEventById(scheduleId);
-
-                            if (event) {
-                                calendarApi.gotoDate(event.start);
-                                // Small delay so the calendar finishes rendering before triggering the click
-                                setTimeout(() => {
-                                    calendarApi.trigger('eventClick', {
-                                        event,
-                                        el: null,
-                                        jsEvent: null,
-                                        view: calendarApi.view
-                                    });
-                                }, 100);
-                            }
-
-                        });
-
-                    });
+                    document.getElementById("upcomingCount").textContent = data.schedules.length;
+                    calRenderUpcoming("upcomingSchedulesList", data.schedules);
 
                 } catch (err) {
                     console.error(err);
@@ -286,20 +275,42 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
 
             }
 
-            function formatTime(timeStr) {
-                const [h, m] = timeStr.split(":");
-                const date = new Date();
-                date.setHours(h, m);
-                return date.toLocaleTimeString(undefined, {
-                    hour: 'numeric',
-                    minute: '2-digit'
-                });
-            }
-
             calendar.render();
             window.calendarInstance = calendar;
             loadUpcomingSchedules();
-            window.reloadCalendar = () => calendar.refetchEvents();
+
+            window.reloadCalendar = () => {
+                calendar.refetchEvents();
+                loadUpcomingSchedules();
+                if (window.calAlertRefresh) window.calAlertRefresh();
+            };
+
+            calStartAlertLoop({
+                leadMinutes: 0, // admins are told when it starts, not 5 minutes before
+                phases: ["start"],
+
+                buildActions: ev => [{
+                        label: "View Attendance",
+                        primary: true,
+                        onClick: () => {
+                            const event = calendar.getEventById(String(ev.id));
+                            if (event) openAttendanceModal(event, ev.start.split("T")[0]);
+                        }
+                    },
+                    {
+                        label: "Open Schedule",
+                        onClick: () => calOpenEvent(ev.id)
+                    },
+                    {
+                        label: "Dismiss"
+                    }
+                ]
+            });
+
+            // A schedule that ends while the page is open drops off the list within a minute
+            setInterval(loadUpcomingSchedules, 60000);
+
+            document.getElementById("addScheduleBtn").addEventListener("click", () => openScheduleModal(isoToday()));
 
         });
 
@@ -313,48 +324,74 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
             const audience = existingEvent ? existingEvent.extendedProps.audience : "Both";
             const startTime = existingEvent ? existingEvent.startStr.split("T")[1]?.substring(0, 5) : "";
             const endTime = existingEvent ? existingEvent.endStr.split("T")[1]?.substring(0, 5) : "";
+            const meetingLink = existingEvent ? (existingEvent.extendedProps.meeting_link ?? "") : "";
+            const locationText = existingEvent ? (existingEvent.extendedProps.location ?? "") : "";
 
-            // Check if this is an existing schedule that's already in the past
-            const clickedDate = new Date(dateStr + "T00:00:00");
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const isPastSchedule = existingEvent && clickedDate < today;
+            // Lifecycle: not started -> in progress -> ended
+            const now = new Date();
+            const startAt = existingEvent && existingEvent.start ? new Date(existingEvent.start) : null;
+            const endAt = existingEvent && existingEvent.end ? new Date(existingEvent.end) : null;
+
+            const hasStarted = !!startAt && startAt <= now; // editing is locked from here
+            const hasEnded = !!endAt && endAt <= now; // deleting is locked from here
+            const isLocked = hasStarted;
+            const canDelete = !!existingEvent && !hasEnded;
+
+            const certTemplateId = existingEvent ? Number(existingEvent.extendedProps.certificate_template_id ?? 0) : 0;
+            const issueCert = existingEvent ? Number(existingEvent.extendedProps.issue_certificate ?? 1) === 1 : true;
 
             Swal.fire({
                 html: `
-                    <div class="flex flex-col justify-center items-start gap-y-4 text-left w-full p-5">
+                    <div class="flex flex-col justify-start items-start gap-y-4 text-left max-h-[85vh] overflow-y-auto w-full p-5 ">
 
                         <div class="flex items-center justify-between w-full">
                             <h2 class="text-2xl font-eurostile-bold text-[#234CA1] uppercase">
-                                ${isPastSchedule ? "View Schedule" : (existingEvent ? "Edit Schedule" : "Add Schedule")}
+                                ${isLocked ? "View Schedule" : (existingEvent ? "Edit Schedule" : "Add Schedule")}
                             </h2>
-                            ${isPastSchedule ? `<span class="text-xs font-bold uppercase px-2 py-1 rounded-full bg-gray-100 text-gray-500">Past</span>` : ""}
+                            ${hasEnded
+                                ? `<span class="text-xs font-bold uppercase px-2 py-1 rounded-full bg-gray-100 text-gray-500">Ended</span>`
+                                : (hasStarted ? `<span class="text-xs font-bold uppercase px-2 py-1 rounded-full bg-red-100 text-[#D02027]">In Progress</span>` : "")}
                         </div>
 
-                        <p class="text-sm text-gray-500 -mt-3">${dateStr}</p>
+                        <div class="w-full">
+                            <label class="text-sm font-bold text-[#234CA1] block mb-1">Date</label>
+                            <input id="scheduleDate" type="date" value="${dateStr}" min="${isoToday()}" class="text-inputs" ${isLocked ? 'disabled' : ''}>
+                        </div>
+
+                        <button id="viewAttendanceBtn" class="w-auto px-3 py-2 border border-[#234CA1] text-xs text-[#234CA1] hover:bg-[#234CA1] hover:text-white duration-300 transform-color rounded-xl font-eurostile-bold outline-none focus:outline-none focus:ring-0 ${hasStarted ? '' : 'hidden'}">
+                            View Attendance
+                        </button>
+
+                        ${isLocked ? `
+                            <p class="w-full text-xs ${hasEnded ? 'text-gray-500' : 'text-amber-700'} bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+                                <i class="fa-solid fa-lock mr-1"></i>
+                                ${hasEnded
+                                    ? "This schedule has ended. It can no longer be edited or deleted."
+                                    : "This schedule has started. It can no longer be edited."}
+                            </p>` : ""}
 
                         <div class="w-full">
                             <label class="text-sm font-bold text-[#234CA1] block mb-1">Title</label>
                             <input id="scheduleTitle" type="text" value="${title.replace(/"/g, '&quot;')}"
-                                class="text-inputs" placeholder="Event title" ${isPastSchedule ? 'disabled' : ''}>
+                                class="text-inputs" placeholder="Event title" ${isLocked ? 'disabled' : ''}>
                         </div>
 
                         <div class="w-full">
                             <label class="text-sm font-bold text-[#234CA1] block mb-1">Description</label>
-                            <textarea id="scheduleDescription" class="text-inputs h-20 p-3" placeholder="Event description" ${isPastSchedule ? 'disabled' : ''}>${description ?? ""}</textarea>
+                            <textarea id="scheduleDescription" class="text-inputs h-20 p-3" placeholder="Event description" ${isLocked ? 'disabled' : ''}>${escapeHtml(description ?? "")}</textarea>
                         </div>
 
                         <div class="grid grid-cols-2 gap-3 w-full">
                             <div>
                                 <label class="text-sm font-bold text-[#234CA1] block mb-1">Type</label>
-                                <select id="scheduleType" class="text-inputs" ${isPastSchedule ? 'disabled' : ''}>
+                                <select id="scheduleType" class="text-inputs" ${isLocked ? 'disabled' : ''}>
                                     <option value="Online" ${scheduleType === 'Online' ? 'selected' : ''}>Online</option>
                                     <option value="Face-to-Face" ${scheduleType === 'Face-to-Face' ? 'selected' : ''}>Face-to-Face</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="text-sm font-bold text-[#234CA1] block mb-1">Audience</label>
-                                <select id="scheduleAudience" class="text-inputs" ${isPastSchedule ? 'disabled' : ''}>
+                                <select id="scheduleAudience" class="text-inputs" ${isLocked ? 'disabled' : ''}>
                                     <option value="Learners" ${audience === 'Learners' ? 'selected' : ''}>Learners Only</option>
                                     <option value="Managers" ${audience === 'Managers' ? 'selected' : ''}>Managers Only</option>
                                     <option value="Both" ${audience === 'Both' ? 'selected' : ''}>Both</option>
@@ -362,25 +399,52 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                             </div>
                         </div>
 
+                        <div id="meetingLinkWrap" class="w-full ${scheduleType === 'Online' ? '' : 'hidden'}">
+                            <label class="text-sm font-bold text-[#234CA1] block mb-1">
+                                Meeting Link <span class="font-normal text-gray-400">(optional: Zoom, Google Meet, Teams)</span>
+                            </label>
+                            <input id="scheduleMeetingLink" type="url" value="${escapeHtml(meetingLink).replace(/"/g, '&quot;')}"
+                                class="text-inputs" placeholder="https://..." ${isLocked ? 'disabled' : ''}>
+                        </div>
+
+                        <div id="locationWrap" class="w-full ${scheduleType === 'Face-to-Face' ? '' : 'hidden'}">
+                            <label class="text-sm font-bold text-[#234CA1] block mb-1">
+                                Location <span class="font-normal text-gray-400">(venue, room or address)</span>
+                            </label>
+                            <input id="scheduleLocation" type="text" maxlength="255" value="${escapeHtml(locationText).replace(/"/g, '&quot;')}"
+                                class="text-inputs" placeholder="e.g. UAAGI Training Room, 3F" ${isLocked ? 'disabled' : ''}>
+                        </div>
+
                         <div class="grid grid-cols-2 gap-3 w-full">
                             <div>
                                 <label class="text-sm font-bold text-[#234CA1] block mb-1">Start Time</label>
-                                <input id="scheduleStartTime" type="time" value="${startTime ?? ""}" class="text-inputs" ${isPastSchedule ? 'disabled' : ''}>
+                                <input id="scheduleStartTime" type="time" value="${startTime ?? ""}" class="text-inputs" ${isLocked ? 'disabled' : ''}>
                             </div>
                             <div>
                                 <label class="text-sm font-bold text-[#234CA1] block mb-1">End Time</label>
-                                <input id="scheduleEndTime" type="time" value="${endTime ?? ""}" class="text-inputs" ${isPastSchedule ? 'disabled' : ''}>
+                                <input id="scheduleEndTime" type="time" value="${endTime ?? ""}" class="text-inputs" ${isLocked ? 'disabled' : ''}>
                             </div>
+                        </div>
+
+                        <div class="w-full">
+                            <label class="text-sm font-bold text-[#234CA1] block mb-1">Certificate</label>
+                            <select id="scheduleCertTemplate" class="text-inputs" ${isLocked ? 'disabled' : ''}>
+                                <option value="0">Automatic (the brand's default template)</option>
+                                ${allCertTemplates.map(t => `<option value="${t.template_id}" ${certTemplateId === Number(t.template_id) ? 'selected' : ''}>${escapeHtml(t.name)}${t.brand_name ? ` · ${escapeHtml(t.brand_name)}` : ""}</option>`).join("")}
+                            </select>
+                            <label class="flex items-center gap-2 text-sm text-gray-600 mt-2 cursor-pointer">
+                                <input type="checkbox" id="scheduleIssueCert" ${issueCert ? "checked" : ""} ${isLocked ? "disabled" : ""}> Give certificates to people who attend
+                            </label>
                         </div>
 
                         <div class="w-full">
                             <label class="text-sm font-bold text-[#234CA1] block mb-1">
                                 Limit to Brands <span class="font-normal text-gray-400">(leave empty for all)</span>
                             </label>
-                            <div class="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border rounded-lg p-3 ${isPastSchedule ? 'opacity-50 pointer-events-none' : ''}">
+                            <div class="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border rounded-lg p-3 ${isLocked ? 'opacity-50 pointer-events-none' : ''}">
                                 ${allBrands.map(b => `
                                     <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                        <input type="checkbox" class="schedule-brand-checkbox" value="${b.brand_id}" ${isPastSchedule ? 'disabled' : ''}>
+                                        <input type="checkbox" class="schedule-brand-checkbox" value="${b.brand_id}" ${isLocked ? 'disabled' : ''}>
                                         ${escapeHtml(b.brand_name)}
                                     </label>
                                 `).join("")}
@@ -391,10 +455,10 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                             <label class="text-sm font-bold text-[#234CA1] block mb-1">
                                 Limit to Dealerships <span class="font-normal text-gray-400">(leave empty for all)</span>
                             </label>
-                            <div class="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border rounded-lg p-3 ${isPastSchedule ? 'opacity-50 pointer-events-none' : ''}">
+                            <div class="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border rounded-lg p-3 ${isLocked ? 'opacity-50 pointer-events-none' : ''}">
                                 ${allDealerships.map(d => `
                                     <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                        <input type="checkbox" class="schedule-dealership-checkbox" value="${d.dealership_id}" ${isPastSchedule ? 'disabled' : ''}>
+                                        <input type="checkbox" class="schedule-dealership-checkbox" value="${d.dealership_id}" ${isLocked ? 'disabled' : ''}>
                                         ${escapeHtml(d.dealership_name)}
                                     </label>
                                 `).join("")}
@@ -402,20 +466,20 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                         </div>
 
                         <div class="flex gap-x-3 w-full mt-2">
-                            ${isPastSchedule ? `
-                                <button id="cancelScheduleBtn" class="flex-1 h-12 bg-gray-200 text-gray-600 rounded-xl font-eurostile-bold">
+                            ${canDelete ? `
+                                <button id="deleteScheduleBtn" class="flex-1 h-12 bg-[#D02027] text-white rounded-xl font-eurostile-bold hover:bg-[#D02027]/70">
+                                    Delete
+                                </button>
+                            ` : ""}
+                            ${isLocked ? `
+                                <button id="cancelScheduleBtn" class="flex-1 h-12 bg-gray-200 text-gray-600 rounded-xl font-eurostile-bold hover:bg-gray-300">
                                     Close
                                 </button>
                             ` : `
-                                ${existingEvent ? `
-                                    <button id="deleteScheduleBtn" class="flex-1 h-12 bg-[#D02027] text-white rounded-xl font-eurostile-bold">
-                                        Delete
-                                    </button>
-                                ` : ""}
-                                <button id="cancelScheduleBtn" class="flex-1 h-12 bg-gray-200 text-gray-600 rounded-xl font-eurostile-bold">
+                                <button id="cancelScheduleBtn" class="flex-1 h-12 bg-gray-200 text-gray-600 rounded-xl font-eurostile-bold hover:bg-gray-300">
                                     Cancel
                                 </button>
-                                <button id="saveScheduleBtn" class="flex-1 h-12 bg-[#234CA1] text-white rounded-xl font-eurostile-bold">
+                                <button id="saveScheduleBtn" class="flex-1 h-12 bg-[#234CA1] text-white rounded-xl font-eurostile-bold hover:bg-[#234CA1]/70">
                                     Save
                                 </button>
                             `}
@@ -433,17 +497,25 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                 heightAuto: false,
                 width: 600,
                 didOpen: () => {
+                    initDatePickers(Swal.getPopup());
+                    const typeSelect = document.getElementById("scheduleType");
+                    typeSelect.onchange = () => {
+                        document.getElementById("meetingLinkWrap").classList.toggle("hidden", typeSelect.value !== "Online");
+                        document.getElementById("locationWrap").classList.toggle("hidden", typeSelect.value !== "Face-to-Face");
+                    };
+
+                    const viewBtn = document.getElementById("viewAttendanceBtn");
+                    if (viewBtn && existingEvent) {
+                        viewBtn.onclick = () => openAttendanceModal(existingEvent, dateStr);
+                    }
 
                     document.getElementById("cancelScheduleBtn").onclick = () => Swal.close();
 
-                    if (!isPastSchedule) {
+                    const saveBtn = document.getElementById("saveScheduleBtn");
+                    if (saveBtn) saveBtn.onclick = () => saveSchedule(dateStr);
 
-                        document.getElementById("saveScheduleBtn").onclick = () => saveSchedule(dateStr);
-
-                        const deleteBtn = document.getElementById("deleteScheduleBtn");
-                        if (deleteBtn) deleteBtn.onclick = () => confirmDeleteSchedule();
-
-                    }
+                    const deleteBtn = document.getElementById("deleteScheduleBtn");
+                    if (deleteBtn) deleteBtn.onclick = () => confirmDeleteSchedule(hasStarted);
 
                     if (editingScheduleId) {
                         loadScheduleTargeting(editingScheduleId);
@@ -452,6 +524,158 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                 }
             });
 
+        }
+        let attendanceRows = [];
+        let attendanceSort = {
+            key: null,
+            dir: "asc"
+        };
+        let attendanceMeta = {
+            title: "",
+            date: ""
+        };
+
+        async function openAttendanceModal(event, dateStr) {
+            attendanceMeta = {
+                id: event.id,
+                title: event.title,
+                date: dateStr
+            };
+            attendanceSort = {
+                key: null,
+                dir: "asc"
+            };
+
+            Swal.fire({
+                html: `
+                <div class="flex flex-col gap-y-4 text-left w-full p-5">
+                    <div class="flex items-center justify-between w-full">
+                        <div>
+                            <h2 class="text-2xl font-eurostile-bold text-[#234CA1] uppercase">Attendance</h2>
+                            <p class="text-sm text-gray-500">${escapeHtml(event.title)} · ${dateStr}</p>
+                        </div>
+                        <button id="printAttendanceBtn" class="px-3 py-2 border border-[#234CA1] text-xs text-[#234CA1] hover:bg-[#234CA1] hover:text-white duration-300 rounded-xl font-eurostile-bold outline-none focus:outline-none focus:ring-0">
+                            <i class="fa-solid fa-file-pdf mr-1"></i> Print PDF
+                        </button>
+                    </div>
+
+                    <div class="max-h-[400px] overflow-y-auto border rounded-lg">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr class="text-left text-xs uppercase text-gray-500">
+                                    <th class="px-3 py-2">Learner</th>
+                                    <th class="px-3 py-2 cursor-pointer select-none" data-sort="brand_name">
+                                        Brand <i class="fa-solid fa-sort ml-1" id="sortIcon-brand_name"></i>
+                                    </th>
+                                    <th class="px-3 py-2 cursor-pointer select-none" data-sort="dealership_name">
+                                        Dealership <i class="fa-solid fa-sort ml-1" id="sortIcon-dealership_name"></i>
+                                    </th>
+                                    <th class="px-3 py-2">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceTbody">
+                                <tr><td colspan="4" class="px-3 py-6 text-center text-gray-400">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="flex gap-x-3 w-full">
+                        <button id="attendanceBackBtn" class="flex-1 h-12 bg-gray-200 text-gray-600 rounded-xl font-eurostile-bold">Back</button>
+                    </div>
+                </div>
+            `,
+                customClass: {
+                    popup: "my-popup popup-blue",
+                    htmlContainer: "!p-0 !m-0"
+                },
+                showConfirmButton: false,
+                heightAuto: false,
+                width: 700,
+                didOpen: () => {
+                    document.getElementById("attendanceBackBtn").onclick = () => openScheduleModal(dateStr, event);
+                    document.getElementById("printAttendanceBtn").onclick = printAttendancePdf;
+
+                    document.querySelectorAll("th[data-sort]").forEach(th => {
+                        th.onclick = () => sortAttendance(th.dataset.sort);
+                    });
+                }
+            });
+
+            try {
+                const res = await fetch(`../php/schedules/get-schedule-attendees.php?schedule_id=${event.id}`);
+                const data = await res.json();
+
+                if (data.status !== "success") {
+                    document.getElementById("attendanceTbody").innerHTML =
+                        `<tr><td colspan="4" class="px-3 py-6 text-center text-red-500">${escapeHtml(data.message)}</td></tr>`;
+                    return;
+                }
+
+                attendanceRows = data.attendees;
+                renderAttendanceRows();
+            } catch (err) {
+                console.error(err);
+                document.getElementById("attendanceTbody").innerHTML =
+                    `<tr><td colspan="4" class="px-3 py-6 text-center text-red-500">Failed to load attendees.</td></tr>`;
+            }
+        }
+
+        function renderAttendanceRows() {
+            const tbody = document.getElementById("attendanceTbody");
+            if (!tbody) return;
+
+            if (attendanceRows.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-3 py-6 text-center text-gray-400">No attendees marked present.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = attendanceRows.map(r => `
+        <tr class="border-t">
+            <td class="px-3 py-2">${escapeHtml(r.first_name)} ${escapeHtml(r.last_name)}</td>
+            <td class="px-3 py-2">${escapeHtml(r.brand_name || "—")}</td>
+            <td class="px-3 py-2">${escapeHtml(r.dealership_name || "—")}</td>
+            <td class="px-3 py-2">
+                <span class="text-xs font-bold uppercase px-2 py-0.5 rounded-full bg-green-100 text-green-700">${escapeHtml(r.attendance_status)}</span>
+            </td>
+        </tr>
+    `).join("");
+        }
+
+        function sortAttendance(key) {
+            attendanceSort.dir = (attendanceSort.key === key && attendanceSort.dir === "asc") ? "desc" : "asc";
+            attendanceSort.key = key;
+
+            attendanceRows.sort((a, b) => {
+                const cmp = (a[key] || "").localeCompare(b[key] || "", undefined, {
+                    sensitivity: "base"
+                });
+                return attendanceSort.dir === "asc" ? cmp : -cmp;
+            });
+
+            ["brand_name", "dealership_name"].forEach(k => {
+                const icon = document.getElementById(`sortIcon-${k}`);
+                if (!icon) return;
+                icon.className = "fa-solid ml-1 " + (
+                    attendanceSort.key !== k ? "fa-sort" :
+                    attendanceSort.dir === "asc" ? "fa-sort-up" : "fa-sort-down"
+                );
+            });
+
+            renderAttendanceRows();
+        }
+
+        function printAttendancePdf() {
+            const params = new URLSearchParams({
+                schedule_id: attendanceMeta.id
+            });
+
+            // Carry over the current sort so the PDF matches what's on screen
+            if (attendanceSort.key) {
+                params.append("sort", attendanceSort.key);
+                params.append("dir", attendanceSort.dir);
+            }
+
+            window.open(`print-attendance.php?${params.toString()}`, "_blank");
         }
 
         async function loadScheduleTargeting(scheduleId) {
@@ -510,9 +734,19 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                 formData.append("description", description);
                 formData.append("schedule_type", document.getElementById("scheduleType").value);
                 formData.append("audience", document.getElementById("scheduleAudience").value);
-                formData.append("event_date", dateStr);
+                const eventDate = document.getElementById("scheduleDate").value;
+                if (!eventDate) {
+                    Swal.showValidationMessage("Please choose a date.");
+                    return;
+                }
+                formData.append("event_date", eventDate);
                 formData.append("start_time", startTime);
                 formData.append("end_time", endTime);
+                formData.append("meeting_link", document.getElementById("scheduleMeetingLink").value.trim());
+                formData.append("location", document.getElementById("scheduleLocation").value.trim());
+
+                formData.append("certificate_template_id", document.getElementById("scheduleCertTemplate").value);
+                if (document.getElementById("scheduleIssueCert").checked) formData.append("issue_certificate", "1");
 
                 document.querySelectorAll(".schedule-brand-checkbox:checked").forEach(cb => {
                     formData.append("brands[]", cb.value);
@@ -543,7 +777,7 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
 
         }
 
-        function confirmDeleteSchedule() {
+        function confirmDeleteSchedule(inProgress = false) {
 
             Swal.fire({
                 html: `
@@ -552,7 +786,11 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                             <i class="fa-solid fa-circle-question text-[#D02027] text-6xl"></i>
                             <div class="text-start">
                                 <h2 class="text-2xl font-eurostile-bold text-[#D02027] uppercase">Delete Schedule?</h2>
-                                <p class="text-sm text-gray-500">This will permanently remove this event.</p>
+                                <p class="text-sm text-gray-500">
+                                    ${inProgress
+                                        ? "This schedule is already in progress. Deleting it also removes the RSVPs and attendance recorded so far."
+                                        : "This will permanently remove this event."}
+                                </p>
                             </div>
                         </div>
                         <div class="flex gap-x-3 w-full">
@@ -595,11 +833,22 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                     Swal.close();
                     window.reloadCalendar();
                 } else {
-                    console.error(data.message);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Cannot delete",
+                        text: data.message,
+                        confirmButtonColor: "#234CA1"
+                    });
                 }
 
             } catch (err) {
                 console.error(err);
+                Swal.fire({
+                    icon: "error",
+                    title: "Something went wrong",
+                    text: "Please try again.",
+                    confirmButtonColor: "#234CA1"
+                });
             }
 
         }

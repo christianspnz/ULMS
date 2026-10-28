@@ -2,14 +2,19 @@
 
 require "../../config/config.php";
 require "../auth-logout/auth.php";
+require "../schedules/attendance-helpers.php";
 requireRole(4);
 
 header("Content-Type: application/json");
 
 try {
 
+    // Past schedules: anyone who never timed in becomes Absent before we read
+    markAbsentLearners($conn);
+
     $dateFrom = $_GET['date_from'] ?? null;
     $dateTo = $_GET['date_to'] ?? null;
+    $scheduleId = $_GET['schedule_id'] ?? null;
     $scheduleType = $_GET['schedule_type'] ?? null;
     $audience = $_GET['audience'] ?? null;
     $attendanceStatus = $_GET['attendance_status'] ?? null;
@@ -22,13 +27,14 @@ try {
 
     if ($dateFrom) { $conditions[] = "s.event_date >= ?"; $params[] = $dateFrom; $types .= "s"; }
     if ($dateTo) { $conditions[] = "s.event_date <= ?"; $params[] = $dateTo; $types .= "s"; }
+    if ($scheduleId) { $conditions[] = "s.schedule_id = ?"; $params[] = (int) $scheduleId; $types .= "i"; }
     if ($scheduleType && in_array($scheduleType, ['Online', 'Face-to-Face'])) {
         $conditions[] = "s.schedule_type = ?"; $params[] = $scheduleType; $types .= "s";
     }
     if ($audience && in_array($audience, ['Learners', 'Managers', 'Both'])) {
         $conditions[] = "s.audience = ?"; $params[] = $audience; $types .= "s";
     }
-    if ($attendanceStatus && in_array($attendanceStatus, ['Not Started', 'Present', 'Left Early', 'Absent'])) {
+    if ($attendanceStatus && in_array($attendanceStatus, ['Not Started', 'Present', 'Left Early', 'Late Time Out', 'No Time Out', 'Absent'])) {
         $conditions[] = "sa.attendance_status = ?"; $params[] = $attendanceStatus; $types .= "s";
     }
 

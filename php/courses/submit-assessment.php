@@ -3,7 +3,11 @@
 require "../../config/config.php";
 require "../auth-logout/auth.php";
 require_once __DIR__ . "/../points/points-helpers.php";
+require_once __DIR__ . "/../certificates/certificate-helpers.php";
 requireRole([1, 2]);
+
+ini_set('display_errors', '0'); // warnings must never be printed into the JSON
+ob_start();
 
 header("Content-Type: application/json");
 
@@ -18,15 +22,19 @@ try {
         throw new Exception("Invalid submission.");
     }
 
+    mysqli_begin_transaction($conn);
+
+    // Lock this learner's enrollment row so two simultaneous submits can't both pass the checks below
     $enrollStmt = mysqli_prepare(
         $conn,
-        "SELECT enrollment_id FROM enrollments WHERE user_id = ? AND course_id = ?"
+        "SELECT enrollment_id, status FROM enrollments WHERE user_id = ? AND course_id = ? FOR UPDATE"
     );
     mysqli_stmt_bind_param($enrollStmt, "ii", $userId, $courseId);
     mysqli_stmt_execute($enrollStmt);
     $enrollResult = mysqli_stmt_get_result($enrollStmt);
+    $enrollment = $enrollResult ? $enrollResult->fetch_assoc() : null;
 
-    if (!$enrollResult || mysqli_num_rows($enrollResult) === 0) {
+    if (!$enrollment) {
         throw new Exception("You are not enrolled in this course.");
     }
 
@@ -96,14 +104,11 @@ try {
         if ($row && $row['is_correct'] == 1) {
             $correctCount++;
         }
-
     }
 
     $score = round(($correctCount / $totalItems) * 100, 2);
     $passed = $score >= $assessment['passing_score'] ? 1 : 0;
     $attemptNumber = $attemptsUsed + 1;
-
-    mysqli_begin_transaction($conn);
 
     $insertStmt = mysqli_prepare(
         $conn,
@@ -112,13 +117,20 @@ try {
         VALUES (?, ?, ?, ?, ?, ?)"
     );
     mysqli_stmt_bind_param(
-        $insertStmt, "iidiii",
-        $assessmentId, $userId, $score, $totalItems, $passed, $attemptNumber
+        $insertStmt,
+        "iidiii",
+        $assessmentId,
+        $userId,
+        $score,
+        $totalItems,
+        $passed,
+        $attemptNumber
     );
     mysqli_stmt_execute($insertStmt);
 
-    // Update enrollment status based on which test this was.
-    // Pre-Test: informational only — just moves status from Not Started to In Progress.
+    $pointsEarned = 0;
+
+    // Pre-Test: informational only, just moves Not Started to In Progress.
     // Post-Test: attempting it (regardless of score) completes the course.
     if ($type === 'Pre-Test') {
 
@@ -129,37 +141,52 @@ try {
         );
         mysqli_stmt_bind_param($updStmt, "ii", $userId, $courseId);
         mysqli_stmt_execute($updStmt);
-
     } else {
 
+        // COALESCE keeps the ORIGINAL completion date if the Post-Test is retaken
         $updStmt = mysqli_prepare(
             $conn,
-            "UPDATE enrollments SET status = 'Completed', completed_at = NOW()
+            "UPDATE enrollments SET status = 'Completed', completed_at = COALESCE(completed_at, NOW())
              WHERE user_id = ? AND course_id = ?"
         );
-        awardPoints($conn, $userId, 50, 'Course Completion', $courseId);
         mysqli_stmt_bind_param($updStmt, "ii", $userId, $courseId);
         mysqli_stmt_execute($updStmt);
 
+        // Once per learner per course, no matter how many times the Post-Test is taken
+        $pointsEarned = awardCourseCompletionPoints($conn, $userId, (int) $courseId);
     }
 
     mysqli_commit($conn);
+    // Certificate of completion: only when the Post-Test was passed
+    $certificate = null;
+
+    if ($type === 'Post-Test' && $passed) {
+        try {
+            $certificate = issueCourseCertificate($conn, $userId, $courseId);
+        } catch (Throwable $e) {
+            error_log("Course certificate failed: " . $e->getMessage());
+        }
+    }
+
+    if (ob_get_length()) ob_clean();
 
     echo json_encode([
         "status" => "success",
         "score" => $score,
         "passed" => (bool) $passed,
+        "passing_score" => (float) $assessment['passing_score'],
         "correct" => $correctCount,
-        "total" => $totalItems
+        "total" => $totalItems,
+        "points_earned" => $pointsEarned,
+        "certificate" => $certificate
     ]);
-
 } catch (Exception $e) {
 
     mysqli_rollback($conn);
+    if (ob_get_length()) ob_clean();
 
     echo json_encode([
         "status" => "error",
         "message" => $e->getMessage()
     ]);
-
 }

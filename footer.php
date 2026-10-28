@@ -6,28 +6,28 @@
                 <img src="./assets/BAIC-Red-logo.png" alt="BAIC Logo" class="w-28">
                 <img src="./assets/Chery Logo.png" alt="Chery Logo" class="w-28">
                 <img src="./assets/foton.png" alt="Foton Logo" class="w-28">
-                <img src="./assets/Radar Logo.png" alt="Radar Logo" class="w-28">
+                <img src="./assets/Riddara-Green.png" alt="Riddara Logo" class="w-28">
             </div>
 
             <div class="flex shrink-0 items-center gap-x-20 pr-20">
                 <img src="./assets/BAIC-Red-logo.png" alt="BAIC Logo" class="w-28">
                 <img src="./assets/Chery Logo.png" alt="Chery Logo" class="w-28">
                 <img src="./assets/foton.png" alt="Foton Logo" class="w-28">
-                <img src="./assets/Radar Logo.png" alt="Radar Logo" class="w-28">
+                <img src="./assets/Riddara-Green.png" alt="Riddara Logo" class="w-28">
             </div>
 
             <div class="flex shrink-0 items-center gap-x-20 pr-20">
                 <img src="./assets/BAIC-Red-logo.png" alt="BAIC Logo" class="w-28">
                 <img src="./assets/Chery Logo.png" alt="Chery Logo" class="w-28">
                 <img src="./assets/foton.png" alt="Foton Logo" class="w-28">
-                <img src="./assets/Radar Logo.png" alt="Radar Logo" class="w-28">
+                <img src="./assets/Riddara-Green.png" alt="Riddara Logo" class="w-28">
             </div>
 
             <div class="flex shrink-0 items-center gap-x-20 pr-20">
                 <img src="./assets/BAIC-Red-logo.png" alt="BAIC Logo" class="w-28">
                 <img src="./assets/Chery Logo.png" alt="Chery Logo" class="w-28">
                 <img src="./assets/foton.png" alt="Foton Logo" class="w-28">
-                <img src="./assets/Radar Logo.png" alt="Radar Logo" class="w-28">
+                <img src="./assets/Riddara-Green.png" alt="Riddara Logo" class="w-28">
             </div>
         </div>
     </div>

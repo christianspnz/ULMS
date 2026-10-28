@@ -2,21 +2,30 @@
 require "../config/config.php";
 require "../php/auth-logout/auth.php";
 requireRole(4);
+
+$activeStatus = $_GET['status'] ?? 'Pending';
+$allowedStatuses = ['Pending', 'Approved', 'Hidden'];
+
+if (!in_array($activeStatus, $allowedStatuses)) {
+    $activeStatus = 'Pending';
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
     <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
-    <title>UEH - Feedback</title>
+    <title>UTH - Feedback</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body class="h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
@@ -34,10 +43,16 @@ requireRole(4);
         </div>
 
         <!-- Tabs -->
-        <div class="flex gap-x-2 border-b border-gray-200 mt-5" id="feedbackTabs">
-            <button type="button" class="feedback-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-[#234CA1] text-[#234CA1]" data-status="Pending">Pending</button>
-            <button type="button" class="feedback-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1]" data-status="Approved">Approved</button>
-            <button type="button" class="feedback-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1]" data-status="Hidden">Hidden</button>
+        <div id="feedbackTabs" class="relative flex overflow-x-auto gap-x-2 bg-gray-100 max-w-full rounded-lg mt-5 p-1">
+            <span id="feedbackTabSlider" class="absolute top-1 bottom-1 left-1 rounded-md bg-[#FFFFFF] shadow-sm transition-all duration-300 ease-in-out pointer-events-none"></span>
+            <?php foreach ($allowedStatuses as $status): ?>
+                <button type="button"
+                    id="feedback-tab-<?= htmlspecialchars($status) ?>"
+                    data-status="<?= htmlspecialchars($status) ?>"
+                    class="universal-tabs relative z-10 !bg-transparent whitespace-nowrap transition-colors duration-300 <?= $activeStatus === $status ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>">
+                    <?= htmlspecialchars($status) ?>
+                </button>
+            <?php endforeach; ?>
         </div>
 
         <div id="feedbackList" class="space-y-4 mt-6">
@@ -48,7 +63,7 @@ requireRole(4);
 
     <script>
         lucide.createIcons();
-        let activeFeedbackStatus = "Pending";
+        let activeFeedbackStatus = "<?= htmlspecialchars($activeStatus) ?>";
 
         async function loadFeedbackQueue() {
 
@@ -121,7 +136,10 @@ requireRole(4);
                 formData.append("feedback_id", feedbackId);
                 formData.append("status", newStatus);
 
-                const res = await fetch("../php/feedback/update-feedback-status.php", { method: "POST", body: formData });
+                const res = await fetch("../php/feedback/update-feedback-status.php", {
+                    method: "POST",
+                    body: formData
+                });
                 const data = await res.json();
 
                 if (data.status === "success") {
@@ -136,25 +154,62 @@ requireRole(4);
 
         }
 
-        document.querySelectorAll(".feedback-tab-btn").forEach(btn => {
 
-            btn.addEventListener("click", () => {
+        const feedbackStatuses = ['Pending', 'Approved', 'Hidden'];
 
-                activeFeedbackStatus = btn.dataset.status;
+        function moveFeedbackTabSlider(status) {
+            const container = document.getElementById('feedbackTabs');
+            const slider = document.getElementById('feedbackTabSlider');
+            const button = document.getElementById(`feedback-tab-${status}`);
 
-                document.querySelectorAll(".feedback-tab-btn").forEach(b => {
-                    b.classList.remove("border-[#234CA1]", "text-[#234CA1]");
-                    b.classList.add("border-transparent", "text-gray-400");
-                });
+            if (!container || !slider || !button) return;
 
-                btn.classList.add("border-[#234CA1]", "text-[#234CA1]");
-                btn.classList.remove("border-transparent", "text-gray-400");
+            slider.style.width = `${button.offsetWidth}px`;
+            slider.style.transform = `translateX(${button.offsetLeft - 4}px)`;
+        }
 
-                loadFeedbackQueue();
+        function switchFeedbackTab(status, updateUrl = true) {
+            if (!feedbackStatuses.includes(status)) return;
 
+            activeFeedbackStatus = status;
+
+            document.querySelectorAll('#feedbackTabs [data-status]').forEach(button => {
+                const active = button.dataset.status === status;
+
+                button.classList.toggle('universal-tabs-active', active);
+                button.classList.toggle('universal-tabs-inactive', !active);
             });
 
+            moveFeedbackTabSlider(status);
+
+            if (updateUrl) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('status', status);
+                history.pushState({
+                    status
+                }, '', url);
+            }
+
+            loadFeedbackQueue();
+        }
+
+        document.querySelectorAll('#feedbackTabs [data-status]').forEach(button => {
+            button.addEventListener('click', () => {
+                switchFeedbackTab(button.dataset.status);
+            });
         });
+
+        moveFeedbackTabSlider(activeFeedbackStatus);
+
+        window.addEventListener('resize', () => {
+            moveFeedbackTabSlider(activeFeedbackStatus);
+        });
+
+        window.addEventListener('popstate', () => {
+            const status = new URLSearchParams(window.location.search).get('status');
+            switchFeedbackTab(feedbackStatuses.includes(status) ? status : 'Pending', false);
+        });
+
 
         function escapeHtml(str) {
             const div = document.createElement("div");
@@ -163,7 +218,7 @@ requireRole(4);
         }
 
         loadFeedbackQueue();
-
     </script>
 </body>
+
 </html>

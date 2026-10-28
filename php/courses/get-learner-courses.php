@@ -2,6 +2,7 @@
 
 require "../../config/config.php";
 require "../auth-logout/auth.php";
+require_once __DIR__ . "/../feedback/course-ratings.php";
 requireRole([1, 2]);
 
 header("Content-Type: application/json");
@@ -47,17 +48,49 @@ try {
     $availResult = mysqli_stmt_get_result($availStmt);
     $availableCourses = $availResult ? $availResult->fetch_all(MYSQLI_ASSOC) : [];
 
+    $ratedCourseIds = [];
+    $rateStmt = mysqli_prepare($conn, "SELECT course_id FROM course_feedback WHERE user_id = ?");
+
+    if ($rateStmt) {
+        mysqli_stmt_bind_param($rateStmt, "i", $userId);
+        mysqli_stmt_execute($rateStmt);
+        $rateResult = mysqli_stmt_get_result($rateStmt);
+        $ratedCourseIds = $rateResult ? array_map('intval', array_column($rateResult->fetch_all(MYSQLI_ASSOC), 'course_id')) : [];
+        mysqli_stmt_close($rateStmt);
+    }
+
+    foreach ($myCourses as &$c) {
+        $c['has_feedback'] = in_array((int) $c['course_id'], $ratedCourseIds, true);
+    }
+    unset($c);
+
     echo json_encode([
         "status" => "success",
         "my_courses" => $myCourses,
         "available_courses" => $availableCourses
     ]);
 
+
+    $ratings = getCourseRatings($conn, array_merge(
+        array_column($myCourses, 'course_id'),
+        array_column($availableCourses, 'course_id')
+    ));
+
+    foreach ($myCourses as &$c) {
+        $c['rating_avg'] = $ratings[(int) $c['course_id']]['avg'] ?? null;
+        $c['rating_count'] = $ratings[(int) $c['course_id']]['count'] ?? 0;
+    }
+    unset($c);
+
+    foreach ($availableCourses as &$c) {
+        $c['rating_avg'] = $ratings[(int) $c['course_id']]['avg'] ?? null;
+        $c['rating_count'] = $ratings[(int) $c['course_id']]['count'] ?? 0;
+    }
+    unset($c);
 } catch (Exception $e) {
 
     echo json_encode([
         "status" => "error",
         "message" => $e->getMessage()
     ]);
-
 }

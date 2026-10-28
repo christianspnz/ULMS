@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/output.css">
     <link rel="icon" type="image/png" href="./assets/ulh-logo.png" class="w-24">
-    <title>UEH</title>
+    <title>UTH - Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
@@ -15,9 +15,9 @@
 </head>
 
 <body class="m-0 p-0 min-h-screen flex items-center justify-center ">
-    <form id="loginForm" class="login-register-form py-0">
+    <form id="loginForm" class="login-register-form">
         <div class="w-[55%] hidden lg:flex flex-col justify-center items-center">
-            <img src="./assets/brandedcarss.png" alt="UAAGI LMS Logo" class="w-full">
+            <img src="./assets/allbrands.png" alt="UAAGI LMS Logo" class="w-full">
         </div>
         <div class="main-card-divider"></div>
         <div class="main-card">

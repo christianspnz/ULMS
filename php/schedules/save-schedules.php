@@ -19,14 +19,55 @@ try {
     $audience = $_POST['audience'] ?? 'Both';
     $brandIds = $_POST['brands'] ?? [];
     $dealershipIds = $_POST['dealerships'] ?? [];
+    $meetingLink = trim($_POST['meeting_link'] ?? '');
+    $location = trim($_POST['location'] ?? '');
     $today = date('Y-m-d');
+    $certTemplateId = (int) ($_POST['certificate_template_id'] ?? 0);
+    $certTemplateId = $certTemplateId > 0 ? $certTemplateId : null;
+    $issueCertificate = !empty($_POST['issue_certificate']) ? 1 : 0;
+
+    // Determine create vs edit BEFORE the insert/update runs
+    $isNewSchedule = empty($scheduleId);
+
+    // ---------- Editing: the schedule must exist and must not have started yet ----------
+
+    $oldSchedule = null;
+
+    if (!$isNewSchedule) {
+
+        $oldStmt = mysqli_prepare(
+            $conn,
+            "SELECT event_date, start_time, end_time, meeting_link, location FROM schedules WHERE schedule_id = ?"
+        );
+        mysqli_stmt_bind_param($oldStmt, "i", $scheduleId);
+        mysqli_stmt_execute($oldStmt);
+        $oldResult = mysqli_stmt_get_result($oldStmt);
+        $oldSchedule = $oldResult ? $oldResult->fetch_assoc() : null;
+        mysqli_stmt_close($oldStmt);
+
+        if (!$oldSchedule) {
+            throw new Exception("Schedule not found.");
+        }
+
+        // Uses the STORED date/time, not what was submitted
+        if (strtotime($oldSchedule['event_date'] . ' ' . $oldSchedule['start_time']) <= time()) {
+            throw new Exception("This schedule has already started and can no longer be edited.");
+        }
+    }
+
+    // ---------- Validation ----------
+
+    if ($title === '' || !$eventDate || !$startTime || !$endTime) {
+        throw new Exception("Title, date, start time, and end time are required.");
+    }
 
     if ($eventDate < $today) {
         throw new Exception("You cannot add or edit a schedule on a date that has already passed.");
     }
 
-    if ($title === '' || !$eventDate || !$startTime || !$endTime) {
-        throw new Exception("Title, date, start time, and end time are required.");
+    // A schedule that has already started can't be edited, so don't create one that starts in the past
+    if (strtotime($eventDate . ' ' . $startTime) <= time()) {
+        throw new Exception("The start time must be in the future.");
     }
 
     if ($endTime <= $startTime) {
@@ -41,8 +82,31 @@ try {
         throw new Exception("Invalid audience selection.");
     }
 
-    // Determine create vs edit BEFORE the insert/update runs
-    $isNewSchedule = empty($scheduleId);
+    // Online schedules keep a link only; Face-to-Face schedules keep a location only
+    if ($scheduleType === 'Online') {
+
+        $location = '';
+
+        if ($meetingLink !== '') {
+            if (
+                strlen($meetingLink) > 500 ||
+                !preg_match('#^https?://#i', $meetingLink) ||
+                !filter_var($meetingLink, FILTER_VALIDATE_URL)
+            ) {
+                throw new Exception("Please enter a valid meeting link starting with http:// or https://");
+            }
+        }
+    } else {
+
+        $meetingLink = '';
+
+        if (strlen($location) > 255) {
+            throw new Exception("Location must be 255 characters or fewer.");
+        }
+    }
+
+    $meetingLink = $meetingLink !== '' ? $meetingLink : null;
+    $location = $location !== '' ? $location : null;
 
     // ---------- Insert or Update the schedule itself ----------
 
@@ -51,27 +115,52 @@ try {
         $stmt = mysqli_prepare(
             $conn,
             "UPDATE schedules
-             SET title = ?, description = ?, schedule_type = ?, audience = ?, event_date = ?, start_time = ?, end_time = ?
+             SET title = ?, description = ?, schedule_type = ?, meeting_link = ?, location = ?,
+                 audience = ?, event_date = ?, start_time = ?, end_time = ?,
+                 certificate_template_id = ?, issue_certificate = ?
              WHERE schedule_id = ?"
         );
         mysqli_stmt_bind_param(
-            $stmt, "sssssssi",
-            $title, $description, $scheduleType, $audience, $eventDate, $startTime, $endTime, $scheduleId
+            $stmt,
+            "sssssssssiii",
+            $title,
+            $description,
+            $scheduleType,
+            $meetingLink,
+            $location,
+            $audience,
+            $eventDate,
+            $startTime,
+            $endTime,
+            $certTemplateId,
+            $issueCertificate,
+            $scheduleId
         );
-
     } else {
+
+        $createdBy = $_SESSION['user_id'];
 
         $stmt = mysqli_prepare(
             $conn,
-            "INSERT INTO schedules (title, description, schedule_type, audience, event_date, start_time, end_time, created_by)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+            "INSERT INTO schedules (title, description, schedule_type, meeting_link, location, audience, event_date, start_time, end_time, certificate_template_id, issue_certificate, created_by)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         );
-        $createdBy = $_SESSION['user_id'];
         mysqli_stmt_bind_param(
-            $stmt, "sssssssi",
-            $title, $description, $scheduleType, $audience, $eventDate, $startTime, $endTime, $createdBy
+            $stmt,
+            "sssssssssiii",
+            $title,
+            $description,
+            $scheduleType,
+            $meetingLink,
+            $location,
+            $audience,
+            $eventDate,
+            $startTime,
+            $endTime,
+            $certTemplateId,
+            $issueCertificate,
+            $createdBy
         );
-
     }
 
     $success = mysqli_stmt_execute($stmt);
@@ -103,10 +192,39 @@ try {
         }
     }
 
-    // ---------- Only notify on genuine first-time creation ----------
+    // ---------- Notifications ----------
 
     if ($isNewSchedule) {
+
         notifyNewSchedule($conn, $finalScheduleId, $title, $audience);
+    } elseif ($oldSchedule) {
+
+        $changes = [];
+
+        $dateTimeChanged =
+            $oldSchedule['event_date'] !== $eventDate ||
+            substr($oldSchedule['start_time'], 0, 5) !== substr($startTime, 0, 5) ||
+            substr($oldSchedule['end_time'], 0, 5) !== substr($endTime, 0, 5);
+
+        if ($dateTimeChanged) {
+            $changes[] = "now " . date('M j, Y', strtotime($eventDate)) . ", "
+                . date('g:i A', strtotime($startTime)) . " - " . date('g:i A', strtotime($endTime));
+
+            // Allow the start reminder to go out again for the new time
+            mysqli_query($conn, "UPDATE schedules SET reminder_sent_at = NULL WHERE schedule_id = " . intval($finalScheduleId));
+        }
+
+        if (($oldSchedule['meeting_link'] ?? '') !== ($meetingLink ?? '')) {
+            $changes[] = "the meeting link changed";
+        }
+
+        if (($oldSchedule['location'] ?? '') !== ($location ?? '')) {
+            $changes[] = "the location changed";
+        }
+
+        if (!empty($changes)) {
+            notifyScheduleUpdated($conn, $finalScheduleId, $title, $audience, implode('; ', $changes));
+        }
     }
 
     echo json_encode([
@@ -114,8 +232,7 @@ try {
         "message" => "Schedule saved successfully.",
         "schedule_id" => $finalScheduleId
     ]);
-
-} catch (Exception $e) {
+} catch (Throwable $e) {
 
     echo json_encode([
         "status" => "error",

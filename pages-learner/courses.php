@@ -1,11 +1,14 @@
 <?php
 require "../php/auth-logout/auth.php";
 requireRole(1);
-$triggerBonusPopup = isset($_SESSION['show_bonus_popup']) && $_SESSION['show_bonus_popup'] === true;
 
-if ($triggerBonusPopup) {
-    unset($_SESSION['show_bonus_popup']);
+$activeTab = $_GET['status'] ?? 'All';
+$allowedTabs = ['All', 'Not Started', 'In Progress', 'Completed'];
+
+if (!in_array($activeTab, $allowedTabs)) {
+    $activeTab = 'All';
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +19,7 @@ if ($triggerBonusPopup) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
     <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
-    <title>UEH - Learners</title>
+    <title>UTH - Learners</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
@@ -44,11 +47,17 @@ if ($triggerBonusPopup) {
             </div>
         </div>
 
-        <div class="flex gap-x-2 border-b border-gray-200 mt-3 mb-3 w-full lg:w-auto overflow-x-auto" id="myCoursesTabs">
-            <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-[#234CA1] text-[#234CA1]" data-status="all">All</button>
-            <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1]" data-status="Not Started">Not Started</button>
-            <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1]" data-status="In Progress">In Progress</button>
-            <button type="button" class="my-tab-btn px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1]" data-status="Completed">Completed</button>
+        <!-- Tabs -->
+        <div id="myCoursesTabs" class="relative flex overflow-x-auto gap-x-2 bg-gray-100 max-w-full rounded-lg mt-5 p-1">
+            <span id="myCoursesTabSlider" class="absolute top-1 bottom-1 left-1 rounded-md bg-[#FFFFFF] shadow-sm transition-all duration-300 ease-in-out pointer-events-none"></span>
+            <?php foreach ($allowedTabs as $tab): ?>
+                <button type="button"
+                    id="my-courses-tab-<?= htmlspecialchars(strtolower(str_replace(' ', '-', $tab))) ?>"
+                    data-status="<?= htmlspecialchars($tab) ?>"
+                    class="universal-tabs relative z-10 !bg-transparent whitespace-nowrap transition-colors duration-300 <?= $activeTab === $tab ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>">
+                    <?= htmlspecialchars($tab) ?>
+                </button>
+            <?php endforeach; ?>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6" id="myCoursesGrid">
@@ -75,7 +84,7 @@ if ($triggerBonusPopup) {
         </div>
 
         <?php include '../feedback-button.php'; ?>
-        <?php include '../bonus-question-modal.php'; ?>
+        <?php include '../course-feedback-modal.php'; ?>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
@@ -93,63 +102,21 @@ if ($triggerBonusPopup) {
             }
         });
         let allMyCourses = [];
-        let activeTabStatus = "all";
+        let activeTab = "<?= htmlspecialchars($activeTab, ENT_QUOTES) ?>"; // exactly: All | Not Started | In Progress | Completed
 
 
-        function renderStreak(streak) {
-            const label = document.getElementById("streakLabel");
-            const dotsContainer = document.getElementById("streakDots");
 
-            const current = streak?.current ?? 0;
-            // current counts completed days in the current 5-day cycle (0-4 shown as filled, resets after bonus)
-            const filled = current % 5;
 
-            label.textContent = current > 0 ?
-                `${current} day${current === 1 ? '' : 's'}` :
-                "Log in to start";
+        function ratingBadge(course) {
 
-            dotsContainer.innerHTML = Array.from({
-                length: 5
-            }, (_, i) => {
-                const isFilled = i < filled;
-                return `<div class="flex-1 h-2 rounded-full ${isFilled ? 'bg-orange-400' : 'bg-white/15'}"></div>`;
-            }).join("");
-        }
+            if (course.rating_avg === null || course.rating_avg === undefined) return "";
 
-        async function claimDailyLogin() {
-            try {
-                const res = await fetch("../php/points/daily-login.php");
-                const data = await res.json();
-
-                if (data.status === "success" && !data.already_claimed) {
-                    await Swal.fire({
-                        html: `
-                            <div class="flex flex-col items-center gap-y-3 p-5 text-center">
-                                <i class="fa-solid fa-fire text-4xl text-orange-400"></i>
-                                <h2 class="text-2xl font-eurostile-bold text-[#234CA1] uppercase">Welcome back!</h2>
-                                <p class="text-gray-600">You earned <span class="font-bold text-emerald-600">+5 points</span> for logging in today.</p>
-                                ${data.bonus_awarded ? `<p class="text-gray-600">5-day streak complete — <span class="font-bold text-orange-500">+50 bonus points!</span> 🔥</p>` : ''}
-                                <button id="loginPointsOkBtn" class="w-full h-12 bg-[#234CA1] text-white rounded-xl font-eurostile-bold mt-2">Nice!</button>
-                            </div>
-                        `,
-                        customClass: {
-                            htmlContainer: "!p-0 !m-0"
-                        },
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            document.getElementById("loginPointsOkBtn").onclick = () => Swal.close();
-                        }
-                    });
-                }
-
-                // Show the bonus question after the login modal is closed
-                openBonusModal();
-
-            } catch (err) {
-                console.error("Error claiming daily login:", err);
-                openBonusModal();
-            }
+            return `
+                <p class="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                    <i class="fa-solid fa-star text-amber-400"></i>
+                    <span class="font-bold text-gray-700">${Number(course.rating_avg).toFixed(1)}</span>
+                    <span>(${Number(course.rating_count)} review${Number(course.rating_count) !== 1 ? "s" : ""})</span>
+                </p>`;
         }
 
         async function loadLearnerCourses() {
@@ -163,7 +130,7 @@ if ($triggerBonusPopup) {
                 const data = await res.json();
 
                 if (data.status !== "success") {
-                    myGrid.innerHTML = `<div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-red-500">${data.message}</div>`;
+                    myGrid.innerHTML = `<div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-red-500">${escapeHtml(data.message)}</div>`;
                     availGrid.innerHTML = "";
                     return;
                 }
@@ -183,7 +150,7 @@ if ($triggerBonusPopup) {
 
                     availGrid.innerHTML = data.available_courses.map(course => `
 
-                <div class="flex flex-col justify-betweenbg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden" data-course-id="${course.course_id}">
+                <div class="flex flex-col justify-between bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden" data-course-id="${course.course_id}">
 
                     <div class="h-40 bg-gray-100 overflow-hidden">
                         ${course.thumbnail
@@ -201,6 +168,8 @@ if ($triggerBonusPopup) {
                         <p class="text-sm text-gray-500 mt-1 line-clamp-2">
                             ${escapeHtml(course.course_description ?? "")}
                         </p>
+
+                        ${ratingBadge(course)}
 
                         <button type="button"
                                 class="enroll-btn w-full bg-[#D02027] text-white rounded-lg py-2 text-sm font-eurostile-bold mt-4"
@@ -245,9 +214,9 @@ if ($triggerBonusPopup) {
 
             const myGrid = document.getElementById("myCoursesGrid");
 
-            const filtered = activeTabStatus === "all" ?
+            const filtered = activeTab === "All" ?
                 allMyCourses :
-                allMyCourses.filter(c => c.enrollment_status === activeTabStatus);
+                allMyCourses.filter(c => c.enrollment_status === activeTab);
 
             if (filtered.length === 0) {
                 myGrid.innerHTML = `<div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">No courses in this category.</div>`;
@@ -265,7 +234,7 @@ if ($triggerBonusPopup) {
                         }
                     </div>
 
-                    <div class="flex flex-col justify-between h-52 p-5">
+                    <div class="flex flex-col justify-between min-h-[13rem] p-5">
                         <div class="flex flex-col justify-between">
                             <div class="flex items-center justify-between">
                                 <h3 class="text-lg font-eurostile-bold text-[#234CA1]">
@@ -288,11 +257,19 @@ if ($triggerBonusPopup) {
                             <p class="text-xs text-gray-400 mt-1">${course.progress}% complete</p>
                         </div>
 
-                        <a href="course-viewer.php?course_id=${course.course_id}"
-                        class="block text-center bg-[#234CA1] text-white rounded-lg py-2 text-sm font-eurostile-bold mt-4">
-                            <i class="fa-solid fa-play mr-1"></i>
-                            ${course.progress > 0 ? "Continue" : "Start"}
-                        </a>
+                        <div class="flex gap-2 mt-4">
+                            <a href="course-viewer.php?course_id=${course.course_id}"
+                               class="flex-1 text-center bg-[#234CA1] text-white rounded-lg py-2 text-sm font-eurostile-bold">
+                                <i class="fa-solid fa-play mr-1"></i>
+                                ${course.progress > 0 ? "Continue" : "Start"}
+                            </a>
+
+                            ${course.enrollment_status === "Completed" ? `
+                                <button type="button" data-course-id="${course.course_id}"
+                                    class="rate-course-btn shrink-0 inline-flex items-center justify-center gap-1.5 px-3 rounded-lg border border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 text-sm font-eurostile-bold transition-colors">
+                                    <i class="fa-solid fa-star"></i> ${course.has_feedback ? "Edit feedback" : "Rate"}
+                                </button>` : ""}
+                        </div>
 
                     </div>
 
@@ -300,28 +277,76 @@ if ($triggerBonusPopup) {
 
             `).join("");
 
-        }
-
-        // Attach tab listeners ONCE, outside the fetch cycle — not on every reload
-        document.querySelectorAll(".my-tab-btn").forEach(btn => {
-
-            btn.addEventListener("click", () => {
-
-                activeTabStatus = btn.dataset.status;
-
-                document.querySelectorAll(".my-tab-btn").forEach(b => {
-                    b.classList.remove("border-[#234CA1]", "text-[#234CA1]");
-                    b.classList.add("border-transparent", "text-gray-400");
+            myGrid.querySelectorAll(".rate-course-btn").forEach(btn => {
+                btn.addEventListener("click", async () => {
+                    const saved = await openCourseFeedback({
+                        courseId: btn.dataset.courseId
+                    });
+                    if (saved) loadLearnerCourses();
                 });
-
-                btn.classList.add("border-[#234CA1]", "text-[#234CA1]");
-                btn.classList.remove("border-transparent", "text-gray-400");
-
-                renderMyCourses();
-
             });
 
+        }
+
+
+        const learnerTabOptions = ['All', 'Not Started', 'In Progress', 'Completed'];
+
+        const getLearnerTabId = status => `my-courses-tab-${status.toLowerCase().replaceAll(' ', '-')}`;
+
+        function moveLearnerTabSlider(status) {
+            const container = document.getElementById('myCoursesTabs');
+            const slider = document.getElementById('myCoursesTabSlider');
+            const button = document.getElementById(getLearnerTabId(status));
+
+            if (!container || !slider || !button) return;
+
+            slider.style.width = `${button.offsetWidth}px`;
+            slider.style.transform = `translateX(${button.offsetLeft - 4}px)`;
+        }
+
+        function switchLearnerTab(status, updateUrl = true) {
+
+            if (!learnerTabOptions.includes(status)) return;
+
+            activeTab = status;
+
+            document.querySelectorAll('#myCoursesTabs [data-status]').forEach(button => {
+                const active = button.dataset.status === status;
+                button.classList.toggle('universal-tabs-active', active);
+                button.classList.toggle('universal-tabs-inactive', !active);
+            });
+
+            moveLearnerTabSlider(status);
+            renderMyCourses();
+
+            if (updateUrl) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('status', status);
+                history.pushState({
+                    status
+                }, '', url);
+            }
+        }
+
+        document.querySelectorAll('#myCoursesTabs [data-status]').forEach(button => {
+            button.addEventListener('click', () => switchLearnerTab(button.dataset.status));
         });
+
+        moveLearnerTabSlider(activeTab);
+        window.addEventListener('load', () => moveLearnerTabSlider(activeTab)); // after fonts and layout settle
+        window.addEventListener('resize', () => moveLearnerTabSlider(activeTab));
+
+        window.addEventListener('popstate', () => {
+            const status = new URLSearchParams(window.location.search).get('status');
+            switchLearnerTab(learnerTabOptions.includes(status) ? status : 'All', false);
+        });
+
+        document.querySelectorAll('#myCoursesTabs [data-status]').forEach(button => {
+            button.addEventListener('click', () => {
+                switchLearnerTab(button.dataset.status);
+            });
+        });
+
 
         function attachEnrollHandlers() {
 
@@ -435,9 +460,6 @@ if ($triggerBonusPopup) {
 
         }
 
-        <?php if ($triggerBonusPopup): ?>
-            claimDailyLogin(); // shows +5 modal, then opens the bonus question
-        <?php endif; ?>
         loadLearnerCourses();
     </script>
 </body>

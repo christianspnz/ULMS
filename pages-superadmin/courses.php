@@ -14,10 +14,10 @@ $stmt = mysqli_prepare(
     $conn,
     "SELECT course_id, course_title, course_description, thumbnail, status, created_at, updated_at
      FROM courses
-     WHERE status = ?
+     WHERE status IN ('Draft', 'Published', 'Archived')
      ORDER BY updated_at DESC"
 );
-mysqli_stmt_bind_param($stmt, "s", $activeTab);
+
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $courses = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
@@ -31,7 +31,7 @@ $courses = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
     <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
-    <title>UEH - Super Admin</title>
+    <title>UTH - Super Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
@@ -42,7 +42,7 @@ $courses = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     <?php include('../sidebar-superadmin.php') ?>
     <main>
 
-        <div class="sticky top-0 z-30 bg-[#fbfcf8] pb-3 -mx-1 px-1">
+        <div class="sticky top-0 z-20 bg-[#fbfcf8] pb-3 -mx-1 px-1">
 
             <div class="flex justify-between items-center w-full">
                 <span class="page-breadcrumbs">
@@ -67,99 +67,111 @@ $courses = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
                 </a>
             </div>
             <!-- Tabs -->
-            <div class="flex gap-x-2 border-b border-gray-200 mt-5">
+            <div id="courseTabs" class="relative flex overflow-x-auto gap-x-2 bg-gray-100 rounded-lg mt-5 p-1">
+                <span id="tabSlider" class="absolute top-1 bottom-1 left-0 rounded-md shadow-sm bg-[#FFFFFF] transition-all duration-300 ease-in-out pointer-events-none"></span>
                 <?php foreach ($allowedTabs as $tab): ?>
-                    <a href="?status=<?= $tab ?>"
-                        class="px-5 py-3 font-eurostile-bold uppercase text-sm border-b-4 transition
-                          <?= $activeTab === $tab
-                                ? 'border-[#234CA1] text-[#234CA1]'
-                                : 'border-transparent text-gray-400 hover:text-[#234CA1]' ?>">
-                        <?= $tab ?>
-                    </a>
+                    <button type="button"
+                        onclick="switchTab('<?= $tab ?>')"
+                        id="tab-btn-<?= $tab ?>"
+                        class="bg-transparent universal-tabs relative z-10 px-5 py-2.5 rounded-md font-eurostile-bold uppercase text-sm whitespace-nowrap transition-colors duration-300 <?= $activeTab === $tab ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>"
+                        data-tab="<?= $tab ?>">
+                        <?= htmlspecialchars($tab) ?>
+                    </button>
                 <?php endforeach; ?>
             </div>
 
         </div>
 
         <!-- Course Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6">
-            <?php if (empty($courses)): ?>
-                <div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">
-                    No <?= strtolower($activeTab) ?> courses found.
-                </div>
-            <?php else: ?>
-                <?php foreach ($courses as $course): ?>
-                    <div class="flex flex-col justify-between bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden course-card"
-                        data-course-id="<?= $course['course_id'] ?>">
-                        <div class="h-40 bg-gray-100 overflow-hidden border-b border-gray-200">
-                            <?php if (!empty($course['thumbnail'])): ?>
-                                <img src="../uploads/thumbnails/<?= htmlspecialchars($course['thumbnail']) ?>"
-                                    class="w-full h-full object-cover" alt="Course thumbnail">
-                            <?php else: ?>
-                                <div class="w-full h-full flex items-center justify-center text-gray-300">
-                                    <i class="fa-solid fa-image text-4xl"></i>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                        <div class="flex flex-col justify-between h-52 p-5">
-                            <div>
-                                <div class="flex items-center justify-between">
-                                    <h3 class="text-lg font-eurostile-bold text-[#234CA1]">
-                                        <?= htmlspecialchars($course['course_title']) ?>
-                                    </h3>
-                                    <span class="text-xs font-bold uppercase px-2 py-1 rounded-full
+        <?php foreach ($allowedTabs as $tab): ?>
+            <?php
+            $tabCourses = array_filter(
+                $courses,
+                fn($course) => $course['status'] === $tab
+            );
+            ?>
+
+            <div id="panel-<?= $tab ?>"
+                class="tab-panel grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6 <?= $activeTab === $tab ? '' : 'hidden' ?>">
+
+                <?php if (empty($tabCourses)): ?>
+                    <div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">
+                        No <?= strtolower($tab) ?> courses found.
+                    </div>
+                <?php else: ?>
+                    <?php foreach ($tabCourses as $course): ?>
+                        <div class="flex flex-col justify-between bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden course-card"
+                            data-course-id="<?= $course['course_id'] ?>">
+                            <div class="h-40 bg-gray-100 overflow-hidden border-b border-gray-200">
+                                <?php if (!empty($course['thumbnail'])): ?>
+                                    <img src="../uploads/thumbnails/<?= htmlspecialchars($course['thumbnail']) ?>"
+                                        class="w-full h-full object-cover" alt="Course thumbnail">
+                                <?php else: ?>
+                                    <div class="w-full h-full flex items-center justify-center text-gray-300">
+                                        <i class="fa-solid fa-image text-4xl"></i>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="flex flex-col justify-between h-52 p-5">
+                                <div>
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-lg font-eurostile-bold text-[#234CA1]">
+                                            <?= htmlspecialchars($course['course_title']) ?>
+                                        </h3>
+                                        <span class="text-xs font-bold uppercase px-2 py-1 rounded-full
                                     <?= $course['status'] === 'Published' ? 'bg-green-100 text-green-700' : '' ?>
                                     <?= $course['status'] === 'Draft' ? 'bg-yellow-100 text-yellow-700' : '' ?>
                                     <?= $course['status'] === 'Archived' ? 'bg-gray-100 text-gray-500' : '' ?>">
-                                        <?= $course['status'] ?>
-                                    </span>
+                                            <?= $course['status'] ?>
+                                        </span>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-2 line-clamp-2">
+                                        <?= htmlspecialchars($course['course_description'] ?? '') ?>
+                                    </p>
+                                    <p class="text-xs text-gray-400 mt-2">
+                                        Last updated: <?= date('M j, Y', strtotime($course['updated_at'])) ?>
+                                    </p>
                                 </div>
-                                <p class="text-sm text-gray-500 mt-2 line-clamp-2">
-                                    <?= htmlspecialchars($course['course_description'] ?? '') ?>
-                                </p>
-                                <p class="text-xs text-gray-400 mt-2">
-                                    Last updated: <?= date('M j, Y', strtotime($course['updated_at'])) ?>
-                                </p>
-                            </div>
-                            <div class="flex gap-x-3 mt-4">
+                                <div class="flex gap-x-3 mt-4">
 
-                                <a href="edit-course.php?course_id=<?= $course['course_id'] ?>"
-                                    class="flex-1 text-center bg-[#234CA1] text-white rounded-lg py-2 text-sm font-eurostile-bold">
-                                    <i class="fa-solid fa-pen mr-1"></i> Edit
-                                </a>
+                                    <a href="edit-course.php?course_id=<?= $course['course_id'] ?>"
+                                        class="flex-1 text-center bg-[#234CA1] text-white rounded-lg py-2 text-sm font-eurostile-bold">
+                                        <i class="fa-solid fa-pen mr-1"></i> Edit
+                                    </a>
 
-                                <?php if ($course['status'] === 'Draft'): ?>
+                                    <?php if ($course['status'] === 'Draft'): ?>
 
-                                    <button type="button"
-                                        class="hard-delete-btn flex-1 bg-[#D02027] text-white rounded-lg py-2 text-sm font-eurostile-bold"
-                                        data-course-id="<?= $course['course_id'] ?>">
-                                        <i class="fa-solid fa-trash mr-1"></i> Delete
-                                    </button>
+                                        <button type="button"
+                                            class="hard-delete-btn flex-1 bg-[#D02027] text-white rounded-lg py-2 text-sm font-eurostile-bold"
+                                            data-course-id="<?= $course['course_id'] ?>">
+                                            <i class="fa-solid fa-trash mr-1"></i> Delete
+                                        </button>
 
-                                <?php elseif ($course['status'] === 'Archived'): ?>
+                                    <?php elseif ($course['status'] === 'Archived'): ?>
 
-                                    <button type="button"
-                                        class="restore-btn flex-1 bg-green-600 text-white rounded-lg py-2 text-sm font-eurostile-bold"
-                                        data-course-id="<?= $course['course_id'] ?>">
-                                        <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Publish
-                                    </button>
+                                        <button type="button"
+                                            class="restore-btn flex-1 bg-green-600 text-white rounded-lg py-2 text-sm font-eurostile-bold"
+                                            data-course-id="<?= $course['course_id'] ?>">
+                                            <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Publish
+                                        </button>
 
-                                <?php else: ?>
+                                    <?php else: ?>
 
-                                    <button type="button"
-                                        class="archive-btn flex-1 bg-[#d0aa13] text-white rounded-lg py-2 text-sm font-eurostile-bold"
-                                        data-course-id="<?= $course['course_id'] ?>">
-                                        <i class="fa-solid fa-box-archive mr-1"></i> Archive
-                                    </button>
+                                        <button type="button"
+                                            class="archive-btn flex-1 bg-[#d0aa13] text-white rounded-lg py-2 text-sm font-eurostile-bold"
+                                            data-course-id="<?= $course['course_id'] ?>">
+                                            <i class="fa-solid fa-box-archive mr-1"></i> Archive
+                                        </button>
 
-                                <?php endif; ?>
+                                    <?php endif; ?>
 
+                                </div>
                             </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
 
     </main>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
@@ -168,6 +180,51 @@ $courses = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
         AOS.init({
             duration: 600,
             once: false // allow animations to replay, not just fire once ever
+        });
+
+        let currentTab = <?= json_encode($activeTab) ?>;
+
+        function moveTabSlider(tabName) {
+            const button = document.getElementById(`tab-btn-${tabName}`);
+            const slider = document.getElementById('tabSlider');
+            if (!button || !slider) return;
+            slider.style.width = `${button.offsetWidth}px`;
+            slider.style.transform = `translateX(${button.offsetLeft}px)`;
+        }
+
+        function switchTab(tabName, updateUrl = true) {
+            const allowedTabs = ['Draft', 'Published', 'Archived'];
+            if (!allowedTabs.includes(tabName) || tabName === currentTab) return;
+
+            currentTab = tabName;
+
+            document.querySelectorAll('.universal-tabs').forEach(button => {
+                const active = button.dataset.tab === tabName;
+                button.classList.toggle('text-[#234CA1]', active);
+                button.classList.toggle('text-gray-500', !active);
+            });
+
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.toggle('hidden', panel.id !== `panel-${tabName}`);
+            });
+
+            moveTabSlider(tabName);
+
+            if (updateUrl) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('status', tabName);
+                history.pushState({ status: tabName }, '', url);
+            }
+        }
+
+        moveTabSlider(currentTab);
+
+        window.addEventListener('resize', () => moveTabSlider(currentTab));
+
+        window.addEventListener('popstate', () => {
+            const tab = new URLSearchParams(window.location.search).get('status');
+            const validTab = ['Draft', 'Published', 'Archived'].includes(tab) ? tab : 'Published';
+            if (validTab !== currentTab) switchTab(validTab, false);
         });
 
         window.addEventListener('pageshow', function(event) {

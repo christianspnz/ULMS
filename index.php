@@ -1,5 +1,17 @@
 <?php
 require "config/config.php";
+require_once __DIR__ . "/php/points/tiers.php";
+$tiers = getAllTiers();
+
+// Keep these in sync with the values your code awards.
+// The attendance value is my placeholder, so change it or delete that row.
+$pointWays = [
+    ['icon' => 'fa-fire',           'label' => 'Log in daily',         'note' => 'Every day you visit',                       'points' => 5],
+    ['icon' => 'fa-bolt',           'label' => '5-day login streak',   'note' => 'Miss a day and the streak restarts',       'points' => 50],
+    ['icon' => 'fa-circle-question', 'label' => 'Daily bonus question', 'note' => 'A new question every day, 3 attempts',     'points' => 10],
+    ['icon' => 'fa-graduation-cap', 'label' => 'Complete a course',    'note' => 'Finish the modules and the post-test',      'points' => 50],
+    ['icon' => 'fa-calendar-check', 'label' => 'Attend live training', 'note' => 'Time in and out of the session',            'points' => 20],
+];
 
 // Published courses count
 $courseCountResult = mysqli_query($conn, "SELECT COUNT(*) as total FROM courses WHERE status = 'Published'");
@@ -29,7 +41,7 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
     <link rel="icon" type="image/png" href="./assets/ulh-logo.png" class="w-24">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
-    <title>UEH</title>
+    <title>UTH - Landing Page</title>
 </head>
 
 <body class="p-0 flex-col lg:px-10">
@@ -38,16 +50,16 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
         <?php include 'header.php'; ?>
     </header>
     <main class="w-full lg:gap-y-20 ml-0 px-10 lg:px-16 pb-10 pt-0">
-        <div class="flex flex-col lg:flex-row justify-center items-center gap-y-10 w-full">
+        <div class="flex flex-col lg:flex-row justify-center items-center gap-y-10 w-full mb-10">
             <div class="flex flex-col justify-center lg:justify-start items-center lg:items-start gap-y-1 w-full lg:w-[55%] ">
                 <div class="flex flex-col justify-center items-center lg:items-start w-full">
                     <span data-aos="fade-right" class="landing-title-text flex gap-x-3">
                         Your <p class="text-[#D02027] uppercase">Gateway</p>
                     </span>
-                    <span data-aos="fade-right" data-aos-delay="150" class="landing-title-text -mt-5 lg:-mt-12">
+                    <span data-aos="fade-right" data-aos-delay="150" class="landing-title-text -mt-5 lg:-mt-8 xl:-mt-12">
                         to Continuous
                     </span>
-                    <span data-aos="fade-right" data-aos-delay="300" class="landing-title-text text-[#D02027] -mt-5 lg:-mt-12 uppercase">
+                    <span data-aos="fade-right" data-aos-delay="300" class="landing-title-text text-[#D02027] -mt-5 lg:-mt-8 xl:-mt-12 uppercase">
                         Learning
                     </span>
                 </div>
@@ -172,7 +184,7 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
             </div>
         </div>
         <!-- Stats / Trust Bar -->
-        <section class="lg:px-16 mb-10">
+        <!-- <section class="lg:px-16 mb-10">
 
             <div data-aos="fade-up" class="bg-white rounded-3xl shadow-md border border-gray-100 p-8 lg:p-10">
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
@@ -208,17 +220,15 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
                 </div>
             </div>
 
-        </section>
+        </section> -->
         <!-- Feedbacks -->
         <section id="feedback" class="lg:px-16 mb-10">
-
             <div data-aos="zoom-in" class="text-center mb-10">
                 <h2 class="text-3xl font-eurostile-black text-[#234CA1]">What Our Users Say</h2>
                 <div id="feedbackSummary" class="flex items-center justify-center gap-x-2 mt-3">
                     <p class="text-gray-400 text-sm">Loading reviews...</p>
                 </div>
             </div>
-
             <div data-aos="fade-right" data-aos-easing="ease-in-out" data-aos-delay="150" id="feedbackCarouselWrapper" class="relative">
 
                 <button type="button" id="feedbackPrevBtn" class="hidden absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 rounded-full bg-white shadow-lg border border-gray-100 items-center justify-center hover:bg-gray-50 transition">
@@ -243,46 +253,159 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
 
             <div data-aos="zoom-in" class="text-center mb-14">
                 <h2 class="text-3xl font-eurostile-black text-[#234CA1]">How It Works</h2>
-                <p class="text-gray-500 mt-2">Getting started takes just a few steps</p>
+                <p class="text-gray-500 mt-2 max-w-2xl mx-auto">From signing up to climbing the leaderboard: what you do, and what you earn along the way.</p>
             </div>
 
-            <div class="relative grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- PART 1: GET STARTED -->
+            <div class="mb-16">
+                <p data-aos="fade-up" class="text-center text-xs font-bold tracking-[0.2em] uppercase text-[#D02027] mb-8">Part 1 · Get Started</p>
 
-                <!-- Connecting line (desktop only) -->
-                <div class="hidden md:block absolute top-8 left-[12.5%] right-[12.5%] h-0.5 bg-gray-200"></div>
+                <div class="relative grid grid-cols-1 md:grid-cols-3 gap-8">
 
-                <div data-aos="fade-up" data-aos-delay="0" class="group relative flex flex-col items-center text-center">
-                    <div class="group-hover:bg-white group-hover:text-[#234CA1] group-hover:border group-hover:border-[#234CA1] group-hover:transition-colors group-hover:duration-300 relative z-10 w-16 h-16 rounded-full bg-[#234CA1] text-white flex items-center justify-center text-xl font-eurostile-black shadow-md mb-5">
-                        1
+                    <!-- Connecting line (desktop only) -->
+                    <div class="hidden md:block absolute top-8 left-[16.6%] right-[16.6%] h-0.5 bg-gray-200"></div>
+
+                    <div data-aos="fade-up" data-aos-delay="0" class="group relative flex flex-col items-center">
+                        <div class="group-hover:bg-white group-hover:text-[#234CA1] group-hover:border group-hover:border-[#234CA1] transition-colors duration-300 relative z-10 w-16 h-16 rounded-full bg-[#234CA1] text-white flex items-center justify-center text-xl font-eurostile-black shadow-md mb-5">1</div>
+                        <div class="w-full h-full bg-white rounded-3xl shadow-md border border-gray-100 p-6">
+                            <h3 class="font-eurostile-bold text-[#234CA1] text-base">Register</h3>
+                            <p class="text-gray-500 text-sm mt-1.5">Create your account with your work details.</p>
+                            <ul class="mt-4 space-y-2 text-sm text-gray-600">
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#234CA1] mt-0.5"></i><span>Your work email</span></li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#234CA1] mt-0.5"></i><span>Your dealership and brand(s)</span></li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#234CA1] mt-0.5"></i><span>Your date hired, used to verify you if you forget your password</span></li>
+                            </ul>
+                            <a href="registration.php" class="inline-flex items-center gap-2 mt-5 text-sm font-bold text-[#234CA1] hover:text-[#D02027] transition-colors">Create an account <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
                     </div>
-                    <h3 class="font-eurostile-bold text-[#234CA1] text-base">Register</h3>
-                    <p class="text-gray-500 text-sm mt-1.5">Create your account with your work details and dealership info.</p>
-                </div>
 
-                <div data-aos="fade-up" data-aos-delay="150" class="group relative flex flex-col items-center text-center">
-                    <div class="group-hover:bg-white group-hover:text-[#234CA1] group-hover:border group-hover:border-[#234CA1] group-hover:transition-colors group-hover:duration-300 relative z-10 w-16 h-16 rounded-full bg-[#234CA1] text-white flex items-center justify-center text-xl font-eurostile-black shadow-md mb-5">
-                        2
+                    <div data-aos="fade-up" data-aos-delay="150" class="group relative flex flex-col items-center">
+                        <div class="group-hover:bg-white group-hover:text-[#234CA1] group-hover:border group-hover:border-[#234CA1] transition-colors duration-300 relative z-10 w-16 h-16 rounded-full bg-[#234CA1] text-white flex items-center justify-center text-xl font-eurostile-black shadow-md mb-5">2</div>
+                        <div class="w-full h-full bg-white rounded-3xl shadow-md border border-gray-100 p-6">
+                            <h3 class="font-eurostile-bold text-[#234CA1] text-base">Get Approved</h3>
+                            <p class="text-gray-500 text-sm mt-1.5">An administrator reviews your registration before you can log in.</p>
+                            <ul class="mt-4 space-y-2 text-sm text-gray-600">
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#234CA1] mt-0.5"></i><span>Approval time depends on your administrator's availability</span></li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#234CA1] mt-0.5"></i><span>Your login details arrive by email once approved</span></li>
+                            </ul>
+                        </div>
                     </div>
-                    <h3 class="font-eurostile-bold text-[#234CA1] text-base">Get Approved</h3>
-                    <p class="text-gray-500 text-sm mt-1.5">An administrator reviews and approves your account.</p>
-                </div>
 
-                <div data-aos="fade-up" data-aos-delay="300" class="group relative flex flex-col items-center text-center">
-                    <div class="group-hover:bg-white group-hover:text-[#234CA1] group-hover:border group-hover:border-[#234CA1] group-hover:transition-colors group-hover:duration-300 relative z-10 w-16 h-16 rounded-full bg-[#234CA1] text-white flex items-center justify-center text-xl font-eurostile-black shadow-md mb-5">
-                        3
+                    <div data-aos="fade-up" data-aos-delay="300" class="group relative flex flex-col items-center">
+                        <div class="group-hover:bg-white group-hover:text-[#234CA1] group-hover:border group-hover:border-[#234CA1] transition-colors duration-300 relative z-10 w-16 h-16 rounded-full bg-[#234CA1] text-white flex items-center justify-center text-xl font-eurostile-black shadow-md mb-5">3</div>
+                        <div class="w-full h-full bg-white rounded-3xl shadow-md border border-gray-100 p-6">
+                            <h3 class="font-eurostile-bold text-[#234CA1] text-base">Log In &amp; Enroll</h3>
+                            <p class="text-gray-500 text-sm mt-1.5">Pick from the courses available for your brand and dealership.</p>
+                            <ul class="mt-4 space-y-2 text-sm text-gray-600">
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#234CA1] mt-0.5"></i><span>Browse the available courses</span></li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#234CA1] mt-0.5"></i><span>Enroll with one click</span></li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#234CA1] mt-0.5"></i><span>Track everything under My Courses</span></li>
+                            </ul>
+                            <a href="start_learning.php" class="inline-flex items-center gap-2 mt-5 text-sm font-bold text-[#234CA1] hover:text-[#D02027] transition-colors">Log in <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
                     </div>
-                    <h3 class="font-eurostile-bold text-[#234CA1] text-base">Enroll in Courses</h3>
-                    <p class="text-gray-500 text-sm mt-1.5">Browse courses available for your brand and start enrolling.</p>
-                </div>
 
-                <div data-aos="fade-up" data-aos-delay="450" class="group relative flex flex-col items-center text-center">
-                    <div class="group-hover:bg-white group-hover:text-[#D02027] group-hover:border group-hover:border-[#D02027] group-hover:transition-colors group-hover:duration-300 relative z-10 w-16 h-16 rounded-full bg-[#D02027] text-white flex items-center justify-center text-xl font-eurostile-black shadow-md mb-5">
-                        4
+                </div>
+            </div>
+
+            <!-- PART 2: LEARNING JOURNEY -->
+            <div class="mb-16">
+                <p data-aos="fade-up" class="text-center text-xs font-bold tracking-[0.2em] uppercase text-[#D02027] mb-2">Part 2 · Your Learning Journey</p>
+                <p data-aos="fade-up" class="text-center text-gray-500 text-sm mb-8">Every course follows the same four stages.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+                    <div data-aos="fade-up" data-aos-delay="0" class="relative bg-white rounded-3xl shadow-md border border-gray-100 p-6">
+                        <div class="hidden md:flex absolute top-1/2 -translate-y-1/2 -right-6 w-6 h-6 items-center justify-center text-gray-300"><i class="fa-solid fa-chevron-right"></i></div>
+                        <!-- <div class="w-12 h-12 rounded-2xl bg-[#234CA1]/10 flex items-center justify-center mb-4"><i class="fa-solid fa-clipboard-question text-[#234CA1] text-xl"></i></div> -->
+                        <p class="font-mono text-[11px] font-bold tracking-widest text-[#D02027] uppercase">Stage 01</p>
+                        <h3 class="font-eurostile-bold text-[#234CA1] text-base mt-1">Pre-Test</h3>
+                        <p class="text-gray-500 text-sm mt-2">A short check before you start. It measures where you begin, so you can see how much you improve.</p>
                     </div>
-                    <h3 class="font-eurostile-bold text-[#234CA1] text-base">Start Learning</h3>
-                    <p class="text-gray-500 text-sm mt-1.5">Complete modules, take assessments, and track your progress.</p>
-                </div>
 
+                    <div data-aos="fade-up" data-aos-delay="150" class="relative bg-white rounded-3xl shadow-md border border-gray-100 p-6">
+                        <div class="hidden md:flex absolute top-1/2 -translate-y-1/2 -right-6 w-6 h-6 items-center justify-center text-gray-300"><i class="fa-solid fa-chevron-right"></i></div>
+                        <!-- <div class="w-12 h-12 rounded-2xl bg-[#D02027]/10 flex items-center justify-center mb-4"><i class="fa-solid fa-layer-group text-[#D02027] text-xl"></i></div> -->
+                        <p class="font-mono text-[11px] font-bold tracking-widest text-[#D02027] uppercase">Stage 02</p>
+                        <h3 class="font-eurostile-bold text-[#234CA1] text-base mt-1">Modules</h3>
+                        <p class="text-gray-500 text-sm mt-2">Learn at your own pace with videos, PDFs, documents and slides. Mark each module complete as you go.</p>
+                    </div>
+
+                    <div data-aos="fade-up" data-aos-delay="300" class="relative bg-white rounded-3xl shadow-md border border-gray-100 p-6">
+                        <div class="hidden md:flex absolute top-1/2 -translate-y-1/2 -right-6 w-6 h-6 items-center justify-center text-gray-300"><i class="fa-solid fa-chevron-right"></i></div>
+                        <!-- <div class="w-12 h-12 rounded-2xl bg-[#234CA1]/10 flex items-center justify-center mb-4"><i class="fa-solid fa-flag-checkered text-[#234CA1] text-xl"></i></div> -->
+                        <p class="font-mono text-[11px] font-bold tracking-widest text-[#D02027] uppercase">Stage 03</p>
+                        <h3 class="font-eurostile-bold text-[#234CA1] text-base mt-1">Post-Test</h3>
+                        <p class="text-gray-500 text-sm mt-2">Once every module is done, take the final test. You have a limited number of attempts, so take your time.</p>
+                    </div>
+
+                    <div data-aos="fade-up" data-aos-delay="450" class="relative bg-white rounded-3xl shadow-md border border-gray-100 p-6">
+                        <!-- <div class="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center mb-4"><i class="fa-solid fa-trophy text-amber-500 text-xl"></i></div> -->
+                        <p class="font-mono text-[11px] font-bold tracking-widest text-[#D02027] uppercase">Stage 04</p>
+                        <h3 class="font-eurostile-bold text-[#234CA1] text-base mt-1">Course Complete</h3>
+                        <p class="text-gray-500 text-sm mt-2">Your course is marked Completed and you earn <span class="font-bold text-emerald-600">+<?= (int) $pointWays[3]['points'] ?> points</span> toward the leaderboard.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- PART 3: STAY ENGAGED -->
+            <div>
+                <p data-aos="fade-up" class="text-center text-xs font-bold tracking-[0.2em] uppercase text-[#D02027] mb-8">Part 3 · Stay Engaged</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                    <!-- Live training -->
+                    <div data-aos="fade-up" data-aos-delay="0" class="bg-white rounded-3xl shadow-md border border-gray-100 p-6">
+                        <!-- <div class="w-12 h-12 rounded-2xl bg-[#234CA1]/10 flex items-center justify-center mb-4"><i class="fa-solid fa-calendar-check text-[#234CA1] text-xl"></i></div> -->
+                        <h3 class="font-eurostile-bold text-[#234CA1] text-lg">Live Training</h3>
+                        <p class="text-gray-500 text-sm mt-2">Your calendar shows the sessions meant for your brand and dealership, online or face-to-face.</p>
+                        <ul class="mt-4 space-y-3 text-sm text-gray-600">
+                            <li class="flex items-start gap-3"><span class="w-6 h-6 rounded-full bg-[#234CA1]/10 text-[#234CA1] text-xs font-bold flex items-center justify-center shrink-0">1</span><span><b>RSVP</b> so organizers know you're coming</span></li>
+                            <li class="flex items-start gap-3"><span class="w-6 h-6 rounded-full bg-[#234CA1]/10 text-[#234CA1] text-xs font-bold flex items-center justify-center shrink-0">2</span><span><b>Time In</b> when the session starts. It opens 5 minutes early</span></li>
+                            <li class="flex items-start gap-3"><span class="w-6 h-6 rounded-full bg-[#234CA1]/10 text-[#234CA1] text-xs font-bold flex items-center justify-center shrink-0">3</span><span><b>Time Out</b> when it ends. Your attendance is recorded automatically</span></li>
+                        </ul>
+                        <p class="mt-4 text-xs text-gray-400">Online sessions include a join link right in the calendar.</p>
+                    </div>
+
+                    <!-- Ways to earn -->
+                    <div data-aos="fade-up" data-aos-delay="150" class="bg-white rounded-3xl shadow-md border border-gray-100 p-6">
+                        <!-- <div class="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center mb-4"><i class="fa-solid fa-star text-amber-500 text-xl"></i></div> -->
+                        <h3 class="font-eurostile-bold text-[#234CA1] text-lg">Ways to Earn Points</h3>
+                        <ul class="mt-3">
+                            <?php foreach ($pointWays as $w): ?>
+                                <li class="flex items-center justify-between gap-3 py-2.5 border-b border-gray-100 last:border-0 hover:bg-[#234CA1]/5 transition-all duration-300 hover:px-3">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <span class="w-9 h-9 rounded-lg bg-amber-50 text-amber-500 flex items-center justify-center shrink-0"><i class="fa-solid <?= htmlspecialchars($w['icon']) ?>"></i></span>
+                                        <div class="min-w-0">
+                                            <p class="text-sm font-bold text-[#234CA1]"><?= htmlspecialchars($w['label']) ?></p>
+                                            <p class="text-xs text-gray-400"><?= htmlspecialchars($w['note']) ?></p>
+                                        </div>
+                                    </div>
+                                    <span class="shrink-0 text-sm font-extrabold text-emerald-600">+<?= (int) $w['points'] ?></span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+
+                    <!-- Tiers -->
+                    <div data-aos="fade-up" data-aos-delay="300" class="bg-white rounded-3xl shadow-md border border-gray-100 p-6">
+                        <!-- <div class="w-12 h-12 rounded-2xl bg-[#D02027]/10 flex items-center justify-center mb-4"><i class="fa-solid fa-ranking-star text-[#D02027] text-xl"></i></div> -->
+                        <h3 class="font-eurostile-bold text-[#234CA1] text-lg">Level Up Your Tier</h3>
+                        <p class="text-gray-500 text-sm mt-2">Your total points decide your tier and your place on the leaderboard.</p>
+                        <div class="mt-4 space-y-2">
+                            <?php foreach ($tiers as $t): ?>
+                                <div class="flex items-center justify-between gap-3 rounded-xl px-3 py-2 hover:scale-105 duration-300 transition-transform" style="background: <?= htmlspecialchars($t['color']) ?>1a">
+                                    <span class="flex items-center gap-2 text-sm font-bold" style="color: <?= htmlspecialchars($t['color']) ?>">
+                                        <i class="fa-solid <?= htmlspecialchars($t['icon']) ?> w-4 text-center"></i><?= htmlspecialchars($t['name']) ?>
+                                    </span>
+                                    <span class="font-mono text-xs text-gray-500"><?= number_format($t['min']) ?>+ pts</span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
         </section>
@@ -296,7 +419,14 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-                <div data-aos="fade-up" data-aos-delay="0" class="bg-white rounded-3xl shadow-md border border-gray-100 px-16 py-14 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <div data-aos="fade-up" data-aos-delay="0" class="group relative overflow-hidden bg-white rounded-3xl shadow-md border border-gray-100 px-16 py-14 text-center
+                                                                transition-all duration-300
+                                                                hover:shadow-xl hover:-translate-y-1
+                                                                before:content-[''] before:absolute before:top-0 before:left-1/2
+                                                                before:w-0 before:h-1 before:bg-[#234CA1]
+                                                                before:-translate-x-1/2
+                                                                before:transition-all before:duration-500 before:ease-in-out
+                                                                hover:before:w-full">
                     <div class="w-16 h-16 rounded-2xl bg-[#234CA1]/10 flex items-center justify-center mx-auto mb-5">
                         <i class="fa-solid fa-user text-[#234CA1] text-2xl"></i>
                     </div>
@@ -304,7 +434,14 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
                     <p class="text-gray-500 text-sm">Take courses, complete assessments, join live training, and track your own certifications.</p>
                 </div>
 
-                <div data-aos="fade-up" data-aos-delay="150" class="bg-white rounded-3xl shadow-md border border-gray-100 px-16 py-14 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <div data-aos="fade-up" data-aos-delay="150" class="group relative overflow-hidden bg-white rounded-3xl shadow-md border border-gray-100 px-16 py-14 text-center
+                                                                transition-all duration-300
+                                                                hover:shadow-xl hover:-translate-y-1
+                                                                before:content-[''] before:absolute before:top-0 before:left-1/2
+                                                                before:w-0 before:h-1 before:bg-[#234CA1]
+                                                                before:-translate-x-1/2
+                                                                before:transition-all before:duration-500 before:ease-in-out
+                                                                hover:before:w-full">
                     <div class="w-16 h-16 rounded-2xl bg-[#D02027]/10 flex items-center justify-center mx-auto mb-5">
                         <i class="fa-solid fa-users text-[#D02027] text-2xl"></i>
                     </div>
@@ -312,7 +449,14 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
                     <p class="text-gray-500 text-sm">Monitor your team's progress, track attendance, and keep training on schedule.</p>
                 </div>
 
-                <div data-aos="fade-up" data-aos-delay="300" class="bg-white rounded-3xl shadow-md border border-gray-100 px-16 py-14 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <div data-aos="fade-up" data-aos-delay="300" class="group relative overflow-hidden bg-white rounded-3xl shadow-md border border-gray-100 px-16 py-14 text-center
+                                                                transition-all duration-300
+                                                                hover:shadow-xl hover:-translate-y-1
+                                                                before:content-[''] before:absolute before:top-0 before:left-1/2
+                                                                before:w-0 before:h-1 before:bg-[#234CA1]
+                                                                before:-translate-x-1/2
+                                                                before:transition-all before:duration-500 before:ease-in-out
+                                                                hover:before:w-full">
                     <div class="w-16 h-16 rounded-2xl bg-[#234CA1]/10 flex items-center justify-center mx-auto mb-5">
                         <i class="fa-solid fa-chart-line text-[#234CA1] text-2xl"></i>
                     </div>
@@ -322,6 +466,63 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
 
             </div>
 
+        </section>
+        <!-- Leaderboard Advertisement -->
+        <section id="leaderboard" class="py-12 lg:py-20">
+            <div>
+                <div class="flex flex-col lg:flex-row items-center gap-10 lg:gap-12">
+                    <div class="w-full lg:w-[52%] flex flex-col items-center lg:items-start text-center lg:text-left">
+                        <span data-aos="fade-right" class="text-sm md:text-base font-bold tracking-[0.2em] uppercase text-[#234CA1] mb-5">Learn <span class="text-[#D02027] mx-1">•</span> Earn <span class="text-[#D02027] mx-1">•</span> Lead</span>
+                        <h2 data-aos="fade-right" data-aos-delay="150" class="text-4xl sm:text-5xl xl:text-6xl font-extrabold leading-[1.08] tracking-tight text-[#1748B8]">Turn Learning Into <span data-aos="fade-right" data-aos-delay="300" class="block text-[#08B9ED] mt-1">Achievement.</span></h2>
+                        <p data-aos="fade-right" data-aos-delay="450" class="mt-6 max-w-xl text-base md:text-lg leading-relaxed text-slate-600">Earn points, build your streak, and climb the leaderboard as you complete your training.</p>
+                        <div class="mt-7 grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+                            <div data-aos="fade-right" data-aos-delay="900" class="flex items-center gap-3 rounded-2xl border border-slate-200 p-3">
+                                <div class="w-11 h-11 shrink-0 rounded-full bg-amber-50 flex items-center justify-center text-amber-500"><i class="fa-solid fa-star text-lg"></i></div>
+                                <span class="text-sm font-bold text-[#234CA1]">Earn Points</span>
+                            </div>
+                            <div data-aos="fade-right" data-aos-delay="750" class="flex items-center gap-3 rounded-2xl border border-slate-200 p-3">
+                                <div class="w-11 h-11 shrink-0 rounded-full bg-cyan-50 flex items-center justify-center text-cyan-500"><i class="fa-solid fa-fire text-lg"></i></div>
+                                <span class="text-sm font-bold text-[#234CA1]">Build Your Streak</span>
+                            </div>
+                            <div data-aos="fade-right" data-aos-delay="600" class="flex items-center gap-3 rounded-2xl border border-slate-200 p-3">
+                                <div class="w-11 h-11 shrink-0 rounded-full bg-blue-50 flex items-center justify-center text-blue-600"><i class="fa-solid fa-users text-lg"></i></div>
+                                <span class="text-sm font-bold text-[#234CA1]">Compete Across Brands</span>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex flex-col sm:flex-row items-center gap-5 w-full sm:w-auto">
+                            <a data-aos="fade-right" data-aos-delay="1050" href="pages-learner/leaderboard.php" class="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-7 py-4 rounded-full bg-[#234CA1] text-white font-bold hover:bg-[#193B82] hover:shadow-lg transition-all duration-300">Explore the Leaderboard <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-[48%] min-w-0">
+                        <div data-aos="zoom-in" data-aos-delay="450" class="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                            <div class="px-5 py-5 sm:px-6 border-b border-slate-100">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                    <div class="flex items-center gap-3">
+                                        <div data-aos="zoom-in" data-aos-delay="750" class="text-amber-500 text-2xl"><i class="fa-solid fa-trophy"></i></div>
+                                        <div>
+                                            <h3 data-aos="zoom-in" data-aos-delay="750" class="text-lg font-extrabold text-[#234CA1]">Top Learners</h3>
+                                            <p data-aos="zoom-in" data-aos-delay="750" class="text-xs text-slate-500 mt-0.5">Overall hall of fame</p>
+                                        </div>
+                                    </div>
+                                    <span data-aos="zoom-in" data-aos-delay="750" class="inline-flex items-center gap-2 self-start rounded-full bg-blue-50 px-3 py-1.5 text-xs font-bold text-[#234CA1]"><i class="fa-solid fa-ranking-star"></i> All-Time</span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-[42px_minmax(0,1fr)_auto] sm:grid-cols-[42px_minmax(0,1fr)_80px] gap-3 px-5 sm:px-6 py-3 bg-slate-50/70 text-[10px] sm:text-xs font-bold uppercase tracking-wide text-slate-400">
+                                <span>Rank</span>
+                                <span>Learner</span>
+                                <span class="text-right">Points</span>
+                            </div>
+                            <div data-aos="zoom-in" data-aos-delay="750" id="indexAllTimeLeaderboard" class="p-3 sm:p-4 space-y-2" aria-live="polite">
+                                <div class="py-12 text-center text-sm text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading top learners...</div>
+                            </div>
+                            <div class="px-5 sm:px-6 py-4 border-t border-slate-100 flex items-center justify-between gap-3">
+                                <p class="text-xs text-slate-500">Every lesson brings you closer to the top.</p>
+                                <a href="pages-learner/leaderboard.php" class="shrink-0 text-sm font-bold text-[#234CA1] hover:text-[#08B9ED] transition-colors">View All <i class="fa-solid fa-arrow-right ml-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
         <!-- FAQ -->
         <section id="faq" class="lg:px-16 mb-10">
@@ -333,7 +534,7 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
 
             <div class="max-w-3xl mx-auto space-y-3">
 
-                <div class="faq-item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div data-aos="zoom-in" class="faq-item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <button type="button" class="faq-question w-full flex justify-between items-center text-left px-6 py-5">
                         <span class="font-eurostile-bold text-[#234CA1] text-sm lg:text-base">How do I get access to the platform?</span>
                         <i class="fa-solid fa-chevron-down text-[#234CA1] text-sm transition-transform duration-300 shrink-0 ml-4"></i>
@@ -345,7 +546,7 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
                     </div>
                 </div>
 
-                <div class="faq-item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div data-aos="zoom-in" class="faq-item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <button type="button" class="faq-question w-full flex justify-between items-center text-left px-6 py-5">
                         <span class="font-eurostile-bold text-[#234CA1] text-sm lg:text-base">How long does approval take?</span>
                         <i class="fa-solid fa-chevron-down text-[#234CA1] text-sm transition-transform duration-300 shrink-0 ml-4"></i>
@@ -357,7 +558,7 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
                     </div>
                 </div>
 
-                <div class="faq-item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div data-aos="zoom-in" class="faq-item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <button type="button" class="faq-question w-full flex justify-between items-center text-left px-6 py-5">
                         <span class="font-eurostile-bold text-[#234CA1] text-sm lg:text-base">What if I forget my password?</span>
                         <i class="fa-solid fa-chevron-down text-[#234CA1] text-sm transition-transform duration-300 shrink-0 ml-4"></i>
@@ -369,7 +570,7 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
                     </div>
                 </div>
 
-                <div class="faq-item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div data-aos="zoom-in" class="faq-item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <button type="button" class="faq-question w-full flex justify-between items-center text-left px-6 py-5">
                         <span class="font-eurostile-bold text-[#234CA1] text-sm lg:text-base">Which brands and dealerships are covered?</span>
                         <i class="fa-solid fa-chevron-down text-[#234CA1] text-sm transition-transform duration-300 shrink-0 ml-4"></i>
@@ -381,7 +582,7 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
                     </div>
                 </div>
 
-                <div class="faq-item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div data-aos="zoom-in" class="faq-item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <button type="button" class="faq-question w-full flex justify-between items-center text-left px-6 py-5">
                         <span class="font-eurostile-bold text-[#234CA1] text-sm lg:text-base">Is there a cost to use the platform?</span>
                         <i class="fa-solid fa-chevron-down text-[#234CA1] text-sm transition-transform duration-300 shrink-0 ml-4"></i>
@@ -396,9 +597,9 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
             </div>
 
         </section>
+        <!-- Contact/Support -->
         <section id="contact" class="flex flex-col justify-center items-center lg:flex-row gap-y-10 gap-x-10 mb-20">
-            <!-- Contact/Support -->
-            <div data-aos="fade-up" class="bg-white rounded-3xl shadow-md border border-gray-100 p-10 lg:p-12 text-center">
+            <div data-aos="zoom-in" data-aos-delay="200" class="bg-white rounded-3xl shadow-md border border-gray-100 p-10 lg:p-12 text-center">
 
                 <div class="w-16 h-16 rounded-2xl bg-[#234CA1]/10 flex items-center justify-center mx-auto mb-5">
                     <i class="fa-solid fa-headset text-[#234CA1] text-xl"></i>
@@ -695,6 +896,90 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
 
             window.open(gmailURL, "_blank");
         }
+
+
+
+        async function loadIndexAllTimeLeaderboard() {
+            const container = document.getElementById("indexAllTimeLeaderboard");
+            if (!container) return;
+
+            try {
+                const response = await fetch("php/points/get-public-leaderboard.php?limit=3");
+                if (!response.ok) throw new Error("Unable to retrieve leaderboard.");
+
+                const data = await response.json();
+                if (data.status !== "success" || !Array.isArray(data.leaderboard)) {
+                    throw new Error("Invalid leaderboard response.");
+                }
+
+                const entries = data.leaderboard.slice().sort((a, b) => Number(a.rank) - Number(b.rank)).slice(0, 3);
+
+                if (!entries.length) {
+                    container.innerHTML = `<p class="py-10 text-center text-sm text-slate-500">The leaderboard is waiting for its first champion.</p>`;
+                    return;
+                }
+
+                const escapeHTML = value => {
+                    const element = document.createElement("span");
+                    element.textContent = value ?? "";
+                    return element.innerHTML;
+                };
+
+                container.innerHTML = entries.map(entry => {
+                    const rank = Number(entry.rank);
+                    const points = Number(entry.total_points) || 0;
+                    const initials = `${(entry.first_name || "").charAt(0)}${(entry.last_name || "").charAt(0)}`.toUpperCase();
+                    const medals = {
+                        1: ["bg-amber-100 text-amber-600", '<i class="fa-solid fa-crown"></i>'],
+                        2: ["bg-slate-200 text-slate-600", '<i class="fa-solid fa-medal"></i>'],
+                        3: ["bg-orange-100 text-orange-600", '<i class="fa-solid fa-medal"></i>']
+                    };
+                    const [badgeStyle, badgeIcon] = medals[rank] || ["bg-slate-100 text-slate-500", escapeHTML(rank)];
+                    const highlighted = rank === 3;
+                    const avatar = entry.profile_picture ?
+                        `<img src="${escapeHTML(entry.profile_picture)}" alt="" class="w-10 h-10 rounded-full object-cover shrink-0" onerror="this.style.display='none'">` :
+                        `<div class="w-10 h-10 rounded-full bg-[#234CA1] text-white flex items-center justify-center text-xs font-bold shrink-0">${escapeHTML(initials)}</div>`;
+
+                    const tier = entry.tier || {
+                        name: "Novice",
+                        icon: "fa-seedling",
+                        color: "#94a3b8"
+                    };
+
+                    const tierPill = `
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0"
+                              style="color:${escapeHTML(tier.color)}; background:${escapeHTML(tier.color)}1a"
+                              title="${escapeHTML(tier.name)}">
+                            <i class="fa-solid ${escapeHTML(tier.icon)}"></i>
+                            <span class="hidden sm:inline">${escapeHTML(tier.name)}</span>
+                        </span>`;
+
+                    return `
+                <div class="grid grid-cols-[42px_minmax(0,1fr)_auto] sm:grid-cols-[42px_minmax(0,1fr)_80px] gap-3 items-center p-3 sm:p-4 rounded-2xl border transition-colors ${highlighted ? "bg-blue-50/80 border-blue-100" : "bg-white border-transparent hover:border-slate-200 hover:bg-slate-50/70"}">
+                    <div class="w-8 h-8 rounded-full ${badgeStyle} flex items-center justify-center text-sm">${badgeIcon}</div>
+                    <div class="flex items-center gap-3 min-w-0">
+                        ${avatar}
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <p class="text-sm font-bold text-slate-800 truncate">${escapeHTML(entry.first_name)} ${escapeHTML(entry.last_name)}</p>
+                                ${tierPill}
+                            </div>
+                            <p class="text-xs text-slate-500 mt-1 truncate">${escapeHTML(entry.brand_name || "—")} <span class="mx-1">•</span> ${escapeHTML(entry.dealership_name || "—")}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-base font-extrabold text-blue-600">${points.toLocaleString()}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">PTS</p>
+                    </div>
+                </div>`;
+                }).join("");
+            } catch (error) {
+                console.error("Index leaderboard error:", error);
+                container.innerHTML = `<p class="py-10 text-center text-sm text-slate-500">The leaderboard is temporarily unavailable.</p>`;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadIndexAllTimeLeaderboard);
     </script>
 </body>
 

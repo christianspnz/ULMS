@@ -12,22 +12,16 @@ try {
     $userId = $_SESSION['user_id'];
     $designationId = $_SESSION['designation_id'];
 
-    $baseSql = "SELECT schedule_id, title, description, schedule_type, audience, event_date, start_time, end_time
-                FROM schedules
-                WHERE event_date >= CURDATE()
-                ORDER BY event_date ASC, start_time ASC
-                LIMIT 20";
-
+    // Not ended yet = upcoming AND currently running. Ended schedules drop off the list.
     $schedules = getVisibleSchedules(
         $conn,
         $userId,
         $designationId,
-        'event_date >= CURDATE()',
+        'TIMESTAMP(event_date, end_time) > NOW()',
         'ORDER BY event_date ASC, start_time ASC LIMIT 20'
     );
 
-    // Trim to 10 after filtering, since the base query pulls extra (20) to
-    // account for rows that might get filtered out by brand/dealership scoping
+    // Trim to 10 after filtering, since brand/dealership scoping can remove some rows
     $schedules = array_slice($schedules, 0, 10);
 
     echo json_encode([

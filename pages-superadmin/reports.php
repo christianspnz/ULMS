@@ -3,6 +3,13 @@ require "../config/config.php";
 require "../php/auth-logout/auth.php";
 requireRole(4);
 
+$activeSection = $_GET['section'] ?? 'courseTraining';
+$allowedSections = ['courseTraining', 'assessment', 'enrollment', 'attendance', 'userTeam', 'systemWide'];
+
+if (!in_array($activeSection, $allowedSections)) {
+    $activeSection = 'courseTraining';
+}
+
 $brandsResult = mysqli_query($conn, "SELECT brand_id, brand_name FROM brands ORDER BY brand_name ASC");
 $allBrands = $brandsResult ? $brandsResult->fetch_all(MYSQLI_ASSOC) : [];
 
@@ -14,6 +21,9 @@ $allDesignations = $designationsResult ? $designationsResult->fetch_all(MYSQLI_A
 
 $dealershipsResult = mysqli_query($conn, "SELECT dealership_id, dealership_name FROM dealerships ORDER BY dealership_name ASC");
 $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSOC) : [];
+
+$schedulesResult = mysqli_query($conn, "SELECT schedule_id, title, event_date FROM schedules ORDER BY event_date DESC");
+$allSchedules = $schedulesResult ? $schedulesResult->fetch_all(MYSQLI_ASSOC) : [];
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +34,7 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
     <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
-    <title>UEH - Reports</title>
+    <title>UTH - Reports</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
@@ -62,19 +72,30 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
             </div>
         </div>
 
-        <!-- Section tabs -->
-        <div class="flex justify-between gap-x-5 border-b border-gray-200 mt-5 overflow-x-auto max-w-full" id="reportSectionTabs">
-            <button type="button" class="section-tab-btn  py-3 font-eurostile-bold uppercase text-sm border-b-4 border-[#234CA1] text-[#234CA1] hover:text-[#234CA1] whitespace-nowrap" data-section="courseTraining">Course & Training</button>
-            <button type="button" class="section-tab-btn  py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="assessment">Assessment & Performance</button>
-            <button type="button" class="section-tab-btn  py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="enrollment">Enrollment</button>
-            <button type="button" class="section-tab-btn  py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="attendance">Attendance & Schedule</button>
-            <button type="button" class="section-tab-btn  py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="userTeam">User & Team</button>
-            <button type="button" class="section-tab-btn  py-3 font-eurostile-bold uppercase text-sm border-b-4 border-transparent text-gray-400 hover:text-[#234CA1] whitespace-nowrap" data-section="systemWide">System-Wide Analytics</button>
+        <!-- Section Tabs -->
+        <div id="reportSectionTabs" class="relative flex overflow-x-auto gap-x-2 bg-gray-100 w-full rounded-lg mt-5 p-1">
+            <span id="reportTabSlider" class="absolute top-1 bottom-1 left-1 rounded-md bg-[#FFFFFF] shadow-sm transition-all duration-300 ease-in-out pointer-events-none"></span>
+            <?php
+            $tabs = [
+                'courseTraining' => 'Course & Training',
+                'assessment' => 'Assessment & Performance',
+                'enrollment' => 'Enrollment',
+                'attendance' => 'Attendance & Schedule',
+                'userTeam' => 'User & Team',
+                'systemWide' => 'System-Wide Analytics'
+            ];
+            foreach ($tabs as $key => $label): ?>
+                <button type="button"
+                    id="report-tab-<?= $key ?>"
+                    data-section="<?= $key ?>"
+                    class="universal-tabs relative z-10 !bg-transparent whitespace-nowrap transition-colors duration-300 <?= $activeSection === $key ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>">
+                    <?= htmlspecialchars($label) ?>
+                </button>
+            <?php endforeach; ?>
         </div>
 
         <!-- ============ SECTION: Course & Training Reports ============ -->
-        <div id="section-courseTraining" class="report-section mt-6">
-
+        <div id="section-courseTraining" class="report-section mt-6 <?= $activeSection !== 'courseTraining' ? 'hidden' : '' ?>">
             <!-- Section filter bar -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
 
@@ -258,7 +279,7 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
         </div>
 
         <!-- ============ SECTION: Assessments & Performance Reports ============ -->
-        <div id="section-assessment" class="report-section mt-6 hidden">
+        <div id="section-assessment" class="report-section mt-6 <?= $activeSection !== 'assessment' ? 'hidden' : '' ?>">
 
             <!-- Filter bar -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
@@ -420,7 +441,7 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
         </div>
 
         <!-- ============ SECTION: Enrollments ============ -->
-        <div id="section-enrollment" class="report-section mt-6 hidden">
+        <div id="section-enrollment" class="report-section mt-6 <?= $activeSection !== 'enrollment' ? 'hidden' : '' ?>">
 
             <!-- Filter bar -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
@@ -573,11 +594,11 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
         </div>
 
         <!-- ============ SECTION: Attendance & Schedule ============ -->
-        <div id="section-attendance" class="report-section mt-6 hidden">
+        <div id="section-attendance" class="report-section mt-6 <?= $activeSection !== 'attendance' ? 'hidden' : '' ?>">
 
             <!-- Filter bar -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
                     <div>
                         <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
                         <input type="date" id="at_dateFrom" class="text-inputs">
@@ -609,8 +630,21 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                             <option value="">All Statuses</option>
                             <option value="Present">Present</option>
                             <option value="Left Early">Left Early</option>
+                            <option value="Late Time Out">Late Time Out</option>
+                            <option value="No Time Out">No Time Out</option>
                             <option value="Absent">Absent</option>
                             <option value="Not Started">Not Started</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Schedule</label>
+                        <select id="at_schedule" class="text-inputs">
+                            <option value="">All Schedules</option>
+                            <?php foreach ($allSchedules as $s): ?>
+                                <option value="<?= $s['schedule_id'] ?>">
+                                    <?= htmlspecialchars($s['title']) ?> (<?= $s['event_date'] ?>)
+                                </option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
@@ -745,7 +779,7 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
         </div>
 
         <!-- ============ SECTION: User & Team ============ -->
-        <div id="section-userTeam" class="report-section mt-6 hidden">
+        <div id="section-userTeam" class="report-section mt-6 <?= $activeSection !== 'userTeam' ? 'hidden' : '' ?>">
 
             <!-- Filter bar -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
@@ -812,6 +846,55 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
             </div>
 
             <div class="max-w-full h-auto mt-5">
+
+                <!-- Sales Executives -->
+                <div class="w-full bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                    <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3 mb-4">
+                        <div>
+                            <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Sales Executives</h3>
+                            <p id="seMeta" class="text-xs text-gray-400 mt-0.5">Click a row to open the profile.</p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-2 w-full xl:w-auto">
+                            <input type="search" id="se_search" placeholder="Search name, brand or dealership" class="text-inputs sm:w-72">
+                            <select id="se_brand" class="text-inputs sm:w-44">
+                                <option value="">All brands</option>
+                                <?php foreach ($allBrands as $b): ?>
+                                    <option value="<?= $b['brand_id'] ?>"><?= htmlspecialchars($b['brand_name']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <select id="se_dealership" class="text-inputs sm:w-52">
+                                <option value="">All dealerships</option>
+                                <?php foreach ($allDealerships as $d): ?>
+                                    <option value="<?= $d['dealership_id'] ?>"><?= htmlspecialchars($d['dealership_name']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-200 text-left">
+                                    <th class="py-3 px-3 font-eurostile-bold text-[#234CA1]">Sales Executive</th>
+                                    <th class="py-3 px-3 font-eurostile-bold text-[#234CA1]">Brand</th>
+                                    <th class="py-3 px-3 font-eurostile-bold text-[#234CA1]">Dealership</th>
+                                    <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Courses</th>
+                                    <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Trainings</th>
+                                    <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Certificates</th>
+                                    <th class="py-3 px-3 w-8"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="seBody">
+                                <tr>
+                                    <td colspan="7" class="text-center text-gray-400 py-10">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="sePager" class="flex flex-col sm:flex-row justify-between items-center gap-3 mt-4"></div>
+                </div>
+
                 <!-- User Directory Export -->
                 <div class="w-full bg-white rounded-2xl shadow-md border border-gray-200 p-6">
                     <div class="flex justify-between items-center mb-4">
@@ -945,7 +1028,7 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
         </div>
 
         <!-- ============ SECTION: System-Wide Analytics ============ -->
-        <div id="section-systemWide" class="report-section mt-6 hidden">
+        <div id="section-systemWide" class="report-section mt-6 <?= $activeSection !== 'systemWide' ? 'hidden' : '' ?>">
 
             <!-- Filter bar -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
@@ -1008,23 +1091,7 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
             </div>
 
         </div>
-        <?php
-        $placeholders = [
-            'assessment' => 'Assessment & Performance Reports',
-            'enrollment' => 'Enrollment Reports',
-            'attendance' => 'Attendance & Schedule Reports',
-            'userTeam' => 'User & Team Reports',
-            'systemWide' => 'System-Wide Analytics'
-        ];
-        foreach ($placeholders as $key => $label):
-        ?>
-            <div id="section-<?= $key ?>" class="report-section mt-6 hidden">
-                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">
-                    <i class="fa-solid fa-hourglass-half text-3xl mb-3"></i>
-                    <p><?= $label ?> — coming soon.</p>
-                </div>
-            </div>
-        <?php endforeach; ?>
+
 
     </main>
 
@@ -1064,7 +1131,16 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
 
         // ---------- Course & Training filter params ----------
         function openPrintReport(type) {
-            const params = getCourseTrainingFilterParams();
+            const attendanceReports = ["attendancelog", "attendancerate", "latelearly"];
+
+            const params = attendanceReports.includes(type) ?
+                getAttendanceFilterParams() :
+                getCourseTrainingFilterParams();
+
+            if (type === "latelearly") {
+                params.append("late_minutes", document.getElementById("at_lateMinutes").value || 10);
+            }
+
             params.append("type", type);
             window.open(`print-report.php?${params.toString()}`, "_blank");
         }
@@ -1678,11 +1754,13 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
             const scheduleType = document.getElementById("at_scheduleType").value;
             const audience = document.getElementById("at_audience").value;
             const attendanceStatus = document.getElementById("at_attendanceStatus").value;
+            const scheduleId = document.getElementById("at_schedule").value;
             if (dateFrom) params.append("date_from", dateFrom);
             if (dateTo) params.append("date_to", dateTo);
             if (scheduleType) params.append("schedule_type", scheduleType);
             if (audience) params.append("audience", audience);
             if (attendanceStatus) params.append("attendance_status", attendanceStatus);
+            if (scheduleId) params.append("schedule_id", scheduleId);
             document.querySelectorAll(".at-brand-checkbox:checked").forEach(cb => params.append("brands[]", cb.value));
             document.querySelectorAll(".at-dealership-checkbox:checked").forEach(cb => params.append("dealerships[]", cb.value));
             return params;
@@ -1816,6 +1894,8 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                 const statusColors = {
                     "Present": "bg-green-100 text-green-700",
                     "Left Early": "bg-orange-100 text-orange-700",
+                    "Late Time Out": "bg-yellow-100 text-yellow-700",
+                    "No Time Out": "bg-purple-100 text-purple-700",
                     "Absent": "bg-red-100 text-red-700",
                     "Not Started": "bg-gray-100 text-gray-500"
                 };
@@ -2227,15 +2307,38 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
             }
         }
 
-        const brandColorPalette = [
-            { bg: 'bg-blue-500', dot: 'bg-blue-500' },
-            { bg: 'bg-red-500', dot: 'bg-red-500' },
-            { bg: 'bg-purple-500', dot: 'bg-purple-500' },
-            { bg: 'bg-teal-500', dot: 'bg-teal-500' },
-            { bg: 'bg-orange-500', dot: 'bg-orange-500' },
-            { bg: 'bg-pink-500', dot: 'bg-pink-500' },
-            { bg: 'bg-indigo-500', dot: 'bg-indigo-500' },
-            { bg: 'bg-lime-500', dot: 'bg-lime-500' }
+        const brandColorPalette = [{
+                bg: 'bg-blue-500',
+                dot: 'bg-blue-500'
+            },
+            {
+                bg: 'bg-red-500',
+                dot: 'bg-red-500'
+            },
+            {
+                bg: 'bg-purple-500',
+                dot: 'bg-purple-500'
+            },
+            {
+                bg: 'bg-teal-500',
+                dot: 'bg-teal-500'
+            },
+            {
+                bg: 'bg-orange-500',
+                dot: 'bg-orange-500'
+            },
+            {
+                bg: 'bg-pink-500',
+                dot: 'bg-pink-500'
+            },
+            {
+                bg: 'bg-indigo-500',
+                dot: 'bg-indigo-500'
+            },
+            {
+                bg: 'bg-lime-500',
+                dot: 'bg-lime-500'
+            }
         ];
 
         const brandColorMap = {};
@@ -2258,7 +2361,11 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                 const params = getSystemWideFilterParams();
                 const res = await fetch(`../php/reports/get-brand-dealership-comparison.php?${params.toString()}`);
                 const data = await res.json();
-                if (data.status !== "success") { brandList.innerHTML = `<p class="text-red-500 text-sm">${data.message}</p>`; dealershipList.innerHTML = ""; return; }
+                if (data.status !== "success") {
+                    brandList.innerHTML = `<p class="text-red-500 text-sm">${data.message}</p>`;
+                    dealershipList.innerHTML = "";
+                    return;
+                }
 
                 brandList.innerHTML = data.by_brand.length === 0 ? `<p class="text-gray-400 text-sm">No data available.</p>` :
                     data.by_brand.map(b => {
@@ -2283,33 +2390,33 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                     }).join("");
 
                 dealershipList.innerHTML = data.by_dealership.length === 0 ? `<p class="text-gray-400 text-sm">No data available.</p>` :
-                data.by_dealership.map(d => {
+                    data.by_dealership.map(d => {
 
-                    const totalEnrolled = d.total_enrolled;
+                        const totalEnrolled = d.total_enrolled;
 
-                    // Each segment's width = that brand's COMPLETED count as a share of
-                    // the dealership's TOTAL enrolled — so the bar's total filled length
-                    // equals the overall completion rate, just color-coded by brand.
-                    const segmentsHtml = (d.segments || []).map(seg => {
+                        // Each segment's width = that brand's COMPLETED count as a share of
+                        // the dealership's TOTAL enrolled — so the bar's total filled length
+                        // equals the overall completion rate, just color-coded by brand.
+                        const segmentsHtml = (d.segments || []).map(seg => {
 
-                        const color = getBrandColor(seg.brand_name);
-                        const widthPct = totalEnrolled > 0 ? (seg.completed / totalEnrolled) * 100 : 0;
+                            const color = getBrandColor(seg.brand_name);
+                            const widthPct = totalEnrolled > 0 ? (seg.completed / totalEnrolled) * 100 : 0;
 
-                        if (widthPct === 0) return ''; // skip brands with zero completions — nothing to show
+                            if (widthPct === 0) return ''; // skip brands with zero completions — nothing to show
 
-                        return `<div class="${color.bg} h-2"
+                            return `<div class="${color.bg} h-2"
                                     style="width: ${widthPct}%"
                                     title="${escapeHtml(seg.brand_name)}: ${seg.completed} completed">
                                 </div>`;
 
-                    }).join("");
+                        }).join("");
 
-                    const dotsHtml = (d.segments || []).map(seg => {
-                        const c = getBrandColor(seg.brand_name);
-                        return `<span class="w-2 h-2 rounded-full ${c.dot}" title="${escapeHtml(seg.brand_name)}"></span>`;
-                    }).join("");
+                        const dotsHtml = (d.segments || []).map(seg => {
+                            const c = getBrandColor(seg.brand_name);
+                            return `<span class="w-2 h-2 rounded-full ${c.dot}" title="${escapeHtml(seg.brand_name)}"></span>`;
+                        }).join("");
 
-                    return `
+                        return `
                         <div>
                             <div class="flex justify-between text-sm mb-1">
                                 <div>
@@ -2324,10 +2431,144 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
                         </div>
                     `;
 
+                    }).join("");
+
+            } catch (err) {
+                console.error(err);
+                brandList.innerHTML = `<p class="text-red-500 text-sm">Failed to load.</p>`;
+                dealershipList.innerHTML = "";
+            }
+        }
+
+        // ---------- Sales Executives card ----------
+        const SE_PAGE_SIZE = 12;
+        let seRows = [];
+        let sePage = 1;
+
+        async function loadSalesExecutives() {
+
+            const body = document.getElementById("seBody");
+
+            try {
+
+                const res = await fetch("../php/reports/get-sales-executives.php");
+                const data = await res.json();
+
+                if (data.status !== "success") {
+                    body.innerHTML = `<tr><td colspan="7" class="text-center text-red-500 py-10">${escapeHtml(data.message)}</td></tr>`;
+                    return;
+                }
+
+                seRows = data.executives;
+                sePage = 1;
+                renderSalesExecutives();
+
+            } catch (err) {
+                console.error(err);
+                body.innerHTML = `<tr><td colspan="7" class="text-center text-red-500 py-10">Failed to load.</td></tr>`;
+            }
+
+        }
+
+        function filteredSes() {
+
+            const q = document.getElementById("se_search").value.trim().toLowerCase();
+            const brand = document.getElementById("se_brand").value;
+            const dealership = document.getElementById("se_dealership").value;
+
+            return seRows.filter(r => {
+
+                if (brand && !r.brands.some(b => String(b.id) === brand)) return false;
+                if (dealership && String(r.dealership_id) !== dealership) return false;
+
+                if (q) {
+                    const hay = `${r.first_name} ${r.last_name} ${r.last_name} ${r.first_name} ${r.brands.map(b => b.name).join(" ")} ${r.dealership_name}`.toLowerCase();
+                    if (!hay.includes(q)) return false;
+                }
+
+                return true;
+
+            });
+
+        }
+
+        function renderSalesExecutives() {
+
+            const rows = filteredSes();
+            const pages = Math.max(1, Math.ceil(rows.length / SE_PAGE_SIZE));
+            sePage = Math.min(Math.max(sePage, 1), pages);
+
+            const slice = rows.slice((sePage - 1) * SE_PAGE_SIZE, sePage * SE_PAGE_SIZE);
+
+            document.getElementById("seMeta").textContent = `${rows.length} of ${seRows.length} sales executives · click a row to open the profile`;
+
+            document.getElementById("seBody").innerHTML = slice.length === 0 ?
+                `<tr><td colspan="7" class="text-center text-gray-400 py-10">No sales executives match these filters.</td></tr>` :
+                slice.map(r => {
+
+                    const initials = `${(r.first_name || "")[0] || ""}${(r.last_name || "")[0] || ""}`.toUpperCase();
+                    const avatar = r.profile_picture ?
+                        `<img src="../${escapeHtml(r.profile_picture).replace(/"/g, "&quot;")}" alt="" class="w-9 h-9 rounded-full object-cover shrink-0">` :
+                        `<div class="w-9 h-9 rounded-full bg-[#234CA1] text-white flex items-center justify-center text-xs font-bold shrink-0">${escapeHtml(initials)}</div>`;
+
+                    return `
+                        <tr data-user-id="${r.user_id}" tabindex="0" class="border-b border-gray-100 cursor-pointer hover:bg-blue-50/60 focus:bg-blue-50/60 outline-none transition-colors">
+                            <td class="py-3 px-3">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    ${avatar}
+                                    <div class="min-w-0">
+                                        <p class="font-medium whitespace-nowrap">${escapeHtml(r.first_name)} ${escapeHtml(r.last_name)}</p>
+                                        <p class="text-[11px] text-gray-400">${escapeHtml(r.position_name || "Sales Executive")}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-3 text-xs text-gray-500">${r.brands.length ? escapeHtml(r.brands.map(b => b.name).join(", ")) : "—"}</td>
+                            <td class="py-3 px-3 text-xs text-gray-500">${escapeHtml(r.dealership_name || "—")}</td>
+                            <td class="py-3 px-3 text-center">${r.courses_completed}</td>
+                            <td class="py-3 px-3 text-center">${r.trainings_attended}</td>
+                            <td class="py-3 px-3 text-center">${r.certificates}</td>
+                            <td class="py-3 px-3 text-gray-300"><i class="fa-solid fa-chevron-right text-xs"></i></td>
+                        </tr>`;
+
                 }).join("");
 
-            } catch (err) { console.error(err); brandList.innerHTML = `<p class="text-red-500 text-sm">Failed to load.</p>`; dealershipList.innerHTML = ""; }
+            const start = rows.length ? (sePage - 1) * SE_PAGE_SIZE + 1 : 0;
+            const end = Math.min(sePage * SE_PAGE_SIZE, rows.length);
+
+            document.getElementById("sePager").innerHTML = `
+                <p class="text-xs text-gray-400">Showing ${start}–${end} of ${rows.length}</p>
+                <div class="flex items-center gap-2">
+                    <button type="button" id="sePrev" ${sePage <= 1 ? "disabled" : ""} class="px-3 h-9 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"><i class="fa-solid fa-chevron-left"></i></button>
+                    <span class="font-mono text-xs text-gray-500">${sePage} / ${pages}</span>
+                    <button type="button" id="seNext" ${sePage >= pages ? "disabled" : ""} class="px-3 h-9 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>`;
+
+            document.getElementById("sePrev").onclick = () => {
+                sePage--;
+                renderSalesExecutives();
+            };
+            document.getElementById("seNext").onclick = () => {
+                sePage++;
+                renderSalesExecutives();
+            };
+
         }
+
+        ["se_search", "se_brand", "se_dealership"].forEach(id => {
+            document.getElementById(id).addEventListener(id === "se_search" ? "input" : "change", () => {
+                sePage = 1;
+                renderSalesExecutives();
+            });
+        });
+
+        function openSeProfile(row) {
+            if (row) window.location.href = `learner-profile.php?user_id=${row.dataset.userId}`;
+        }
+
+        document.getElementById("seBody").addEventListener("click", e => openSeProfile(e.target.closest("tr[data-user-id]")));
+        document.getElementById("seBody").addEventListener("keydown", e => {
+            if (e.key === "Enter") openSeProfile(e.target.closest("tr[data-user-id]"));
+        });
 
         document.getElementById("sw_applyBtn").addEventListener("click", () => {
             loadActivityHeatmap();
@@ -2336,6 +2577,86 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
         });
 
         document.getElementById("sw_heatmapMetric").addEventListener("change", loadActivityHeatmap);
+
+        let currentReportSection = <?= json_encode($activeSection) ?>;
+
+        const reportSections = [
+            'courseTraining',
+            'assessment',
+            'enrollment',
+            'attendance',
+            'userTeam',
+            'systemWide'
+        ];
+
+        function moveReportTabSlider(section) {
+            const tabs = document.getElementById('reportSectionTabs');
+            const slider = document.getElementById('reportTabSlider');
+            const button = document.getElementById(`report-tab-${section}`);
+
+            if (!tabs || !slider || !button) return;
+
+            slider.style.width = `${button.offsetWidth}px`;
+            slider.style.transform = `translateX(${button.offsetLeft - 4}px)`;
+        }
+
+        function switchReportSection(section, updateUrl = true) {
+            if (!reportSections.includes(section)) return;
+
+            currentReportSection = section;
+
+            document.querySelectorAll('#reportSectionTabs [data-section]').forEach(button => {
+                const active = button.dataset.section === section;
+
+                button.classList.toggle('universal-tabs-active', active);
+                button.classList.toggle('universal-tabs-inactive', !active);
+            });
+
+            document.querySelectorAll('.report-section').forEach(panel => {
+                panel.classList.toggle('hidden', panel.id !== `section-${section}`);
+            });
+
+            moveReportTabSlider(section);
+
+            if (updateUrl) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('section', section);
+                history.pushState({
+                    section
+                }, '', url);
+            }
+
+            // Refresh Chart.js charts when their section becomes visible.
+            requestAnimationFrame(() => {
+                if (typeof Chart !== 'undefined') {
+                    Object.values(Chart.instances).forEach(chart => {
+                        if (chart.canvas && chart.canvas.offsetParent !== null) {
+                            chart.resize();
+                        }
+                    });
+                }
+            });
+        }
+
+        document.querySelectorAll('#reportSectionTabs [data-section]').forEach(button => {
+            button.addEventListener('click', () => {
+                switchReportSection(button.dataset.section);
+            });
+        });
+
+        moveReportTabSlider(currentReportSection);
+
+        window.addEventListener('resize', () => {
+            moveReportTabSlider(currentReportSection);
+        });
+
+        window.addEventListener('popstate', () => {
+            const section = new URLSearchParams(window.location.search).get('section');
+            switchReportSection(
+                reportSections.includes(section) ? section : 'courseTraining',
+                false
+            );
+        });
 
         // Initial load
         loadSystemOverview();
@@ -2356,6 +2677,7 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
         loadAttendanceRate();
         loadLateLeftEarly();
         loadAttendanceLog();
+        loadSalesExecutives();
     </script>
 </body>
 

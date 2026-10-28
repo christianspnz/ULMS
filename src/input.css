@@ -261,11 +261,10 @@ body {
   src: url("../fonts/fonnts.com-Eurostile-MN-Extended-Bold.ttf") format("truetype");
 }
 
-
 @layer base{
     
     body{
-        @apply flex flex-row justify-center lg:justify-end bg-[#fbfcf8] w-screen h-auto min-h-screen p-5;
+        @apply flex flex-row justify-center lg:justify-end bg-[#fbfcf8] w-screen h-auto min-h-screen;
     }
     
     header{
@@ -273,7 +272,7 @@ body {
     }
     
     main{
-        @apply flex flex-col gap-y-3 px-2 lg:px-10 py-10 w-[80%] h-auto;
+        @apply flex flex-col gap-y-3 lg:px-10 py-10 w-[85%] h-auto;
     }
     
     footer{
@@ -283,6 +282,10 @@ body {
 }
 
 @layer components{
+
+    button{
+        @apply outline-none focus:outline-none focus:ring-0;
+    }
 
     .side-body{
         @apply flex flex-row;
@@ -294,6 +297,20 @@ body {
 
     .breadcrumbs-icon{
         @apply size-2 lg:size-4
+    }
+    
+    /* Universal Tabs */
+
+    .universal-tabs{
+        @apply px-5 py-3 font-eurostile-bold uppercase text-sm bg-[#fff] transition;
+    }
+
+    .universal-tabs-active{
+        @apply rounded-lg text-[#234CA1];
+    }
+
+    .universal-tabs-inactive{
+        @apply bg-transparent text-gray-400 hover:text-[#234CA1];
     }
 
     /* Sweet Alert */
@@ -314,20 +331,34 @@ body {
 
     /* Sidebar */
 
-    .sidebar{
-        @apply flex flex-col justify-between items-center w-[90%] lg:max-w-[20%] h-[90%] lg:h-[95%] bg-white border border-[#234CA1] rounded-3xl py-8 px-5 gap-y-10;
+    .sidebar {
+        @apply flex flex-col justify-start items-center w-[90%] lg:max-w-[15%] h-[90vh] lg:h-[calc(100vh-2.5rem)] bg-white border border-[#234CA1] rounded-3xl py-8 px-5 gap-y-4 overflow-hidden;
     }
 
-    .sidebar-nav{
-        @apply flex flex-col justify-start items-center h-full w-full gap-y-2 overflow-x-auto;
+    .sidebar-nav {
+        @apply flex flex-col justify-start items-center flex-1 min-h-0 w-full gap-y-1 overflow-y-auto overflow-x-hidden overscroll-contain; 
+        scrollbar-width: thin; 
+        scrollbar-color: #cbd5e1 transparent;
     }
 
-    .sidebar-text{
-        @apply flex flex-row gap-x-3 items-center w-full px-5 h-12 rounded-xl font-eurostile-bold text-[20px];
+    .sidebar-text {
+        @apply flex flex-row gap-x-3 items-center w-full px-5 py-1 shrink-0 rounded-lg font-eurostile-bold text-[16px] truncate;
+    }
+
+    .sidebar-section-label {
+        @apply text-[12px] text-start font-eurostile-bold text-[#afafaf] uppercase w-full mt-1 shrink-0;
+    }
+
+    .sidebar-icon {
+        @apply w-4 h-4 shrink-0;
+    }
+
+    .sidebar-divider {
+        @apply w-full h-[1px] bg-[#afafaf] mt-2 shrink-0;
     }
 
     .logout-container{
-        @apply flex flex-col gap-y-3 items-center justify-center shadow-xl w-full h-auto p-4 rounded-2xl border-2 border-[#CDCDCD]/40;
+        @apply flex flex-col gap-y-3 items-center justify-center shadow-xl w-full h-auto p-4 rounded-2xl border-2 border-[#CDCDCD]/40 shrink-0;
     }
 
     .logout-row{
@@ -339,7 +370,7 @@ body {
     }
 
     .user-icon {
-        @apply w-16 h-16 min-w-16 min-h-16 rounded-full border-4 border-[#234CA1] flex items-center justify-center overflow-hidden text-[#234CA1] font-eurostile-extd-black text-[20px] group-hover:bg-[#234CA1] group-hover:text-white transition-colors duration-100;
+        @apply w-12 h-12 min-w-12 min-h-12 rounded-full border-2 border-[#234CA1] flex items-center justify-center overflow-hidden text-[#234CA1] font-eurostile-extd-black text-[14px] group-hover:bg-[#234CA1] group-hover:text-white transition-colors duration-100;
     }
 
     .user-icon img {
@@ -369,7 +400,7 @@ body {
     /* Login/Registration */
     
     .login-register-form{
-        @apply flex justify-between items-center h-screen w-full p-10;
+        @apply flex justify-between items-center h-screen w-full px-10 lg:px-0;
     }
 
     .login-registration-form{
@@ -385,7 +416,7 @@ body {
     }
 
     .landing-title-text{
-        @apply flex font-eurostile-black text-[44px] lg:text-[80px] text-[#234CA1];
+        @apply flex font-eurostile-black text-[44px] lg:text-[52px] xl:text-[80px] text-[#234CA1];
     }
 
     .landing-title-subtext{
@@ -457,7 +488,7 @@ body {
     }
 
     .text-inputs{
-        @apply w-full h-12 border border-[#234CA1] rounded-2xl px-3 focus:outline-none focus:ring-1 focus:ring-[#234CA1] focus:border-transparent;
+        @apply w-full h-12 border border-[#234CA1] rounded-2xl px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#234CA1] focus:border-transparent;
     }
 
     .anchortag{
@@ -521,7 +552,7 @@ body {
     }
 
     .contacts-container{
-        @apply bg-white flex flex-col items-center lg:items-start justify-center px-10 py-7 rounded-md border border-[#234CA1] w-[100%] gap-y-5; 
+        @apply bg-white flex flex-col items-center lg:items-start justify-center px-10 py-7 rounded-md border border-gray-200 w-[100%] gap-y-5; 
     }
 
     .contacts-row{
@@ -529,7 +560,7 @@ body {
     }
 
     .contacts-row-card{
-        @apply flex flex-col gap-y-3 w-full lg:w-[50%] h-auto p-10 rounded-xl justify-center items-center shadow-md shadow-[#234CA1];
+        @apply flex flex-col gap-y-3 w-full lg:w-[50%] h-auto p-10 rounded-xl justify-center items-center shadow-md shadow-gray-500;
     }
 
     .card-name{

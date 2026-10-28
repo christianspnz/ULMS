@@ -11,7 +11,7 @@ requireRole(2);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/output.css">
     <link rel="icon" type="image/png" href="../assets/ulh-logo.png" class="w-24">
-    <title>UEH - Calendar</title>
+    <title>UTH - Calendar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
@@ -420,6 +420,9 @@ requireRole(2);
                                             <span class="ml-1 text-xs font-bold uppercase px-2 py-0.5 rounded-full ${s.schedule_type === 'Online' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}">
                                                 ${s.schedule_type}
                                             </span>
+                                            ${new Date(`${s.event_date}T${s.start_time}`) <= new Date()
+                                            ? `<span class="ml-1 text-xs font-bold uppercase px-2 py-0.5 rounded-full bg-red-100 text-[#D02027]">Live</span>`
+                                            : ""}
                                         </p>
                                         <p class="text-xs text-gray-400 mt-1">
                                             ${formatTime(s.start_time)} - ${formatTime(s.end_time)}
