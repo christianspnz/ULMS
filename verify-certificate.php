@@ -49,7 +49,7 @@ $banner = [
     <title>Verify Certificate - UAAGI Training Hub</title>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex items-center justify-center p-4">
+<body class=" antialiased min-h-screen flex items-center justify-center p-4">
     <main class="w-full max-w-lg bg-white rounded-3xl shadow-lg border border-gray-100 p-6 sm:p-8">
 
         <div class="flex items-center w-full mb-5">

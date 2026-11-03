@@ -42,136 +42,143 @@ $pendingCount = $pendingCountResult ? mysqli_fetch_assoc($pendingCountResult)['t
     <?php include('../sidebar-superadmin.php') ?>
     <main>
 
-        <div class="flex justify-between items-center w-full">
+        <div class="main-header">
             <span class="page-breadcrumbs">Accounts</span>
             <?php include '../notification-bell.php'; ?>
         </div>
 
-        <div class="flex justify-between items-center w-full">
-            <div>
-                <h2 class="text-3xl font-eurostile-black text-[#234CA1]">User Accounts</h2>
-                <p class="text-gray-500 mt-1">Manage all learner, manager, and distributor accounts.</p>
+        <div class="main-container">
+            <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg">
+                <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+                <div class="hero-grid absolute inset-0 pointer-events-none"></div>
+
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                    <div class="space-y-2 min-w-0">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                            <i class="fa-solid fa-users text-white"></i> Users
+                        </span>
+                        <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">User Accounts</h1>
+                        <p class="text-slate-300 text-sm max-w-xl">Manage all learner, manager, and distributor accounts.</p>
+                    </div>
+                </div>
+            </section>
+            <!-- Tabs -->
+            <div id="userTabs" class="relative flex overflow-x-auto gap-x-2 bg-gray-100  max-w-full rounded-lg mt-5 p-1">
+                <span id="userTabSlider" class="absolute top-1 bottom-1 left-1 rounded-md bg-[#FFFFFF] shadow-sm transition-all duration-300 ease-in-out pointer-events-none"></span>
+                <button type="button" id="user-tab-all" data-tab="all" class="universal-tabs relative z-10 !bg-transparent whitespace-nowrap transition-colors duration-300 <?= $activeTab === 'all' ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>">
+                    All Users
+                </button>
+                <button type="button" id="user-tab-pending" data-tab="pending" class="universal-tabs relative z-10 !bg-transparent whitespace-nowrap flex items-center gap-2 transition-colors duration-300 <?= $activeTab === 'pending' ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>">
+                    Pending Approvals
+                    <?php if ($pendingCount > 0): ?>
+                        <span id="pendingBadge" class="bg-[#D02027] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"><?= $pendingCount ?></span>
+                    <?php endif; ?>
+                </button>
             </div>
-        </div>
 
-        <!-- Tabs -->
-        <div id="userTabs" class="relative flex overflow-x-auto gap-x-2 bg-gray-100  max-w-full rounded-lg mt-5 p-1">
-            <span id="userTabSlider" class="absolute top-1 bottom-1 left-1 rounded-md bg-[#FFFFFF] shadow-sm transition-all duration-300 ease-in-out pointer-events-none"></span>
-            <button type="button" id="user-tab-all" data-tab="all" class="universal-tabs relative z-10 !bg-transparent whitespace-nowrap transition-colors duration-300 <?= $activeTab === 'all' ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>">
-                All Users
-            </button>
-            <button type="button" id="user-tab-pending" data-tab="pending" class="universal-tabs relative z-10 !bg-transparent whitespace-nowrap flex items-center gap-2 transition-colors duration-300 <?= $activeTab === 'pending' ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>">
-                Pending Approvals
-                <?php if ($pendingCount > 0): ?>
-                    <span id="pendingBadge" class="bg-[#D02027] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"><?= $pendingCount ?></span>
-                <?php endif; ?>
-            </button>
-        </div>
+            <!-- ============ ALL USERS TAB ============ -->
+            <div id="tab-all" class="user-tab-panel mt-6 <?= $activeTab === 'all' ? '' : 'hidden' ?>">
 
-        <!-- ============ ALL USERS TAB ============ -->
-        <div id="tab-all" class="user-tab-panel mt-6 <?= $activeTab === 'all' ? '' : 'hidden' ?>">
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
 
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Status</label>
+                            <select id="filterStatus" class="text-inputs">
+                                <option value="">All Statuses</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
 
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Status</label>
-                        <select id="filterStatus" class="text-inputs">
-                            <option value="">All Statuses</option>
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                        </select>
+                        <div class="flex items-end">
+                            <button type="button" id="applyUserFiltersBtn" class="w-full bg-[#234CA1] text-white rounded-lg py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
+                        </div>
+
                     </div>
 
-                    <div class="flex items-end">
-                        <button type="button" id="applyUserFiltersBtn" class="w-full bg-[#234CA1] text-white rounded-lg py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Designation</label>
+                            <div class="flex flex-wrap gap-2">
+                                <?php foreach ($allDesignations as $d): ?>
+                                    <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                        <input type="checkbox" class="filter-designation-checkbox" value="<?= $d['designation_id'] ?>">
+                                        <?= htmlspecialchars($d['designation_name']) ?>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brand</label>
+                            <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
+                                <?php foreach ($allBrands as $b): ?>
+                                    <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                        <input type="checkbox" class="filter-brand-checkbox" value="<?= $b['brand_id'] ?>">
+                                        <?= htmlspecialchars($b['brand_name']) ?>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealership</label>
+                            <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
+                                <?php foreach ($allDealerships as $d): ?>
+                                    <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                        <input type="checkbox" class="filter-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
+                                        <?= htmlspecialchars($d['dealership_name']) ?>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 mt-5 overflow-hidden">
 
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Designation</label>
-                        <div class="flex flex-wrap gap-2">
-                            <?php foreach ($allDesignations as $d): ?>
-                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" class="filter-designation-checkbox" value="<?= $d['designation_id'] ?>">
-                                    <?= htmlspecialchars($d['designation_name']) ?>
-                                </label>
-                            <?php endforeach; ?>
+                    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                        <div class="flex flex-row justify-center items-center gap-x-3">
+                            <h3 class="font-eurostile-bold text-[#234CA1] text-lg">All Users</h3>
+                            <p id="userCountLabel" class="text-xs text-gray-400 mt-0.5">Loading...</p>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brand</label>
-                        <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
-                            <?php foreach ($allBrands as $b): ?>
-                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" class="filter-brand-checkbox" value="<?= $b['brand_id'] ?>">
-                                    <?= htmlspecialchars($b['brand_name']) ?>
-                                </label>
-                            <?php endforeach; ?>
-                        </div>
+                    <div class="overflow-x-auto max-h-96 overflow-y-auto">
+                        <table class="w-full text-sm">
+                            <thead class="sticky top-0 bg-white z-10">
+                                <tr class="bg-gray-50 border-b border-gray-200">
+                                    <th class="text-left py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">User</th>
+                                    <th class="text-left py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">Role</th>
+                                    <th class="text-left py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">Brand / Dealership</th>
+                                    <th class="text-left py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">Contact</th>
+                                    <th class="text-center py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">Dates</th>
+                                    <th class="text-center py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">Status</th>
+                                    <th class="text-center py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody" class="overflow-x-auto max-h-96">
+                                <tr>
+                                    <td colspan="7" class="text-center text-gray-400 py-14">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealership</label>
-                        <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
-                            <?php foreach ($allDealerships as $d): ?>
-                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" class="filter-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
-                                    <?= htmlspecialchars($d['dealership_name']) ?>
-                                </label>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-
                 </div>
-
             </div>
-
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 mt-5 overflow-hidden">
-
-                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-                    <div class="flex flex-row justify-center items-center gap-x-3">
-                        <h3 class="font-eurostile-bold text-[#234CA1] text-lg">All Users</h3>
-                        <p id="userCountLabel" class="text-xs text-gray-400 mt-0.5">Loading...</p>
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto max-h-96 overflow-y-auto">
-                    <table class="w-full text-sm">
-                        <thead class="sticky top-0 bg-white z-10">
-                            <tr class="bg-gray-50 border-b border-gray-200">
-                                <th class="text-left py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">User</th>
-                                <th class="text-left py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">Role</th>
-                                <th class="text-left py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">Brand / Dealership</th>
-                                <th class="text-left py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">Contact</th>
-                                <th class="text-center py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">Dates</th>
-                                <th class="text-center py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">Status</th>
-                                <th class="text-center py-3.5 px-5 font-bold text-gray-500 text-xs uppercase tracking-wide">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersTableBody" class="overflow-x-auto max-h-96">
-                            <tr>
-                                <td colspan="7" class="text-center text-gray-400 py-14">Loading...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <!-- ============ PENDING APPROVALS TAB ============ -->
+            <div id="tab-pending" class="user-tab-panel mt-6 <?= $activeTab === 'pending' ? '' : 'hidden' ?>">
+                <div id="pendingList" class="space-y-4 overflow-x-auto max-h-96 overflow-y-auto">
+                    <p class="text-gray-400 text-center py-10">Loading...</p>
                 </div>
             </div>
         </div>
-        <!-- ============ PENDING APPROVALS TAB ============ -->
-        <div id="tab-pending" class="user-tab-panel mt-6 <?= $activeTab === 'pending' ? '' : 'hidden' ?>">
-
-            <div id="pendingList" class="space-y-4 overflow-x-auto max-h-96 overflow-y-auto">
-                <p class="text-gray-400 text-center py-10">Loading...</p>
-            </div>
-
-        </div>
-
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>

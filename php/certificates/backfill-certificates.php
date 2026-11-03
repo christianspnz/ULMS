@@ -32,16 +32,11 @@ $courseRows = certFetchAll(
     "SELECT e.user_id, e.course_id
      FROM enrollments e
      JOIN users u ON u.user_id = e.user_id AND u.designation_id IN (1, 2)
-     WHERE e.status = 'Completed'
-       AND EXISTS (
-            SELECT 1 FROM assessment_attempts aa
-            JOIN assessments a ON a.assessment_id = aa.assessment_id
-            WHERE aa.user_id = e.user_id AND a.course_id = e.course_id
-              AND a.assessment_type = 'Post-Test' AND aa.score >= a.passing_score)"
+     WHERE e.status = 'Completed'"
 );
 
 foreach ($courseRows as $r) {
-    if (issueCourseCertificate($conn, (int) $r['user_id'], (int) $r['course_id'], false)) {
+    if (issueCourseCertificate($conn, (int) $r['user_id'], (int) $r['course_id'], false, null)) {
         $issued++;
     }
 }

@@ -27,7 +27,7 @@ if (empty($_SESSION['course_id'])) {
 <body class="h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
-        <div class="flex justify-between items-center w-full">
+        <div class="main-header">
             <span class="page-breadcrumbs">
                 Add Courses
                 <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
@@ -38,155 +38,149 @@ if (empty($_SESSION['course_id'])) {
                     <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor"/>
                 </svg>
                 Training Modules 
-            <!-- <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor"/>
-            </svg>
-            Assessment
-            <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor"/>
-            </svg>
-            Review & Publish -->
             </span>
             <?php include '../notification-bell.php'; ?>
         </div>
-        <?php $currentStep = 2;
-        include 'course-stepper.php'; ?>
-        <form id="courseForm" enctype="multipart/form-data" method="POST" class="add-course-form">
-            <!-- Header -->
-            <div class="flex justify-between items-center w-full">
-                <div>
-                    <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
-                        Training Modules
-                    </h2>
-                    <p class="font-eurostile text-gray-500 mt-1">
-                        Create modules and upload learning materials for this course.
-                    </p>
-                </div>
-                <button type="button" id="addModule" class="bg-[#234CA1] p-3 text-white rounded-lg font-eurostile-bold uppercase flex items-center gap-2">
-                    <i class="fa-solid fa-plus"></i>
-                    Add Module
-                </button>
-            </div>
-            <div id="moduleContainer" class="space-y-6 w-full">
-                <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden module-card">
-                    <!-- Header -->
-                    <div class="bg-[#234CA1] px-6 py-4 flex justify-between items-center">
-                        <div>
-                            <p class="module-number text-white text-sm">
-                                Module 1
-                            </p>
-                            <h3 class="module-name text-white text-xl font-eurostile-bold">
-                                New Module
-                            </h3>
-                        </div>
-                        <button type="button" class="remove-module text-white hover:text-red-300 transition">
-                            <i class="fa-solid fa-trash text-xl"></i>
-                        </button>
+        <div class="main-container">
+            <?php $currentStep = 2;
+            include 'course-stepper.php'; ?>
+            <form id="courseForm" enctype="multipart/form-data" method="POST" class="add-course-form">
+                <!-- Header -->
+                <div class="flex justify-between items-center w-full">
+                    <div>
+                        <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
+                            Training Modules
+                        </h2>
+                        <p class="font-eurostile text-gray-500 mt-1">
+                            Create modules and upload learning materials for this course.
+                        </p>
                     </div>
-                    <div class="p-6 flex flex-col lg:flex-row gap-y-5 gap-x-10">
-                        <div class="flex flex-col gap-2 w-full lg:w-[40%]">
-                            <label class="label-inputs-add-course">
-                                Module Title
-                            </label>
-                            <input type="text" name="module_title[]" class="text-inputs module-title-input" placeholder="Enter module title">
-                        </div>
-                        <!-- Upload Area -->
-                        <div class="flex flex-col gap-2 w-full lg:w-[30%]">
-                            <label class="label-inputs-add-course">
-                                Learning Materials
-                            </label>
-                            <label class="module-dropzone w-full border-2 border-dashed border-gray-300 rounded-2xl p-10 flex flex-col justify-center items-center cursor-pointer hover:border-[#234CA1] hover:bg-blue-50 transition">
-                                <i class="fa-solid fa-cloud-arrow-up text-5xl text-[#234CA1] mb-4"></i>
-                                <p class="text-sm text-gray-600">
-                                    <span class="font-semibold text-blue-600">Click</span> or drag and drop
+                    <button type="button" id="addModule" class="bg-[#234CA1] p-3 text-white rounded-lg font-eurostile-bold uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i>
+                        Add Module
+                    </button>
+                </div>
+                <div id="moduleContainer" class="space-y-6 w-full">
+                    <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden module-card">
+                        <!-- Header -->
+                        <div class="bg-[#234CA1] px-6 py-4 flex justify-between items-center">
+                            <div>
+                                <p class="module-number text-white text-sm">
+                                    Module 1
                                 </p>
-                                <p class="text-xs text-gray-500 mt-1">
-                                    MP4, PDF, DOCX, PPT, PPTX
-                                </p>
-                                <input type="file" name="module_files[0][]" class="hidden module-file-input" multiple accept=".mp4,.pdf,.doc,.docx,.ppt,.pptx">
-                            </label>
+                                <h3 class="module-name text-white text-xl font-eurostile-bold">
+                                    New Module
+                                </h3>
+                            </div>
+                            <button type="button" class="remove-module text-white hover:text-red-300 transition">
+                                <i class="fa-solid fa-trash text-xl"></i>
+                            </button>
                         </div>
-                        <!-- Uploaded Files -->
-                        <div class="flex flex-col gap-2 w-full lg:w-[30%]">
-                            <label class="label-inputs-add-course">
-                                Uploaded Files
-                            </label>
-                            <div class="uploaded-files mt-1 flex flex-col gap-3">
-                                <!-- Preview will appear here -->
-                                <div class="text-sm text-gray-400 italic">
-                                    No files uploaded.
+                        <div class="p-6 flex flex-col lg:flex-row gap-y-5 gap-x-10">
+                            <div class="flex flex-col gap-2 w-full lg:w-[40%]">
+                                <label class="label-inputs-add-course">
+                                    Module Title
+                                </label>
+                                <input type="text" name="module_title[]" class="text-inputs module-title-input" placeholder="Enter module title">
+                            </div>
+                            <!-- Upload Area -->
+                            <div class="flex flex-col gap-2 w-full lg:w-[30%]">
+                                <label class="label-inputs-add-course">
+                                    Learning Materials
+                                </label>
+                                <label class="module-dropzone w-full border-2 border-dashed border-gray-300 rounded-2xl p-10 flex flex-col justify-center items-center cursor-pointer hover:border-[#234CA1] hover:bg-blue-50 transition">
+                                    <i class="fa-solid fa-cloud-arrow-up text-5xl text-[#234CA1] mb-4"></i>
+                                    <p class="text-sm text-gray-600">
+                                        <span class="font-semibold text-blue-600">Click</span> or drag and drop
+                                    </p>
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        MP4, PDF, DOCX, PPT, PPTX
+                                    </p>
+                                    <input type="file" name="module_files[0][]" class="hidden module-file-input" multiple accept=".mp4,.pdf,.doc,.docx,.ppt,.pptx">
+                                </label>
+                            </div>
+                            <!-- Uploaded Files -->
+                            <div class="flex flex-col gap-2 w-full lg:w-[30%]">
+                                <label class="label-inputs-add-course">
+                                    Uploaded Files
+                                </label>
+                                <div class="uploaded-files mt-1 flex flex-col gap-3">
+                                    <!-- Preview will appear here -->
+                                    <div class="text-sm text-gray-400 italic">
+                                        No files uploaded.
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <template id="moduleTemplate">
-                <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden module-card">
-                    <div class="bg-[#234CA1] px-6 py-4 flex justify-between items-center">
-                        <div>
-                            <p class="module-number text-white text-sm">
-                                Module X
-                            </p>
-                            <h3 class="module-name text-white text-xl font-eurostile-bold">
-                                New Module
-                            </h3>
-                        </div>
-                        <button type="button"
-                            class="remove-module text-white hover:text-red-300 transition">
-                            <i class="fa-solid fa-trash text-xl"></i>
-                        </button>
-                    </div>
-                    <div class="p-6 flex flex-col lg:flex-row gap-y-5 gap-x-10">
-                        <div class="flex flex-col gap-2 w-full lg:w-[40%]">
-                            <label class="label-inputs-add-course">
-                                Module Title
-                            </label>
-                            <input
-                                type="text"
-                                name="module_title[]"
-                                class="text-inputs module-title-input"
-                                placeholder="Enter module title">
-                        </div>
-                        <div class="flex flex-col gap-2 w-full lg:w-[30%]">
-                            <label class="label-inputs-add-course">
-                                Learning Materials
-                            </label>
-                            <label class="module-dropzone w-full border-2 border-dashed border-gray-300 rounded-2xl p-10 flex flex-col justify-center items-center cursor-pointer hover:border-[#234CA1] hover:bg-blue-50 transition">
-                                <i class="fa-solid fa-cloud-arrow-up text-5xl text-[#234CA1] mb-4"></i>
-                                <p class="text-sm text-gray-600">
-                                    <span class="font-semibold text-blue-600">Click</span>
-                                    or drag and drop
+                <template id="moduleTemplate">
+                    <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden module-card">
+                        <div class="bg-[#234CA1] px-6 py-4 flex justify-between items-center">
+                            <div>
+                                <p class="module-number text-white text-sm">
+                                    Module X
                                 </p>
-                                <p class="text-xs text-gray-500 mt-1">
-                                    MP4, PDF, DOCX, PPT, PPTX
-                                </p>
+                                <h3 class="module-name text-white text-xl font-eurostile-bold">
+                                    New Module
+                                </h3>
+                            </div>
+                            <button type="button"
+                                class="remove-module text-white hover:text-red-300 transition">
+                                <i class="fa-solid fa-trash text-xl"></i>
+                            </button>
+                        </div>
+                        <div class="p-6 flex flex-col lg:flex-row gap-y-5 gap-x-10">
+                            <div class="flex flex-col gap-2 w-full lg:w-[40%]">
+                                <label class="label-inputs-add-course">
+                                    Module Title
+                                </label>
                                 <input
-                                    type="file"
-                                    class="hidden module-file-input"
-                                    multiple
-                                    accept=".mp4,.pdf,.doc,.docx,.ppt,.pptx">
-                            </label>
-                        </div>
-                        <div class="flex flex-col gap-2 w-full lg:w-[30%]">
-                            <label class="label-inputs-add-course">
-                                Uploaded Files
-                            </label>
-                            <div class="uploaded-files mt-1 flex flex-col gap-3">
-                                <div class="text-sm text-gray-400 italic">
-                                    No files uploaded.
+                                    type="text"
+                                    name="module_title[]"
+                                    class="text-inputs module-title-input"
+                                    placeholder="Enter module title">
+                            </div>
+                            <div class="flex flex-col gap-2 w-full lg:w-[30%]">
+                                <label class="label-inputs-add-course">
+                                    Learning Materials
+                                </label>
+                                <label class="module-dropzone w-full border-2 border-dashed border-gray-300 rounded-2xl p-10 flex flex-col justify-center items-center cursor-pointer hover:border-[#234CA1] hover:bg-blue-50 transition">
+                                    <i class="fa-solid fa-cloud-arrow-up text-5xl text-[#234CA1] mb-4"></i>
+                                    <p class="text-sm text-gray-600">
+                                        <span class="font-semibold text-blue-600">Click</span>
+                                        or drag and drop
+                                    </p>
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        MP4, PDF, DOCX, PPT, PPTX
+                                    </p>
+                                    <input
+                                        type="file"
+                                        class="hidden module-file-input"
+                                        multiple
+                                        accept=".mp4,.pdf,.doc,.docx,.ppt,.pptx">
+                                </label>
+                            </div>
+                            <div class="flex flex-col gap-2 w-full lg:w-[30%]">
+                                <label class="label-inputs-add-course">
+                                    Uploaded Files
+                                </label>
+                                <div class="uploaded-files mt-1 flex flex-col gap-3">
+                                    <div class="text-sm text-gray-400 italic">
+                                        No files uploaded.
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </template>
+                <!-- Buttons -->
+                <div class="flex flex-col lg:flex-row gap-2 justify-end gap-x-5 w-full">
+                    <button type="button" onclick="window.location.href='add-course-step1.php'" class="bg-[#D02027] font-eurostile-bold uppercase text-sm lg:text-base text-white w-full lg:w-auto lg:px-10 rounded-xl hover:scale-105 hover:bg-[#D02027]/50 transition duration-300 h-12">Previous</button>
+                    <button type="submit" class="bg-[#234CA1] font-eurostile-bold uppercase text-sm lg:text-base text-white w-full lg:w-auto lg:px-10 rounded-xl hover:scale-105 hover:bg-[#234CA1]/50 transition duration-300 h-12">Save & Continue</button>
                 </div>
-            </template>
-            <!-- Buttons -->
-            <div class="flex flex-col lg:flex-row gap-2 justify-end gap-x-5 w-full">
-                <button type="button" onclick="window.location.href='add-course-step1.php'" class="bg-[#D02027] font-eurostile-bold uppercase text-sm lg:text-base text-white w-full lg:w-auto lg:px-10 rounded-xl hover:scale-105 hover:bg-[#D02027]/50 transition duration-300 h-12">Previous</button>
-                <button type="submit" class="bg-[#234CA1] font-eurostile-bold uppercase text-sm lg:text-base text-white w-full lg:w-auto lg:px-10 rounded-xl hover:scale-105 hover:bg-[#234CA1]/50 transition duration-300 h-12">Save & Continue</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
@@ -270,7 +264,6 @@ if (empty($_SESSION['course_id'])) {
             const dropzone = card.querySelector(".module-dropzone");
             const selectedFiles = new DataTransfer();
 
-            dropzone.addEventListener("click", () => fileInput.click());
 
             fileInput.addEventListener("change", (e) => {
                 [...e.target.files].forEach(file => {

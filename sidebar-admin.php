@@ -6,7 +6,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 
 include "../php/login/user_info.php";
 
-include "hamburger-btn.php";
+
 
 // Define DRY classes for navigation states
 $activeClass   = 'bg-[#234CA1] text-white';
@@ -20,7 +20,7 @@ function isActive(array|string $pages, string$current): bool {
     return $current ===$pages;
 }
 ?>
-<aside id="sidebar" class="sidebar hidden lg:flex fixed lg:top-0 lg:left-0 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 lg:translate-y-0 lg:translate-x-0 z-40 lg:m-5">
+<aside id="sidebar" class="sidebar hidden lg:flex z-40 lg:m-5">
     <div class="flex flex-col lg:flex-row w-full justify-center items-center gap-x-1 gap-y-1">
         <img src="../assets/ulh-logo.png" alt="UAAGI LMS Logo" class="w-14">
         <img src="../assets/Logo.png" alt="UAAGI LMS Logo" class="w-40">

@@ -29,60 +29,69 @@ if (!in_array($activeTab, $allowedTabs)) {
 <body>
     <?php include '../sidebar-learner.php'; ?>
     <main>
-        <div class="flex justify-between items-center w-full">
+        <div class="main-header">
             <span class="page-breadcrumbs">
                 Courses
             </span>
             <?php include '../notification-bell.php'; ?>
         </div>
 
-        <div class="flex justify-between items-center w-full">
-            <div>
-                <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
-                    My Courses
-                </h2>
-                <p class="font-eurostile text-gray-500 mt-1">
-                    Continue where you left off.
-                </p>
+        <div class="main-container">
+            <!-- HERO -->
+            <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg">
+                <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+                <div class="hero-grid absolute inset-0 pointer-events-none"></div>
+
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                    <div class="space-y-2 min-w-0">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                            <i class="fa-solid fa-graduation-cap"></i> Courses
+                        </span>
+                        <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Continue where you left off..</h1>
+                        <p class="text-slate-300 text-sm max-w-xl">Get enrolled and start your learning journey.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tabs -->
+            <div id="myCoursesTabs" class="relative flex overflow-x-auto gap-x-2 bg-gray-100 max-w-full rounded-lg mt-5 p-1">
+                <span id="myCoursesTabSlider" class="absolute top-1 bottom-1 left-1 rounded-md bg-[#FFFFFF] shadow-sm transition-all duration-300 ease-in-out pointer-events-none"></span>
+                <?php foreach ($allowedTabs as $tab): ?>
+                    <button type="button"
+                        id="my-courses-tab-<?= htmlspecialchars(strtolower(str_replace(' ', '-', $tab))) ?>"
+                        data-status="<?= htmlspecialchars($tab) ?>"
+                        class="universal-tabs relative z-10 !bg-transparent whitespace-nowrap transition-colors duration-300 <?= $activeTab === $tab ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>">
+                        <?= htmlspecialchars($tab) ?>
+                    </button>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6" id="myCoursesGrid">
+                <div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">
+                    Loading your courses...
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center w-full mt-10">
+                <div>
+                    <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
+                        Available Courses
+                    </h2>
+                    <p class="font-eurostile text-gray-500">
+                        Courses available for your brand.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6" id="availableCoursesGrid">
+                <div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">
+                    Loading available courses...
+                </div>
             </div>
         </div>
 
-        <!-- Tabs -->
-        <div id="myCoursesTabs" class="relative flex overflow-x-auto gap-x-2 bg-gray-100 max-w-full rounded-lg mt-5 p-1">
-            <span id="myCoursesTabSlider" class="absolute top-1 bottom-1 left-1 rounded-md bg-[#FFFFFF] shadow-sm transition-all duration-300 ease-in-out pointer-events-none"></span>
-            <?php foreach ($allowedTabs as $tab): ?>
-                <button type="button"
-                    id="my-courses-tab-<?= htmlspecialchars(strtolower(str_replace(' ', '-', $tab))) ?>"
-                    data-status="<?= htmlspecialchars($tab) ?>"
-                    class="universal-tabs relative z-10 !bg-transparent whitespace-nowrap transition-colors duration-300 <?= $activeTab === $tab ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>">
-                    <?= htmlspecialchars($tab) ?>
-                </button>
-            <?php endforeach; ?>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6" id="myCoursesGrid">
-            <div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">
-                Loading your courses...
-            </div>
-        </div>
-
-        <div class="flex justify-between items-center w-full mt-10">
-            <div>
-                <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
-                    Available Courses
-                </h2>
-                <p class="font-eurostile text-gray-500">
-                    Courses available for your brand.
-                </p>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6" id="availableCoursesGrid">
-            <div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">
-                Loading available courses...
-            </div>
-        </div>
-
+        <?php include '../downloadable-assets.php'; ?>
         <?php include '../feedback-button.php'; ?>
         <?php include '../course-feedback-modal.php'; ?>
     </main>
@@ -102,10 +111,26 @@ if (!in_array($activeTab, $allowedTabs)) {
             }
         });
         let allMyCourses = [];
+
+        // Remembers whether the learner hid their finished courses (per user, in this browser)
+        const completedCollapseKey = "myCourses:completedCollapsed:<?= (int) $_SESSION['user_id'] ?>";
+
+        function readCompletedCollapsed() {
+            try {
+                return localStorage.getItem(completedCollapseKey) === "1";
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function saveCompletedCollapsed(value) {
+            try {
+                localStorage.setItem(completedCollapseKey, value ? "1" : "0");
+            } catch (e) {}
+        }
+
+        let completedCollapsed = readCompletedCollapsed();
         let activeTab = "<?= htmlspecialchars($activeTab, ENT_QUOTES) ?>"; // exactly: All | Not Started | In Progress | Completed
-
-
-
 
         function ratingBadge(course) {
 
@@ -210,20 +235,9 @@ if (!in_array($activeTab, $allowedTabs)) {
 
         }
 
-        function renderMyCourses() {
+        function courseCardHtml(course) {
 
-            const myGrid = document.getElementById("myCoursesGrid");
-
-            const filtered = activeTab === "All" ?
-                allMyCourses :
-                allMyCourses.filter(c => c.enrollment_status === activeTab);
-
-            if (filtered.length === 0) {
-                myGrid.innerHTML = `<div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">No courses in this category.</div>`;
-                return;
-            }
-
-            myGrid.innerHTML = filtered.map(course => `
+            return `
 
                 <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
 
@@ -236,11 +250,11 @@ if (!in_array($activeTab, $allowedTabs)) {
 
                     <div class="flex flex-col justify-between min-h-[13rem] p-5">
                         <div class="flex flex-col justify-between">
-                            <div class="flex items-center justify-between">
+                            <div class="flex items-center justify-between gap-2">
                                 <h3 class="text-lg font-eurostile-bold text-[#234CA1]">
-                                ${escapeHtml(course.course_title)}
+                                    ${escapeHtml(course.course_title)}
                                 </h3>
-                                <span class="text-xs font-bold uppercase px-2 py-1 rounded-full ${getStatusBadgeClass(course.enrollment_status)}">
+                                <span class="text-xs font-bold uppercase px-2 py-1 rounded-full shrink-0 ${getStatusBadgeClass(course.enrollment_status)}">
                                     ${escapeHtml(course.enrollment_status)}
                                 </span>
                             </div>
@@ -248,8 +262,9 @@ if (!in_array($activeTab, $allowedTabs)) {
                             <p class="text-sm text-gray-500 mt-1 line-clamp-2">
                                 ${escapeHtml(course.course_description ?? "")}
                             </p>
-
+                            ${ratingBadge(course)}
                         </div>
+
                         <div class="mt-3">
                             <div class="w-full bg-gray-200 rounded-full h-2">
                                 <div class="bg-[#234CA1] h-2 rounded-full" style="width: ${course.progress}%"></div>
@@ -265,17 +280,89 @@ if (!in_array($activeTab, $allowedTabs)) {
                             </a>
 
                             ${course.enrollment_status === "Completed" ? `
+                                ${course.has_certificate ? `
+                                    <a href="certificates.php" title="View my certificate"
+                                       class="shrink-0 inline-flex items-center justify-center w-10 rounded-lg border border-purple-200 bg-purple-50 text-purple-600 hover:bg-purple-100 transition-colors">
+                                        <i class="fa-solid fa-certificate"></i>
+                                    </a>` : ""}
                                 <button type="button" data-course-id="${course.course_id}"
                                     class="rate-course-btn shrink-0 inline-flex items-center justify-center gap-1.5 px-3 rounded-lg border border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 text-sm font-eurostile-bold transition-colors">
                                     <i class="fa-solid fa-star"></i> ${course.has_feedback ? "Edit feedback" : "Rate"}
                                 </button>` : ""}
                         </div>
-
                     </div>
 
-                </div>
+                </div>`;
 
-            `).join("");
+        }
+
+        function renderMyCourses() {
+
+            const myGrid = document.getElementById("myCoursesGrid");
+
+            const message = text => `<div class="col-span-full bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">${text}</div>`;
+
+            let html = "";
+
+            if (activeTab === "All") {
+
+                // Active courses first; finished ones tuck away under a bar the learner can close
+                const active = allMyCourses.filter(c => c.enrollment_status !== "Completed");
+                const done = allMyCourses.filter(c => c.enrollment_status === "Completed");
+
+                if (!active.length && !done.length) {
+                    myGrid.innerHTML = message("No courses in this category.");
+                    return;
+                }
+
+                html = active.length ?
+                    active.map(courseCardHtml).join("") :
+                    message("Nothing in progress right now. All your enrolled courses are completed.");
+
+                if (done.length) {
+
+                    html += `
+                        <button type="button" id="toggleCompleted" aria-expanded="${!completedCollapsed}"
+                            class="col-span-full flex items-center justify-between gap-3 rounded-xl bg-white border border-gray-200 hover:border-[#234CA1] px-4 py-3 text-left transition-colors">
+                            <span class="flex items-center gap-2.5 min-w-0">
+                                <span class="w-9 h-9 rounded-lg bg-green-100 text-green-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-circle-check"></i></span>
+                                <span class="font-eurostile-bold text-[#234CA1]">Completed courses</span>
+                                <span class="font-mono text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-500">${done.length}</span>
+                            </span>
+                            <span class="flex items-center gap-2 text-xs font-semibold text-gray-500 shrink-0">
+                                ${completedCollapsed ? "Show" : "Hide"}
+                                <i class="fa-solid fa-chevron-down transition-transform duration-300 ${completedCollapsed ? "" : "rotate-180"}"></i>
+                            </span>
+                        </button>`;
+
+                    if (!completedCollapsed) {
+                        html += done.map(courseCardHtml).join("");
+                    }
+                }
+
+            } else {
+
+                const filtered = allMyCourses.filter(c => c.enrollment_status === activeTab);
+
+                if (!filtered.length) {
+                    myGrid.innerHTML = message("No courses in this category.");
+                    return;
+                }
+
+                html = filtered.map(courseCardHtml).join("");
+            }
+
+            myGrid.innerHTML = html;
+
+            const toggle = document.getElementById("toggleCompleted");
+
+            if (toggle) {
+                toggle.addEventListener("click", () => {
+                    completedCollapsed = !completedCollapsed;
+                    saveCompletedCollapsed(completedCollapsed);
+                    renderMyCourses();
+                });
+            }
 
             myGrid.querySelectorAll(".rate-course-btn").forEach(btn => {
                 btn.addEventListener("click", async () => {
@@ -287,7 +374,6 @@ if (!in_array($activeTab, $allowedTabs)) {
             });
 
         }
-
 
         const learnerTabOptions = ['All', 'Not Started', 'In Progress', 'Completed'];
 

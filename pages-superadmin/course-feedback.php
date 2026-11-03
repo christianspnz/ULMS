@@ -33,143 +33,145 @@ $allCourses = $coursesResult ? $coursesResult->fetch_all(MYSQLI_ASSOC) : [];
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased h-auto">
+<body class=" antialiased h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
 
-        <div class="flex justify-between items-center w-full">
+        <div class="main-header">
             <span class="page-breadcrumbs">Course Feedback</span>
             <?php include '../notification-bell.php'; ?>
         </div>
 
-        <!-- HERO -->
-        <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg mt-5">
-            <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
-            <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
-            <div class="hero-grid absolute inset-0 pointer-events-none"></div>
-
-            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-                <div class="space-y-2 min-w-0">
-                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
-                        <i class="fa-solid fa-star text-amber-400"></i> Learner &amp; Manager Voice
-                    </span>
-                    <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Course Feedback</h1>
-                    <p class="text-slate-300 text-sm max-w-xl">What learners and managers think of each course after completing it. Spot what works, what needs attention, and close the loop.</p>
+        <div class="main-container">
+            <!-- HERO -->
+            <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg ">
+                <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+                <div class="hero-grid absolute inset-0 pointer-events-none"></div>
+    
+                <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+                    <div class="space-y-2 min-w-0">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                            <i class="fa-solid fa-star text-amber-400"></i> Learner &amp; Manager Voice
+                        </span>
+                        <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Course Feedback</h1>
+                        <p class="text-slate-300 text-sm max-w-xl">What learners and managers think of each course after completing it. Spot what works, what needs attention, and close the loop.</p>
+                    </div>
+    
+                    <div class="flex flex-wrap items-center gap-2 shrink-0">
+                        <button type="button" id="exportCsvBtn" class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-sm font-eurostile-bold transition-colors">
+                            <i class="fa-solid fa-file-csv"></i> CSV
+                        </button>
+                        <button type="button" id="printPdfBtn" class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white text-[#234CA1] hover:bg-gray-100 text-sm font-eurostile-bold transition-colors">
+                            <i class="fa-solid fa-file-pdf"></i> Print PDF
+                        </button>
+                    </div>
                 </div>
-
-                <div class="flex flex-wrap items-center gap-2 shrink-0">
-                    <button type="button" id="exportCsvBtn" class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-sm font-eurostile-bold transition-colors">
-                        <i class="fa-solid fa-file-csv"></i> CSV
-                    </button>
-                    <button type="button" id="printPdfBtn" class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white text-[#234CA1] hover:bg-gray-100 text-sm font-eurostile-bold transition-colors">
-                        <i class="fa-solid fa-file-pdf"></i> Print PDF
-                    </button>
+            </section>
+    
+            <!-- FILTERS -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5 ">
+                <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
+                    <div class="col-span-2">
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Course</label>
+                        <select id="f_course" class="text-inputs">
+                            <option value="">All courses</option>
+                            <?php foreach ($allCourses as $c): ?>
+                                <option value="<?= $c['course_id'] ?>"><?= htmlspecialchars($c['course_title']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
+                        <input type="date" id="f_from" class="text-inputs">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
+                        <input type="date" id="f_to" class="text-inputs">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Who</label>
+                        <select id="f_role" class="text-inputs">
+                            <option value="">Learners &amp; Managers</option>
+                            <option value="1">Learners</option>
+                            <option value="2">Managers</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Rating</label>
+                        <select id="f_rating" class="text-inputs">
+                            <option value="">All ratings</option>
+                            <option value="low">Low (1-2)</option>
+                            <option value="mid">Average (3)</option>
+                            <option value="high">High (4-5)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Review</label>
+                        <select id="f_review" class="text-inputs">
+                            <option value="">All feedback</option>
+                            <option value="unreviewed">Needs review</option>
+                            <option value="reviewed">Reviewed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row justify-end gap-3 mt-4">
+                    <button type="button" id="resetBtn" class="bg-gray-100 text-gray-600 rounded-lg px-8 py-2.5 text-sm font-eurostile-bold">Reset</button>
+                    <button type="button" id="applyBtn" class="bg-[#234CA1] text-white rounded-lg px-8 py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
                 </div>
             </div>
-        </section>
-
-        <!-- FILTERS -->
-        <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5 mt-5">
-            <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
-                <div class="col-span-2">
-                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Course</label>
-                    <select id="f_course" class="text-inputs">
-                        <option value="">All courses</option>
-                        <?php foreach ($allCourses as $c): ?>
-                            <option value="<?= $c['course_id'] ?>"><?= htmlspecialchars($c['course_title']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
+    
+            <!-- KPIs -->
+            <div id="kpiCards" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 md:gap-4 "></div>
+    
+            <!-- DISTRIBUTION + TAGS -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 ">
+                <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                    <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Rating Distribution</h3>
+                    <div id="distribution" class="space-y-2.5"></div>
                 </div>
-                <div>
-                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
-                    <input type="date" id="f_from" class="text-inputs">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
-                    <input type="date" id="f_to" class="text-inputs">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Who</label>
-                    <select id="f_role" class="text-inputs">
-                        <option value="">Learners &amp; Managers</option>
-                        <option value="1">Learners</option>
-                        <option value="2">Managers</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Rating</label>
-                    <select id="f_rating" class="text-inputs">
-                        <option value="">All ratings</option>
-                        <option value="low">Low (1-2)</option>
-                        <option value="mid">Average (3)</option>
-                        <option value="high">High (4-5)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Review</label>
-                    <select id="f_review" class="text-inputs">
-                        <option value="">All feedback</option>
-                        <option value="unreviewed">Needs review</option>
-                        <option value="reviewed">Reviewed</option>
-                    </select>
+    
+                <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                    <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">What People Mention</h3>
+                    <div id="tagsBox" class="space-y-4"></div>
                 </div>
             </div>
-            <div class="flex flex-col sm:flex-row justify-end gap-3 mt-4">
-                <button type="button" id="resetBtn" class="bg-gray-100 text-gray-600 rounded-lg px-8 py-2.5 text-sm font-eurostile-bold">Reset</button>
-                <button type="button" id="applyBtn" class="bg-[#234CA1] text-white rounded-lg px-8 py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
+    
+            <!-- COURSES -->
+            <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6 ">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4">
+                    <h3 class="text-lg font-eurostile-bold text-[#234CA1]">By Course</h3>
+                    <p class="text-xs text-gray-400">Needs 5+ responses to be judged. Score gain = average Post-Test minus Pre-Test.</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-200 text-left">
+                                <th class="py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
+                                <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Completions</th>
+                                <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Responses</th>
+                                <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Response Rate</th>
+                                <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Avg Rating</th>
+                                <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Recommend</th>
+                                <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Score Gain</th>
+                                <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="courseBody">
+                            <tr>
+                                <td colspan="8" class="text-center text-gray-400 py-10">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-
-        <!-- KPIs -->
-        <div id="kpiCards" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 md:gap-4 mt-5"></div>
-
-        <!-- DISTRIBUTION + TAGS -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
-            <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6">
-                <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Rating Distribution</h3>
-                <div id="distribution" class="space-y-2.5"></div>
+    
+            <!-- FEED -->
+            <div id="feedCard" class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6 ">
+                <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-1">Latest Feedback</h3>
+                <p class="text-xs text-gray-400 mb-4">Every comment, plus every low rating, even without a comment.</p>
+                <div id="feedList" class="space-y-3"></div>
             </div>
-
-            <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6">
-                <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">What People Mention</h3>
-                <div id="tagsBox" class="space-y-4"></div>
-            </div>
-        </div>
-
-        <!-- COURSES -->
-        <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4">
-                <h3 class="text-lg font-eurostile-bold text-[#234CA1]">By Course</h3>
-                <p class="text-xs text-gray-400">Needs 5+ responses to be judged. Score gain = average Post-Test minus Pre-Test.</p>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="border-b border-gray-200 text-left">
-                            <th class="py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
-                            <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Completions</th>
-                            <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Responses</th>
-                            <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Response Rate</th>
-                            <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Avg Rating</th>
-                            <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Recommend</th>
-                            <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Score Gain</th>
-                            <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="courseBody">
-                        <tr>
-                            <td colspan="8" class="text-center text-gray-400 py-10">Loading...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- FEED -->
-        <div id="feedCard" class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-            <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-1">Latest Feedback</h3>
-            <p class="text-xs text-gray-400 mb-4">Every comment, plus every low rating, even without a comment.</p>
-            <div id="feedList" class="space-y-3"></div>
         </div>
 
     </main>

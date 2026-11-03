@@ -61,6 +61,7 @@ function pointSourceMeta(string $source): array
     if ($has('streak'))            return ['Login streak bonus', 'fa-fire', 'login', null];
     if ($has('login'))             return ['Daily login', 'fa-right-to-bracket', 'login', null];
     if ($has('bonus', 'question')) return ['Bonus question', 'fa-circle-question', 'bonus', null];
+    if ($has('library'))           return ['Library feedback', 'fa-book-open-reader', 'feedback', 'library'];
     if ($has('feedback'))          return ['Course feedback', 'fa-comment-dots', 'feedback', 'course'];
     if ($has('attend'))            return ['Training attendance', 'fa-calendar-check', 'training', 'schedule'];
     if ($has('module'))            return ['Module completed', 'fa-layer-group', 'learning', null];
@@ -122,6 +123,7 @@ try {
     // Course / training names for the entries on this page
     $courseIds = [];
     $scheduleIds = [];
+    $libraryIds = [];
 
     foreach ($rows as $r) {
         $ref = (int) $r['reference_id'];
@@ -129,10 +131,18 @@ try {
 
         if ($ref > 0 && $kind === 'course') $courseIds[$ref] = true;
         if ($ref > 0 && $kind === 'schedule') $scheduleIds[$ref] = true;
+        if ($ref > 0 && $kind === 'library') $libraryIds[$ref] = true;
     }
 
     $courseTitles = [];
     $scheduleTitles = [];
+    $libraryTitles = [];
+
+    if (!empty($libraryIds)) {
+        foreach (phFetchAll($conn, "SELECT library_id, title FROM library_items WHERE library_id IN (" . implode(",", array_keys($libraryIds)) . ")") as $c) {
+            $libraryTitles[(int) $c['library_id']] = $c['title'];
+        }
+    }
 
     if (!empty($courseIds)) {
         foreach (phFetchAll($conn, "SELECT course_id, course_title FROM courses WHERE course_id IN (" . implode(",", array_keys($courseIds)) . ")") as $c) {
@@ -146,7 +156,7 @@ try {
         }
     }
 
-    $entries = array_map(function ($r) use ($courseTitles, $scheduleTitles) {
+    $entries = array_map(function ($r) use ($courseTitles, $scheduleTitles, $libraryTitles) {
 
         [$label, $icon, $cat, $kind] = pointSourceMeta((string) $r['source']);
         // A blank-source entry worth 50 or more is the 5-day streak bonus
@@ -156,7 +166,9 @@ try {
         }
         $ref = (int) $r['reference_id'];
 
-        $detail = $kind === 'course' ? ($courseTitles[$ref] ?? '') : ($kind === 'schedule' ? ($scheduleTitles[$ref] ?? '') : '');
+        $detail = $kind === 'course' ? ($courseTitles[$ref] ?? '')
+            : ($kind === 'schedule' ? ($scheduleTitles[$ref] ?? '')
+                : ($kind === 'library' ? ($libraryTitles[$ref] ?? '') : ''));
 
         return [
             'label'      => $label,

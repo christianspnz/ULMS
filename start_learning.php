@@ -12,7 +12,7 @@ switch ($designation) {
 
     // Sales Executive / Learner
     case 1:
-        header("Location: ./pages-learner/courses.php");
+        header("Location: ./pages-learner/dashboard.php");
         break;
 
     // Sales Manager

@@ -1,6 +1,7 @@
 <?php
 session_start();
 include "../../config/config.php";
+require_once __DIR__ . "/../auth-logout/remember-me.php";
 
 header('Content-Type: application/json');
 
@@ -9,8 +10,9 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
     exit;
 }
 
-$email = trim($_POST["email"]);
-$password = $_POST["password"];
+$email = trim($_POST["email"] ?? "");
+$password = $_POST["password"] ?? "";
+$remember = !empty($_POST["remember"]); // "Keep me signed in"
 
 $sql = "SELECT * FROM users WHERE email = ? LIMIT 1";
 $stmt = mysqli_prepare($conn, $sql);
@@ -47,11 +49,24 @@ $updateStmt = mysqli_prepare($conn, "UPDATE users SET last_login = NOW() WHERE u
 mysqli_stmt_bind_param($updateStmt, "i", $user["user_id"]);
 mysqli_stmt_execute($updateStmt);
 
+session_regenerate_id(true); // a new session ID for the new login
+
 $_SESSION["user_id"] = $user["user_id"];
 $_SESSION["firstname"] = $user["first_name"];
 $_SESSION["lastname"] = $user["last_name"];
 $_SESSION["email"] = $user["email"];
 $_SESSION["designation_id"] = $user["designation_id"];
+
+// Keep me signed in: ticked = a 30-day token for this device; unticked = remove any old one
+rememberMeForget($conn);
+
+if ($remember) {
+    try {
+        rememberMeIssue($conn, (int) $user["user_id"]);
+    } catch (Throwable $e) {
+        error_log("Remember-me could not be saved: " . $e->getMessage()); // the login itself still succeeds
+    }
+}
 
 switch ($user["designation_id"]) {
     case 1:

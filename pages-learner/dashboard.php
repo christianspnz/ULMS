@@ -35,119 +35,116 @@ if ($triggerBonusPopup) {
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased">
+<body class="antialiased">
     <?php include '../sidebar-learner.php'; ?>
+    
     <main>
-
-        <div class="flex justify-between items-center w-full">
+        <header class="main-header">
             <span class="page-breadcrumbs">Dashboard</span>
             <?php include '../notification-bell.php'; ?>
-        </div>
+        </header>
 
-        <!-- HERO -->
-        <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg mt-5">
-            <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
-            <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
-            <div class="hero-grid absolute inset-0 pointer-events-none"></div>
-
-            <div class="relative z-10 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] gap-6 items-center">
-
-                <div class="space-y-3 min-w-0">
-                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
-                        <i class="fa-solid fa-gauge-high"></i> Dashboard
-                    </span>
-                    <h1 id="greeting" data-name="<?= htmlspecialchars($user['first_name'] ?? '', ENT_QUOTES) ?>" class="text-2xl md:text-4xl font-extrabold tracking-tight break-words">Welcome back</h1>
-                    <p id="todayLabel" class="text-slate-300 text-sm"></p>
-
-                    <div class="grid grid-cols-3 gap-3 max-w-md pt-1">
-                        <div class="rounded-xl bg-white/10 border border-white/10 px-3 py-2.5">
-                            <p class="text-[10px] uppercase tracking-wider text-slate-300">Points</p>
-                            <p id="heroPoints" class="text-xl font-black leading-tight">—</p>
+        <div class="main-container">
+            <!-- HERO -->
+            <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg">
+                <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+                <div class="hero-grid absolute inset-0 pointer-events-none"></div>
+    
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] gap-6 items-center">
+    
+                    <div class="space-y-3 min-w-0">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                            <i class="fa-solid fa-gauge-high"></i> Dashboard
+                        </span>
+                        <h1 id="greeting" data-name="<?= htmlspecialchars($user['first_name'] ?? '', ENT_QUOTES) ?>" class="text-2xl md:text-4xl font-extrabold tracking-tight break-words">Welcome back</h1>
+                        <p id="todayLabel" class="text-slate-300 text-sm"></p>
+    
+                        <div class="grid grid-cols-3 gap-3 max-w-md pt-1">
+                            <div class="rounded-xl bg-white/10 border border-white/10 px-3 py-2.5">
+                                <p class="text-[10px] uppercase tracking-wider text-slate-300">Points</p>
+                                <p id="heroPoints" class="text-xl font-black leading-tight">—</p>
+                            </div>
+                            <div class="rounded-xl bg-white/10 border border-white/10 px-3 py-2.5">
+                                <p class="text-[10px] uppercase tracking-wider text-slate-300">All-time rank</p>
+                                <p id="heroRank" class="text-xl font-black leading-tight text-amber-300">—</p>
+                            </div>
+                            <div class="rounded-xl bg-white/10 border border-white/10 px-3 py-2.5">
+                                <p class="text-[10px] uppercase tracking-wider text-slate-300">Login streak</p>
+                                <p id="heroStreak" class="text-xl font-black leading-tight text-orange-300">—</p>
+                            </div>
                         </div>
-                        <div class="rounded-xl bg-white/10 border border-white/10 px-3 py-2.5">
-                            <p class="text-[10px] uppercase tracking-wider text-slate-300">All-time rank</p>
-                            <p id="heroRank" class="text-xl font-black leading-tight text-amber-300">—</p>
-                        </div>
-                        <div class="rounded-xl bg-white/10 border border-white/10 px-3 py-2.5">
-                            <p class="text-[10px] uppercase tracking-wider text-slate-300">Login streak</p>
-                            <p id="heroStreak" class="text-xl font-black leading-tight text-orange-300">—</p>
-                        </div>
+    
+                        <button type="button" onclick="openPointsHistory()"
+                            class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-eurostile-bold transition-colors">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Points History
+                        </button>
                     </div>
-
-                    <button type="button" onclick="openPointsHistory()"
-                        class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-eurostile-bold transition-colors">
-                        <i class="fa-solid fa-clock-rotate-left"></i> Points History
-                    </button>
+    
+                    <div id="nextAction" class="rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md p-5 min-w-0">
+                        <p class="text-slate-300 text-sm">Finding your next step...</p>
+                    </div>
+    
                 </div>
-
-                <div id="nextAction" class="rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md p-5 min-w-0">
-                    <p class="text-slate-300 text-sm">Finding your next step...</p>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- COURSE COUNTS -->
-        <div id="countCards" class="grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 mt-5"></div>
-
-        <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_380px] gap-5 mt-5 items-start">
-
-            <div class="space-y-5 min-w-0">
-
-                <!-- NOT STARTED -->
-                <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-5">
-                    <div class="flex items-center justify-between gap-3 mb-4">
-                        <div>
-                            <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Not Started</h3>
-                            <p class="text-xs text-gray-400">Courses you're enrolled in but haven't opened yet</p>
+            </section>
+    
+            <!-- COURSE COUNTS -->
+            <div id="countCards" class="grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 mt-5"></div>
+    
+            <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_380px] gap-5 mt-5 items-start">
+                <div class="space-y-5 min-w-0">
+                    <!-- NOT STARTED -->
+                    <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                        <div class="flex items-center justify-between gap-3 mb-4">
+                            <div>
+                                <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Not Started</h3>
+                                <p class="text-xs text-gray-400">Courses you're enrolled in but haven't opened yet</p>
+                            </div>
+                            <a href="courses.php" class="text-xs font-bold text-[#234CA1] hover:underline shrink-0">My Courses <i class="fa-solid fa-arrow-right ml-1"></i></a>
                         </div>
-                        <a href="courses.php" class="text-xs font-bold text-[#234CA1] hover:underline shrink-0">My Courses <i class="fa-solid fa-arrow-right ml-1"></i></a>
-                    </div>
-                    <div id="notStartedList" class="space-y-2.5">
-                        <p class="text-gray-400 text-sm">Loading...</p>
-                    </div>
-                </section>
-
-                <!-- CONTINUE LEARNING -->
-                <section id="continueCard" class="hidden min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-5">
-                    <div class="mb-4">
-                        <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Continue Learning</h3>
-                        <p class="text-xs text-gray-400">Pick up where you left off</p>
-                    </div>
-                    <div id="continueList" class="space-y-2.5"></div>
-                </section>
-
+                        <div id="notStartedList" class="space-y-2.5">
+                            <p class="text-gray-400 text-sm">Loading...</p>
+                        </div>
+                    </section>
+    
+                    <!-- CONTINUE LEARNING -->
+                    <section id="continueCard" class="hidden min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                        <div class="mb-4">
+                            <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Continue Learning</h3>
+                            <p class="text-xs text-gray-400">Pick up where you left off</p>
+                        </div>
+                        <div id="continueList" class="space-y-2.5"></div>
+                    </section>
+                </div>
+    
+                <div class="space-y-5 min-w-0">
+                    <!-- UPCOMING -->
+                    <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                        <div class="flex items-center justify-between gap-3 mb-4">
+                            <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Upcoming Schedule</h3>
+                            <a href="calendar.php" class="text-xs font-bold text-[#234CA1] hover:underline shrink-0">Calendar <i class="fa-solid fa-arrow-right ml-1"></i></a>
+                        </div>
+                        <div id="upcomingList" class="space-y-2.5">
+                            <p class="text-gray-400 text-sm">Loading...</p>
+                        </div>
+                    </section>
+    
+                    <!-- LEADERBOARD -->
+                    <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                        <div class="flex items-center justify-between gap-3 mb-4">
+                            <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Leaderboard</h3>
+                            <a href="leaderboard.php" class="text-xs font-bold text-[#234CA1] hover:underline shrink-0">Full ranking <i class="fa-solid fa-arrow-right ml-1"></i></a>
+                        </div>
+                        <div id="lbList" class="space-y-1">
+                            <p class="text-gray-400 text-sm">Loading...</p>
+                        </div>
+                    </section>
+                </div>
             </div>
-
-            <div class="space-y-5 min-w-0">
-
-                <!-- UPCOMING -->
-                <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-5">
-                    <div class="flex items-center justify-between gap-3 mb-4">
-                        <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Upcoming Schedule</h3>
-                        <a href="calendar.php" class="text-xs font-bold text-[#234CA1] hover:underline shrink-0">Calendar <i class="fa-solid fa-arrow-right ml-1"></i></a>
-                    </div>
-                    <div id="upcomingList" class="space-y-2.5">
-                        <p class="text-gray-400 text-sm">Loading...</p>
-                    </div>
-                </section>
-
-                <!-- LEADERBOARD -->
-                <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-5">
-                    <div class="flex items-center justify-between gap-3 mb-4">
-                        <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Leaderboard</h3>
-                        <a href="leaderboard.php" class="text-xs font-bold text-[#234CA1] hover:underline shrink-0">Full ranking <i class="fa-solid fa-arrow-right ml-1"></i></a>
-                    </div>
-                    <div id="lbList" class="space-y-1">
-                        <p class="text-gray-400 text-sm">Loading...</p>
-                    </div>
-                </section>
-
-            </div>
+    
+            <?php include '../feedback-button.php'; ?>
+            <?php include '../bonus-question-modal.php'; ?>
         </div>
-
-        <?php include '../feedback-button.php'; ?>
-        <?php include '../bonus-question-modal.php'; ?>
     </main>
 
     <?php include '../points-history.php'; ?>
@@ -348,9 +345,12 @@ if ($triggerBonusPopup) {
                     ${thumbBox(c.thumbnail)}
                     <div class="min-w-0 flex-1">
                         <p class="text-sm font-semibold text-slate-800 break-words">${esc(c.course_title)}</p>
+                        ${label === "In progress" ? `
+                            <div class="h-1.5 rounded-full bg-gray-100 mt-2 overflow-hidden"><div class="h-1.5 rounded-full bg-[#234CA1]" style="width:${Math.min(100, Number(c.progress) || 0)}%"></div></div>
+                            <p class="text-[10px] text-gray-400 mt-1">${Math.min(100, Number(c.progress) || 0)}% complete</p>` : ""}
                         <span class="inline-block mt-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${tone}">${label}</span>
                     </div>
-                    <span class="shrink-0 px-3 h-9 inline-flex items-center rounded-lg bg-[#234CA1] text-white text-xs font-eurostile-bold group-hover:bg-[#193B82] transition-colors">${label === "Not started" ? "Start" : "Continue"}</span>
+                    <span class="shrink-0 px-3 w-16 h-9 inline-flex items-center justify-center rounded-lg bg-[#234CA1] text-white text-xs font-eurostile-bold group-hover:bg-[#193B82] transition-colors">${label === "Not started" ? "Start" : "Continue"}</span>
                 </a>`;
 
             function renderCourses() {

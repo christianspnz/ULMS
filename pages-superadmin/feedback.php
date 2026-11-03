@@ -30,33 +30,44 @@ if (!in_array($activeStatus, $allowedStatuses)) {
     <?php include('../sidebar-superadmin.php') ?>
     <main>
 
-        <div class="flex justify-between items-center w-full">
+        <div class="main-header">
             <span class="page-breadcrumbs">Feedback</span>
             <?php include '../notification-bell.php'; ?>
         </div>
 
-        <div class="flex justify-between items-center w-full">
-            <div>
-                <h2 class="text-3xl font-eurostile-black text-[#234CA1]">User Feedback</h2>
-                <p class="text-gray-500 mt-1">Review and moderate feedback before it appears on the landing page.</p>
+        <div class="main-container">
+            <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg">
+                <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+                <div class="hero-grid absolute inset-0 pointer-events-none"></div>
+
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                    <div class="space-y-2 min-w-0">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                            <i class="fa-solid fa-star text-white"></i> User's Voice
+                        </span>
+                        <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">User Feedback</h1>
+                        <p class="text-slate-300 text-sm max-w-xl">Review and moderate feedback before it appears on the landing page.</p>
+                    </div>
+                </div>
+            </section>
+            <!-- Tabs -->
+            <div id="feedbackTabs" class="relative flex overflow-x-auto gap-x-2 bg-gray-100 max-w-full rounded-lg  p-1">
+                <span id="feedbackTabSlider" class="absolute top-1 bottom-1 left-0 rounded-md shadow-sm bg-[#FFFFFF] transition-all duration-300 ease-in-out pointer-events-none"></span>
+                <?php foreach ($allowedStatuses as $status): ?>
+                    <button type="button"
+                        id="feedback-tab-<?= htmlspecialchars($status) ?>"
+                        data-status="<?= htmlspecialchars($status) ?>"
+                        class="bg-transparent universal-tabs relative z-10 px-5 py-2.5 rounded-md font-eurostile-bold uppercase text-sm whitespace-nowrap transition-colors duration-300 <?= $activeStatus === $status ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>">
+                        <?= htmlspecialchars($status) ?>
+                        <span class="ml-1.5 font-mono text-[10px] opacity-70" data-count-for="<?= htmlspecialchars($status) ?>"></span>
+                    </button>
+                <?php endforeach; ?>
             </div>
-        </div>
 
-        <!-- Tabs -->
-        <div id="feedbackTabs" class="relative flex overflow-x-auto gap-x-2 bg-gray-100 max-w-full rounded-lg mt-5 p-1">
-            <span id="feedbackTabSlider" class="absolute top-1 bottom-1 left-1 rounded-md bg-[#FFFFFF] shadow-sm transition-all duration-300 ease-in-out pointer-events-none"></span>
-            <?php foreach ($allowedStatuses as $status): ?>
-                <button type="button"
-                    id="feedback-tab-<?= htmlspecialchars($status) ?>"
-                    data-status="<?= htmlspecialchars($status) ?>"
-                    class="universal-tabs relative z-10 !bg-transparent whitespace-nowrap transition-colors duration-300 <?= $activeStatus === $status ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>">
-                    <?= htmlspecialchars($status) ?>
-                </button>
-            <?php endforeach; ?>
-        </div>
-
-        <div id="feedbackList" class="space-y-4 mt-6">
-            <p class="text-gray-400 text-center py-10">Loading...</p>
+            <div id="feedbackList" class="space-y-4 mt-6">
+                <p class="text-gray-400 text-center py-10">Loading...</p>
+            </div>
         </div>
 
     </main>
@@ -64,11 +75,30 @@ if (!in_array($activeStatus, $allowedStatuses)) {
     <script>
         lucide.createIcons();
         let activeFeedbackStatus = "<?= htmlspecialchars($activeStatus) ?>";
+        const feedbackStatuses = ['Pending', 'Approved', 'Hidden'];
+
+        async function loadFeedbackCounts() {
+            try {
+                for (const status of feedbackStatuses) {
+                    const res = await fetch(`../php/feedback/get-feedback-queue.php?status=${status}`);
+                    const data = await res.json();
+                    if (data.status === "success" && Array.isArray(data.feedback)) {
+                        const badge = document.querySelector(`[data-count-for="${status}"]`);
+                        if (badge) badge.textContent = data.feedback.length;
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to load feedback counts", err);
+            }
+        }
 
         async function loadFeedbackQueue() {
 
             const container = document.getElementById("feedbackList");
             container.innerHTML = `<p class="text-gray-400 text-center py-10">Loading...</p>`;
+
+            // Update counts whenever queue refreshes
+            loadFeedbackCounts();
 
             try {
 
@@ -154,18 +184,14 @@ if (!in_array($activeStatus, $allowedStatuses)) {
 
         }
 
-
-        const feedbackStatuses = ['Pending', 'Approved', 'Hidden'];
-
         function moveFeedbackTabSlider(status) {
-            const container = document.getElementById('feedbackTabs');
-            const slider = document.getElementById('feedbackTabSlider');
             const button = document.getElementById(`feedback-tab-${status}`);
+            const slider = document.getElementById('feedbackTabSlider');
 
-            if (!container || !slider || !button) return;
+            if (!button || !slider) return;
 
             slider.style.width = `${button.offsetWidth}px`;
-            slider.style.transform = `translateX(${button.offsetLeft - 4}px)`;
+            slider.style.transform = `translateX(${button.offsetLeft}px)`;
         }
 
         function switchFeedbackTab(status, updateUrl = true) {
@@ -199,8 +225,6 @@ if (!in_array($activeStatus, $allowedStatuses)) {
             });
         });
 
-        moveFeedbackTabSlider(activeFeedbackStatus);
-
         window.addEventListener('resize', () => {
             moveFeedbackTabSlider(activeFeedbackStatus);
         });
@@ -210,13 +234,13 @@ if (!in_array($activeStatus, $allowedStatuses)) {
             switchFeedbackTab(feedbackStatuses.includes(status) ? status : 'Pending', false);
         });
 
-
         function escapeHtml(str) {
             const div = document.createElement("div");
             div.textContent = str ?? "";
             return div.innerHTML;
         }
 
+        moveFeedbackTabSlider(activeFeedbackStatus);
         loadFeedbackQueue();
     </script>
 </body>

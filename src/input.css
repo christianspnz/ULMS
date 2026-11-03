@@ -203,6 +203,28 @@ body {
     }
 }
 
+.hero-grid {
+    background-image:
+        linear-gradient(rgba(255, 255, 255, .07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .07) 1px, transparent 1px);
+    background-size: 32px 32px;
+    -webkit-mask-image: radial-gradient(ellipse at top right, #000 0%, transparent 70%);
+    mask-image: radial-gradient(ellipse at top right, #000 0%, transparent 70%);
+}
+
+@media print {
+
+    #sidebar,
+    .no-print {
+        display: none !important;
+    }
+
+    main {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+
 
 /* Eurostile Font Family */
 
@@ -264,7 +286,7 @@ body {
 @layer base{
     
     body{
-        @apply flex flex-row justify-center lg:justify-end bg-[#fbfcf8] w-screen h-auto min-h-screen;
+        @apply flex flex-row justify-center lg:justify-end bg-[#FFFFFF] w-screen h-auto min-h-screen;
     }
     
     header{
@@ -272,7 +294,7 @@ body {
     }
     
     main{
-        @apply flex flex-col gap-y-3 lg:px-10 py-10 w-[85%] h-auto;
+        @apply flex flex-col gap-y-0 w-[85%] h-auto min-h-screen;
     }
     
     footer{
@@ -282,6 +304,15 @@ body {
 }
 
 @layer components{
+
+    /* Main Header - Notif / Breadcrumbs */
+    .main-header {
+        @apply flex items-center justify-between px-6 h-16 w-full bg-white sticky top-0 z-20 lg:border-b border-[#234CA1];
+    }
+
+    .main-container {
+        @apply  p-3 flex flex-col justify-between gap-y-3;
+    }
 
     button{
         @apply outline-none focus:outline-none focus:ring-0;
@@ -332,17 +363,17 @@ body {
     /* Sidebar */
 
     .sidebar {
-        @apply flex flex-col justify-start items-center w-[90%] lg:max-w-[15%] h-[90vh] lg:h-[calc(100vh-2.5rem)] bg-white border border-[#234CA1] rounded-3xl py-8 px-5 gap-y-4 overflow-hidden;
+        @apply flex flex-col fixed lg:left-0 bg-white justify-center items-center w-full lg:max-w-[15%] h-full py-5 px-5 gap-y-4 overflow-hidden border-r border-[#234CA1];
     }
 
     .sidebar-nav {
-        @apply flex flex-col justify-start items-center flex-1 min-h-0 w-full gap-y-1 overflow-y-auto overflow-x-hidden overscroll-contain; 
+        @apply flex flex-col justify-start items-center flex-1 min-h-0 w-full gap-y-1 overflow-y-auto overflow-x-hidden overscroll-contain z-40; 
         scrollbar-width: thin; 
         scrollbar-color: #cbd5e1 transparent;
     }
 
     .sidebar-text {
-        @apply flex flex-row gap-x-3 items-center w-full px-5 py-1 shrink-0 rounded-lg font-eurostile-bold text-[16px] truncate;
+        @apply flex flex-row gap-x-3 items-center w-full px-3 py-1 shrink-0 rounded-lg font-eurostile-bold text-[16px] truncate;
     }
 
     .sidebar-section-label {
@@ -544,7 +575,7 @@ body {
     }
 
     .contacts-card-text{
-        @apply text-[20px] font-eurostile-bold text-[#234CA1] group-hover:text-white;
+        @apply text-[20px] font-eurostile-bold text-[#234CA1] group-hover:text-white ;
     }
 
     .contacts-card-subtext{

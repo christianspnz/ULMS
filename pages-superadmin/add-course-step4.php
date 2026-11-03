@@ -27,7 +27,7 @@ if (empty($_SESSION['course_id'])) {
 <body class="h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
-        <div class="flex justify-between items-center w-full">
+        <div class="main-header">
             <span class="page-breadcrumbs">
                 Add Courses
                 <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
@@ -49,39 +49,41 @@ if (empty($_SESSION['course_id'])) {
             </span>
             <?php include '../notification-bell.php'; ?>
         </div>
-        <?php $currentStep = 4;
-        include 'course-stepper.php'; ?>
-        <div class="flex justify-between items-center w-full">
-            <div>
-                <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
-                    Review & Publish
-                </h2>
-                <p class="font-eurostile text-gray-500 mt-1">
-                    Review everything before making this course available to learners.
-                </p>
+        <div class="main-container">
+            <?php $currentStep = 4;
+            include 'course-stepper.php'; ?>
+            <div class="flex justify-between items-center w-full">
+                <div>
+                    <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
+                        Review & Publish
+                    </h2>
+                    <p class="font-eurostile text-gray-500 mt-1">
+                        Review everything before making this course available to learners.
+                    </p>
+                </div>
             </div>
-        </div>
-
-        <div id="reviewContainer" class="space-y-5">
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 text-gray-400">
-                Loading course details...
+    
+            <div id="reviewContainer" class="space-y-5">
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 text-gray-400">
+                    Loading course details...
+                </div>
             </div>
-        </div>
-
-        <div class="flex flex-col lg:flex-row gap-2 justify-end gap-x-5 w-full mt-5">
-            <button
-                type="button"
-                onclick="window.location.href='add-course-step3.php'"
-                class="bg-[#D02027] font-eurostile-bold uppercase text-white px-10 rounded-xl h-12">
-                Previous
-            </button>
-
-            <button
-                type="button"
-                id="publishBtn"
-                class="bg-[#234CA1] font-eurostile-bold uppercase text-white px-10 rounded-xl h-12">
-                Publish Course
-            </button>
+    
+            <div class="flex flex-col lg:flex-row gap-2 justify-end gap-x-5 w-full mt-5">
+                <button
+                    type="button"
+                    onclick="window.location.href='add-course-step3.php'"
+                    class="bg-[#D02027] font-eurostile-bold uppercase text-white px-10 rounded-xl h-12">
+                    Previous
+                </button>
+    
+                <button
+                    type="button"
+                    id="publishBtn"
+                    class="bg-[#234CA1] font-eurostile-bold uppercase text-white px-10 rounded-xl h-12">
+                    Publish Course
+                </button>
+            </div>
         </div>
     </main>
 

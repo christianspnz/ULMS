@@ -22,188 +22,194 @@ $allBrands = $brandsResult ? $brandsResult->fetch_all(MYSQLI_ASSOC) : [];
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased selection:bg-blue-500 selection:text-white">
+<body class=" antialiased selection:bg-blue-500 selection:text-white">
 
     <?php include '../sidebar-learner.php'; ?>
 
     <main>
-
-        <!-- =========================
-             COMPACT HERO BANNER
-        ========================== -->
-        <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-6 md:p-8 text-white shadow-lg">
-            <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
-            <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
-
-            <div class="relative z-10 flex flex-col md:flex-row items-start justify-between gap-6">
-                <div class="space-y-2 h-full">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
-                        <i class="fa-solid fa-trophy text-amber-400"></i>
-                        <span>Learner Rankings</span>
-                    </div>
-                    <h1 class="text-xl sm:text-2xl md:text-4xl font-extrabold tracking-tight">
-                        Your Progress <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Matters.</span>
-                    </h1>
-                    <p class="text-slate-300 text-sm max-w-md">
-                        Compete with peers, track your weekly momentum, and earn top positions.
-                    </p>
-                    <button type="button" onclick="openPointsHistory()"
-                        class="inline-flex items-center gap-2 mt-1 px-4 h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-eurostile-bold transition-colors">
-                        <i class="fa-solid fa-clock-rotate-left"></i> Points History
-                    </button>
-                </div>
-
-                <!-- Personal Quick Stats -->
-                <div class="flex flex-col gap-3 bg-white/5 border border-white/10 backdrop-blur-md p-2 md:p-4 rounded-2xl w-full md:w-[40%]">
-
-                    <div class="grid grid-cols-3 gap-3">
-
-                        <div class="text-center px-2 cursor-pointer rounded-xl hover:bg-white/5 transition-colors" onclick="openPointsHistory()" title="View points history">
-                            <p class="text-[10px] font-medium uppercase tracking-wider text-slate-400 whitespace-nowrap text-center">Total Pts</p>
-                            <p id="myTotalPoints" class="text-lg sm:text-3xl font-black text-white mt-0.5">—</p>
-                            <p id="myTodayPointsEarned" class="text-[10px] font-semibold text-emerald-400 mt-0.5">—</p>
-                        </div>
-
-                        <div class="text-center px-2 border-x border-white/10">
-                            <p class="text-[10px] font-medium uppercase tracking-wider text-slate-400 whitespace-nowrap text-center">Today</p>
-                            <p id="myTodayRank" class="text-lg sm:text-3xl font-black text-cyan-400 mt-0.5">—</p>
-                        </div>
-
-                        <div class="text-center px-2">
-                            <p class="text-[10px] font-medium uppercase tracking-wider text-slate-400 whitespace-nowrap text-center">All-Time</p>
-                            <p id="myAllTimeRank" class="text-lg sm:text-3xl font-black text-amber-400 mt-0.5">—</p>
-                        </div>
-
-                    </div>
-
-                    <!-- Tier indicator -->
-                    <div class="border-t border-white/10 pt-3">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <div class="flex items-center gap-1.5">
-                                <i id="tierIcon" class="fa-solid fa-seedling text-sm"></i>
-                                <span id="tierName" class="text-xs font-bold text-white">—</span>
-                            </div>
-                            <span id="tierPointsToNext" class="text-[10px] text-slate-400">—</span>
-                        </div>
-                        <div class="w-full bg-white/10 rounded-full h-1.5">
-                            <div id="tierProgressBar" class="h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
-                        </div>
-                    </div>
-
-                    <!-- Login streak indicator -->
-                    <div class="border-t border-white/10 pt-3">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <div class="flex items-center gap-1.5">
-                                <i class="fa-solid fa-fire text-sm text-orange-400"></i>
-                                <span class="text-xs font-bold text-white">Login Streak</span>
-                            </div>
-                            <span id="streakLabel" class="text-[10px] text-slate-400">—</span>
-                        </div>
-                        <div id="streakDots" class="flex items-center gap-1.5">
-                            <!-- 5 dots injected by JS -->
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- =========================
-             BRAND FILTERS
-        ========================== -->
-        <section class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5">
-            <div>
-                <h2 class="text-base font-bold text-[#234CA1]">Leaderboard Views</h2>
-                <p class="text-xs text-slate-500">Filter standings across partner brands</p>
-            </div>
-
-            <!-- Horizontal Scrollable Pills -->
-            <div class="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 no-scrollbar">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 shrink-0 mr-1">Brand:</span>
-                <?php foreach ($allBrands as $b): ?>
-                    <label class="cursor-pointer shrink-0">
-                        <input type="checkbox" class="lb-brand-checkbox peer sr-only" value="<?= $b['brand_id'] ?>">
-                        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-white border border-slate-200 text-slate-600 shadow-sm transition-all peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:text-white hover:border-slate-300">
-                            <?= htmlspecialchars($b['brand_name']) ?>
-                        </span>
-                    </label>
-                <?php endforeach; ?>
-            </div>
-        </section>
-
-        <!-- =========================
-             MOBILE TAB CONTROLLER (Visible < lg)
-        ========================== -->
-        <div class="lg:hidden flex bg-slate-200/70 p-1 rounded-xl gap-1 text-xs font-bold">
-            <button onclick="switchTab('today')" id="tab-btn-today" class="tab-btn flex-1 py-2 rounded-lg bg-white text-[#234CA1] shadow-sm transition-all">Today</button>
-            <button onclick="switchTab('yesterday')" id="tab-btn-yesterday" class="tab-btn flex-1 py-2 rounded-lg text-slate-600 hover:text-[#234CA1] transition-all">Yesterday</button>
-            <button onclick="switchTab('alltime')" id="tab-btn-alltime" class="tab-btn flex-1 py-2 rounded-lg text-slate-600 hover:text-[#234CA1] transition-all">All-Time</button>
+        <div class="main-header">
+            <span class="page-breadcrumbs">Leaderboard</span>
+            <?php include '../notification-bell.php'; ?>
         </div>
 
-        <!-- =========================
-             LEADERBOARD PANELS
-        ========================== -->
-        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-            <!-- TODAY PANEL -->
-            <div id="panel-today" class="lb-panel bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col">
-                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-                    <div class="flex items-center gap-2.5">
-                        <!-- <div class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-600 flex items-center justify-center font-bold">
-                            <i class="fa-solid fa-bolt text-sm"></i>
-                        </div> -->
-                        <div>
-                            <h3 class="text-sm font-bold text-slate-800">Today</h3>
-                            <p class="text-[11px] text-slate-400">Daily active learners</p>
+        <div class="main-container">
+            <!-- =========================
+                 COMPACT HERO BANNER
+            ========================== -->
+            <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-6 md:p-8 text-white shadow-lg">
+                <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+    
+                <div class="relative z-10 flex flex-col md:flex-row items-start justify-between gap-6">
+                    <div class="space-y-2 ">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                            <i class="fa-solid fa-trophy text-amber-400"></i>
+                            <span>Learner Rankings</span>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl md:text-4xl font-extrabold tracking-tight">
+                            Your Progress <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Matters.</span>
+                        </h1>
+                        <p class="text-slate-300 text-sm max-w-md pb-5">
+                            Compete with peers, track your weekly momentum, and earn top positions.
+                        </p>
+                        <button type="button" onclick="openPointsHistory()"
+                            class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-eurostile-bold transition-colors ">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Points History
+                        </button>
+                    </div>
+    
+                    <!-- Personal Quick Stats -->
+                    <div class="flex flex-col gap-3 bg-white/5 border border-white/10 backdrop-blur-md p-2 md:p-4 rounded-2xl w-full md:w-[40%]">
+    
+                        <div class="grid grid-cols-3 gap-3">
+    
+                            <div class="text-center px-2 cursor-pointer rounded-xl hover:bg-white/5 transition-colors" onclick="openPointsHistory()" title="View points history">
+                                <p class="text-[10px] font-medium uppercase tracking-wider text-slate-400 whitespace-nowrap text-center">Total Pts</p>
+                                <p id="myTotalPoints" class="text-lg sm:text-3xl font-black text-white mt-0.5">—</p>
+                                <p id="myTodayPointsEarned" class="text-[10px] font-semibold text-emerald-400 mt-0.5">—</p>
+                            </div>
+    
+                            <div class="text-center px-2 border-x border-white/10">
+                                <p class="text-[10px] font-medium uppercase tracking-wider text-slate-400 whitespace-nowrap text-center">Today</p>
+                                <p id="myTodayRank" class="text-lg sm:text-3xl font-black text-cyan-400 mt-0.5">—</p>
+                            </div>
+    
+                            <div class="text-center px-2">
+                                <p class="text-[10px] font-medium uppercase tracking-wider text-slate-400 whitespace-nowrap text-center">All-Time</p>
+                                <p id="myAllTimeRank" class="text-lg sm:text-3xl font-black text-amber-400 mt-0.5">—</p>
+                            </div>
+    
+                        </div>
+    
+                        <!-- Tier indicator -->
+                        <div class="border-t border-white/10 pt-3">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <div class="flex items-center gap-1.5">
+                                    <i id="tierIcon" class="fa-solid fa-seedling text-sm"></i>
+                                    <span id="tierName" class="text-xs font-bold text-white">—</span>
+                                </div>
+                                <span id="tierPointsToNext" class="text-[10px] text-slate-400">—</span>
+                            </div>
+                            <div class="w-full bg-white/10 rounded-full h-1.5">
+                                <div id="tierProgressBar" class="h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+    
+                        <!-- Login streak indicator -->
+                        <div class="border-t border-white/10 pt-3">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <div class="flex items-center gap-1.5">
+                                    <i class="fa-solid fa-fire text-sm text-orange-400"></i>
+                                    <span class="text-xs font-bold text-white">Login Streak</span>
+                                </div>
+                                <span id="streakLabel" class="text-[10px] text-slate-400">—</span>
+                            </div>
+                            <div id="streakDots" class="flex items-center gap-1.5">
+                                <!-- 5 dots injected by JS -->
+                            </div>
+                        </div>
+    
+                    </div>
+                </div>
+            </section>
+    
+            <!-- =========================
+                 BRAND FILTERS
+            ========================== -->
+            <section class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5">
+                <div>
+                    <h2 class="text-base font-bold text-[#234CA1]">Leaderboard Views</h2>
+                    <p class="text-xs text-slate-500">Filter standings across partner brands</p>
+                </div>
+    
+                <!-- Horizontal Scrollable Pills -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 no-scrollbar">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 shrink-0 mr-1">Brand:</span>
+                    <?php foreach ($allBrands as $b): ?>
+                        <label class="cursor-pointer shrink-0">
+                            <input type="checkbox" class="lb-brand-checkbox peer sr-only" value="<?= $b['brand_id'] ?>">
+                            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-white border border-slate-200 text-slate-600 shadow-sm transition-all peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:text-white hover:border-slate-300">
+                                <?= htmlspecialchars($b['brand_name']) ?>
+                            </span>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+    
+            <!-- =========================
+                 MOBILE TAB CONTROLLER (Visible < lg)
+            ========================== -->
+            <div class="lg:hidden flex bg-slate-200/70 p-1 rounded-xl gap-1 text-xs font-bold">
+                <button onclick="switchTab('today')" id="tab-btn-today" class="tab-btn flex-1 py-2 rounded-lg bg-white text-[#234CA1] shadow-sm transition-all">Today</button>
+                <button onclick="switchTab('yesterday')" id="tab-btn-yesterday" class="tab-btn flex-1 py-2 rounded-lg text-slate-600 hover:text-[#234CA1] transition-all">Yesterday</button>
+                <button onclick="switchTab('alltime')" id="tab-btn-alltime" class="tab-btn flex-1 py-2 rounded-lg text-slate-600 hover:text-[#234CA1] transition-all">All-Time</button>
+            </div>
+    
+            <!-- =========================
+                 LEADERBOARD PANELS
+            ========================== -->
+            <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    
+                <!-- TODAY PANEL -->
+                <div id="panel-today" class="lb-panel bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col">
+                    <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <!-- <div class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-600 flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-bolt text-sm"></i>
+                            </div> -->
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-800">Today</h3>
+                                <p class="text-[11px] text-slate-400">Daily active learners</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">Live</span>
+                    </div>
+    
+                    <div id="leaderboardToday" class="p-3 space-y-2 divide-y divide-slate-50 max-h-[520px] overflow-y-auto">
+                        <p class="text-slate-400 text-center py-12 text-xs">Loading standings...</p>
+                    </div>
+                </div>
+    
+                <!-- YESTERDAY PANEL -->
+                <div id="panel-yesterday" class="lb-panel hidden lg:flex bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex-col">
+                    <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <!-- <div class="w-8 h-8 rounded-lg bg-slate-500/10 text-slate-600 flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-clock-rotate-left text-sm"></i>
+                            </div> -->
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-800">Yesterday</h3>
+                                <p class="text-[11px] text-slate-400">Previous day results</p>
+                            </div>
                         </div>
                     </div>
-                    <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">Live</span>
-                </div>
-
-                <div id="leaderboardToday" class="p-3 space-y-2 divide-y divide-slate-50 max-h-[520px] overflow-y-auto">
-                    <p class="text-slate-400 text-center py-12 text-xs">Loading standings...</p>
-                </div>
-            </div>
-
-            <!-- YESTERDAY PANEL -->
-            <div id="panel-yesterday" class="lb-panel hidden lg:flex bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex-col">
-                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-                    <div class="flex items-center gap-2.5">
-                        <!-- <div class="w-8 h-8 rounded-lg bg-slate-500/10 text-slate-600 flex items-center justify-center font-bold">
-                            <i class="fa-solid fa-clock-rotate-left text-sm"></i>
-                        </div> -->
-                        <div>
-                            <h3 class="text-sm font-bold text-slate-800">Yesterday</h3>
-                            <p class="text-[11px] text-slate-400">Previous day results</p>
-                        </div>
+    
+                    <div id="leaderboardYesterday" class="p-4 space-y-2 divide-y divide-slate-50 max-h-[520px] overflow-y-auto">
+                        <p class="text-slate-400 text-center py-12 text-xs">Loading standings...</p>
                     </div>
                 </div>
-
-                <div id="leaderboardYesterday" class="p-4 space-y-2 divide-y divide-slate-50 max-h-[520px] overflow-y-auto">
-                    <p class="text-slate-400 text-center py-12 text-xs">Loading standings...</p>
-                </div>
-            </div>
-
-            <!-- ALL-TIME PANEL -->
-            <div id="panel-alltime" class="lb-panel hidden lg:flex bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex-col">
-                <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-                    <div class="flex items-center gap-2.5">
-                        <!-- <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center font-bold">
-                            <i class="fa-solid fa-trophy text-sm"></i>
-                        </div> -->
-                        <div>
-                            <h3 class="text-sm font-bold text-slate-800">All-Time</h3>
-                            <p class="text-[11px] text-slate-400">Overall hall of fame</p>
+    
+                <!-- ALL-TIME PANEL -->
+                <div id="panel-alltime" class="lb-panel hidden lg:flex bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex-col">
+                    <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <!-- <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-trophy text-sm"></i>
+                            </div> -->
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-800">All-Time</h3>
+                                <p class="text-[11px] text-slate-400">Overall hall of fame</p>
+                            </div>
                         </div>
                     </div>
+    
+                    <div id="leaderboardAlltime" class="p-3 space-y-2 divide-y divide-slate-50 max-h-[520px] overflow-y-auto">
+                        <p class="text-slate-400 text-center py-12 text-xs">Loading standings...</p>
+                    </div>
                 </div>
-
-                <div id="leaderboardAlltime" class="p-3 space-y-2 divide-y divide-slate-50 max-h-[520px] overflow-y-auto">
-                    <p class="text-slate-400 text-center py-12 text-xs">Loading standings...</p>
-                </div>
-            </div>
-
-        </section>
+    
+            </section>
+        </div>
 
     </main>
 

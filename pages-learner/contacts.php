@@ -22,13 +22,13 @@ requireRole(1)
 <body class="h-auto lg:h-screen">
     <?php include '../sidebar-learner.php'; ?>
     <main>
-        <div class="flex justify-between items-center w-full">
+        <div class="main-header">
             <span class="page-breadcrumbs">
                 Contact Us
             </span>
             <?php include '../notification-bell.php'; ?>
         </div> 
-        <div class="contacts-container">
+        <div class="main-container">
             <span class="contacts-card-subtext">Message us if you have any concerns</span>
             <div class="contacts-row">
                 <div class="contacts-row-card">

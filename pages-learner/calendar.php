@@ -20,56 +20,58 @@ requireRole(1);
     <?php include '../calendar-theme.php'; ?>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased">
+<body class=" antialiased">
     <?php include '../sidebar-learner.php'; ?>
     <main>
 
-        <div class="flex justify-between items-center w-full">
+        <div class="main-header">
             <span class="page-breadcrumbs">Calendar</span>
             <?php include '../notification-bell.php'; ?>
         </div>
 
-        <!-- HERO -->
-        <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg mt-5">
-            <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
-            <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
-            <div class="hero-grid absolute inset-0 pointer-events-none"></div>
-
-            <div class="relative z-10 space-y-2 min-w-0">
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
-                    <i class="fa-solid fa-calendar-check"></i> My Calendar
-                </span>
-                <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Live Training &amp; Sessions</h1>
-                <p class="text-slate-300 text-sm max-w-xl">See what's coming up, RSVP, and time in and out to record your attendance and earn points.</p>
-            </div>
-        </section>
-
-        <!-- STATS -->
-        <div id="statCards" class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mt-5"></div>
-
-        <!-- CALENDAR + UPCOMING -->
-        <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] gap-5 mt-5 items-start">
-
-            <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-3 sm:p-5">
-                <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-1 pb-3 text-xs text-gray-500">
-                    <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#234CA1]"></span>Online</span>
-                    <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#7c3aed]"></span>Face-to-Face</span>
-                    <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#D02027]"></span>Live now</span>
-                    <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>Ended</span>
+        <div class="main-container">
+            <!-- HERO -->
+            <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg">
+                <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+                <div class="hero-grid absolute inset-0 pointer-events-none"></div>
+    
+                <div class="relative z-10 space-y-2 min-w-0">
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                        <i class="fa-solid fa-calendar-check"></i> My Calendar
+                    </span>
+                    <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Live Training &amp; Sessions</h1>
+                    <p class="text-slate-300 text-sm max-w-xl">See what's coming up, RSVP, and time in and out to record your attendance and earn points.</p>
                 </div>
-                <div id="calendar"></div>
             </section>
-
-            <aside class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-4 sm:p-5 xl:sticky xl:top-5">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Upcoming Schedules</h3>
-                    <span id="upcomingCount" class="font-mono text-[11px] font-bold px-2 py-1 rounded-md bg-slate-100 text-slate-500">0</span>
-                </div>
-                <div id="upcomingSchedulesList" class="space-y-4 xl:max-h-[640px] xl:overflow-y-auto pr-1">
-                    <p class="text-gray-400 text-sm">Loading...</p>
-                </div>
-            </aside>
-
+    
+            <!-- STATS -->
+            <div id="statCards" class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mt-5"></div>
+    
+            <!-- CALENDAR + UPCOMING -->
+            <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] gap-5 mt-5 items-start">
+    
+                <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-3 sm:p-5">
+                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-1 pb-3 text-xs text-gray-500">
+                        <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#234CA1]"></span>Online</span>
+                        <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#7c3aed]"></span>Face-to-Face</span>
+                        <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#D02027]"></span>Live now</span>
+                        <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>Ended</span>
+                    </div>
+                    <div id="calendar"></div>
+                </section>
+    
+                <aside class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-4 sm:p-5 xl:sticky xl:top-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Upcoming Schedules</h3>
+                        <span id="upcomingCount" class="font-mono text-[11px] font-bold px-2 py-1 rounded-md bg-slate-100 text-slate-500">0</span>
+                    </div>
+                    <div id="upcomingSchedulesList" class="space-y-4 xl:max-h-[640px] xl:overflow-y-auto pr-1">
+                        <p class="text-gray-400 text-sm">Loading...</p>
+                    </div>
+                </aside>
+    
+            </div>
         </div>
 
         <?php include '../feedback-button.php'; ?>

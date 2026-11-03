@@ -268,8 +268,7 @@ function getCertificateAssets($conn): array
     $templates = [];
     $defaults = [];
 
-    foreach (certFetchAll($conn, "SELECT template_id, name, brand_id, is_default, background_path, layout, valid_months, archived_at, updated_at FROM certificate_templates") as $r) {
-
+    foreach (certFetchAll($conn, "SELECT template_id, name, brand_id, applies_to, is_default, background_path, layout, valid_months, archived_at, updated_at FROM certificate_templates") as $r) {
         $id = (int) $r['template_id'];
 
         $templates[$id] = [
@@ -282,6 +281,7 @@ function getCertificateAssets($conn): array
             'archived'        => $r['archived_at'] !== null,
             'version'         => strtotime($r['updated_at']),
             'layout'          => sanitizeCertificateLayout(json_decode($r['layout'], true)),
+            'applies_to'      => $r['applies_to'],
         ];
 
         if ((int) $r['is_default'] === 1 && $r['archived_at'] === null) {
@@ -379,15 +379,16 @@ function pickCertificateBrand($conn, int $userId, int $scheduleId): int
     return $candidates[0];
 }
 
-// The template the schedule picked, else the brand's default, else the "all brands" default, else null (built-in design)
-function resolveCertificateTemplateId($conn, ?int $scheduleTemplateId, int $brandId): ?int
+// The template the schedule/course picked, else the brand's default for this kind, else the "all brands" default, else null (built-in design)
+function resolveCertificateTemplateId($conn, ?int $explicitTemplateId, int $brandId, string $kind = 'Training'): ?int
 {
-    if ($scheduleTemplateId) {
+    if ($explicitTemplateId) {
         $r = certFetchAll(
             $conn,
-            "SELECT template_id FROM certificate_templates WHERE template_id = ? AND archived_at IS NULL",
-            "i",
-            [$scheduleTemplateId]
+            "SELECT template_id FROM certificate_templates
+             WHERE template_id = ? AND archived_at IS NULL AND applies_to IN ('Both', ?)",
+            "is",
+            [$explicitTemplateId, $kind]
         );
 
         if (!empty($r)) {
@@ -396,11 +397,14 @@ function resolveCertificateTemplateId($conn, ?int $scheduleTemplateId, int $bran
     }
 
     foreach ([$brandId, 0] as $b) {
+        // A default made for exactly this kind wins over a "Both" default
         $r = certFetchAll(
             $conn,
-            "SELECT template_id FROM certificate_templates WHERE brand_id = ? AND is_default = 1 AND archived_at IS NULL LIMIT 1",
-            "i",
-            [$b]
+            "SELECT template_id FROM certificate_templates
+             WHERE brand_id = ? AND is_default = 1 AND archived_at IS NULL AND applies_to IN ('Both', ?)
+             ORDER BY (applies_to = ?) DESC LIMIT 1",
+            "iss",
+            [$b, $kind, $kind]
         );
 
         if (!empty($r)) {
@@ -409,6 +413,18 @@ function resolveCertificateTemplateId($conn, ?int $scheduleTemplateId, int $bran
     }
 
     return null;
+}
+
+// A brand-specific template puts its own brand's logo on the certificate
+function certBrandForTemplate($conn, ?int $templateId, int $fallbackBrandId): int
+{
+    if (!$templateId) {
+        return $fallbackBrandId;
+    }
+
+    $r = certFetchAll($conn, "SELECT brand_id FROM certificate_templates WHERE template_id = ?", "i", [$templateId]);
+
+    return (!empty($r) && (int) $r[0]['brand_id'] > 0) ? (int) $r[0]['brand_id'] : $fallbackBrandId;
 }
 
 // Did the learner stay long enough? Time in / out are clamped to the session so early joiners get no bonus.
@@ -494,6 +510,8 @@ function issueTrainingCertificate($conn, int $userId, int $scheduleId, bool $not
         $brandId
     );
 
+    $brandId = certBrandForTemplate($conn, $templateId, $brandId);
+
     $validUntil = null;
 
     if ($templateId) {
@@ -553,11 +571,27 @@ function issueTrainingCertificate($conn, int $userId, int $scheduleId, bool $not
 
 const CERT_ISSUE_COURSE_CERTIFICATES = true; // set to false to stop certificates for passed courses
 
+// Best Post-Test score at or above the passing score?
+function courseTestPassed($conn, int $userId, int $courseId): bool
+{
+    $r = certFetchAll(
+        $conn,
+        "SELECT MAX(aa.score) AS best, MAX(a.passing_score) AS needed
+         FROM assessment_attempts aa JOIN assessments a ON a.assessment_id = aa.assessment_id
+         WHERE aa.user_id = ? AND a.course_id = ? AND a.assessment_type = 'Post-Test'",
+        "ii",
+        [$userId, $courseId]
+    );
+
+    return !empty($r) && $r[0]['best'] !== null && (float) $r[0]['best'] >= (float) $r[0]['needed'];
+}
+
 /**
- * A certificate of completion for a course. Call it only when the Post-Test was passed.
- * Returns the new certificate, or null if they already have one.
+ * A certificate for a completed course, following the course's own settings
+ * (switch, template, requirement). Returns the new certificate, or null if none was issued.
+ * $passed: pass the result when you know it; leave null to look it up.
  */
-function issueCourseCertificate($conn, int $userId, int $courseId, bool $notify = true): ?array
+function issueCourseCertificate($conn, int $userId, int $courseId, bool $notify = true, ?bool $passed = null): ?array
 {
     if (!CERT_ISSUE_COURSE_CERTIFICATES) {
         return null;
@@ -570,7 +604,12 @@ function issueCourseCertificate($conn, int $userId, int $courseId, bool $notify 
         [$userId, $courseId]
     );
 
-    $course = certFetchAll($conn, "SELECT course_title FROM courses WHERE course_id = ?", "i", [$courseId]);
+    $course = certFetchAll(
+        $conn,
+        "SELECT course_title, issue_certificate, certificate_template_id, certificate_requirement FROM courses WHERE course_id = ?",
+        "i",
+        [$courseId]
+    );
     $enrollment = certFetchAll(
         $conn,
         "SELECT completed_at FROM enrollments WHERE user_id = ? AND course_id = ? AND status = 'Completed'",
@@ -580,6 +619,14 @@ function issueCourseCertificate($conn, int $userId, int $courseId, bool $notify 
     $user = certFetchAll($conn, "SELECT first_name, middle_name, last_name FROM users WHERE user_id = ?", "i", [$userId]);
 
     if (!empty($existing) || empty($course) || empty($enrollment) || empty($user)) {
+        return null;
+    }
+
+    if ((int) $course[0]['issue_certificate'] !== 1) {
+        return null;
+    }
+
+    if ($course[0]['certificate_requirement'] === 'Passed' && !($passed ?? courseTestPassed($conn, $userId, $courseId))) {
         return null;
     }
 
@@ -608,7 +655,14 @@ function issueCourseCertificate($conn, int $userId, int $courseId, bool $notify 
         }
     }
 
-    $templateId = resolveCertificateTemplateId($conn, null, $brandId);
+    $templateId = resolveCertificateTemplateId(
+        $conn,
+        $course[0]['certificate_template_id'] !== null ? (int) $course[0]['certificate_template_id'] : null,
+        $brandId,
+        'Course'
+    );
+    $brandId = certBrandForTemplate($conn, $templateId, $brandId);
+
     $validUntil = null;
 
     if ($templateId) {

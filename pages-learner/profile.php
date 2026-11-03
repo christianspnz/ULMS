@@ -36,347 +36,349 @@ $sidebarFile = match ($designationId) {
     ?>
 
     <main class="min-h-screen">
-        <!-- PAGE HEADER -->
-        <div class="">
-            <div class="flex items-center gap-3 mb-2">
-                <div>
-                    <h1 class="text-2xl uppercase font-eurostile-bold text-[#234CA1]">My Profile</h1>
-                    <p class="text-sm text-gray-500">Manage your personal information and account settings</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- MAIN GRID -->
-        <div class="grid grid-cols-1 gap-4 items-start">
-            <!--PROFILE SUMMARY -->
-            <div class="flex flex-col lg:flex-row w-full items-center justify-center gap-4">
-                <!-- PROFILE CARD -->
-                <div class="bg-white w-full lg:w-[45%] rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                    <!-- BLUE HEADER -->
-                    <div class="h-32 bg-gradient-to-r from-[#234CA1] to-[#3563C4] relative">
-                        <div class="absolute inset-0 opacity-10">
-                            <div class="w-64 h-64 rounded-full border-[35px] border-white absolute -right-20 -top-32"></div>
-                            <div class="w-40 h-40 rounded-full border-[25px] border-white absolute -left-16 top-10"></div>
-                        </div>
-                    </div>
-
-                    <!-- PROFILE CONTENT -->
-                    <div class="px-5 pb-10">
-                        <!-- AVATAR -->
-                        <div class="relative w-40 h-40 mx-auto -mt-20">
-                            <div class="w-40 h-40 rounded-full bg-white p-1.5 shadow-lg">
-                                <div
-                                    id="profileAvatar"
-                                    class="w-full h-full rounded-full overflow-hidden bg-[#234CA1] text-white flex items-center justify-center text-3xl font-bold">
-
-                                    <span id="profileInitials"></span>
-
-                                    <img
-                                        id="profilePreview"
-                                        src=""
-                                        alt="Profile Picture"
-                                        class="hidden w-full h-full object-cover">
-                                </div>
-                            </div>
-
-                            <label class="absolute bottom-1 right-0 w-9 h-9 rounded-full bg-[#234CA1] text-white flex items-center justify-center cursor-pointer border-4 border-white shadow-md hover:bg-[#1a3a80] transition">
-                                <i data-lucide="camera" class=" text-white text-xs w-4 h-4"></i>
-                                <input
-                                    type="file"
-                                    id="profilePictureInput"
-                                    accept="image/*"
-                                    class="hidden">
-                            </label>
-                        </div>
-
-                        <!-- NAME -->
-                        <div class="text-center mt-4">
-                            <h2 id="profileNameDisplay" class="text-xl font-eurostile-bold text-gray-800">Loading...</h2>
-                            <p id="profileEmailDisplay" class="text-sm text-gray-500 mt-1"></p>
-
-                            <div id="profileDesignation" class="inline-flex items-center gap-2 mt-3 px-3 py-1.5 rounded-full bg-[#234CA1]/10 text-[#234CA1] text-xs font-bold">
-                                <i data-lucide="user-round" class=" text-[#234CA1] text-xs w-4 h-4"></i>
-                                <span>—</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- PROFILE DETAILS -->
-                <div class="w-full lg:w-[55%] flex justify-center flex-col bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
-                    <div class="flex items-center justify-between mb-1">
-                        <div>
-                            <h3 class="font-bold text-gray-800 text-sm">Profile Details</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">Account information</p>
-                        </div>
-                        <i data-lucide="id-card" class=" text-gray-400 text-xs w-6 h-6"></i>
-                    </div>
-
-                    <div class="space-y-4">
-                        <!-- BRAND -->
-                        <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
-                            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                                <i data-lucide="car-front" class=" text-[#234CA1] text-xs w-4 h-4"></i>
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Brand</p>
-                                <p id="profileBrands" class="text-sm text-gray-700 font-medium truncate">—</p>
-                            </div>
-                        </div>
-
-                        <!-- DEALERSHIP -->
-                        <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
-                            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                                <i data-lucide="building-2" class=" text-[#234CA1] text-xs w-4 h-4"></i>
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Dealership</p>
-                                <p id="profileDealership" class="text-sm text-gray-700 font-medium truncate">—</p>
-                            </div>
-                        </div>
-
-                        <!-- BIRTHDATE -->
-                        <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
-                            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                                <i data-lucide="cake" class=" text-[#234CA1] text-xs w-4 h-4"></i>
-                            </div>
-                            <div>
-                                <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Birthdate</p>
-                                <p id="profileBirthdate" class="text-sm text-gray-700 font-medium">—</p>
-                            </div>
-                        </div>
-
-                        <!-- DATE HIRED -->
-                        <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
-                            <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                                <i data-lucide="calendar" class=" text-[#234CA1] text-xs w-4 h-4"></i>
-                            </div>
-                            <div>
-                                <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Date Hired</p>
-                                <p id="profileHireDate" class="text-sm text-gray-700 font-medium">—</p>
-                            </div>
-                        </div>
+        <div class="main-container">
+            <!-- PAGE HEADER -->
+            <div class="">
+                <div class="flex items-center gap-3 mb-2">
+                    <div>
+                        <h1 class="text-2xl uppercase font-eurostile-bold text-[#234CA1]">My Profile</h1>
+                        <p class="text-sm text-gray-500">Manage your personal information and account settings</p>
                     </div>
                 </div>
             </div>
-            <!--SETTINGS -->
-            <div class="space-y-4">
-                <!-- PERSONAL INFORMATION -->
-                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
-                    <div class="flex items-start justify-between mb-5">
-                        <div class="flex items-center gap-4">
-                            <div class="w-11 h-11 rounded-xl bg-[#234CA1]/10 flex items-center justify-center">
-                                <i data-lucide="user-pen" class=" text-[#234CA1] text-xs w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h2 class="text-lg font-eurostile-bold text-gray-800">Personal Information</h2>
-                                <p class="text-xs text-gray-400 mt-1">Update your personal details</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-4">
-                        <!-- NAME -->
-                        <div>
-                            <label class="text-xs font-bold text-gray-600 uppercase tracking-wide block mb-2">Full Name</label>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                <div>
-                                    <label class="text-[11px] text-gray-400 mb-1 block">Last Name</label>
-                                    <input id="profile_lastName" type="text" class="text-inputs w-full">
-                                </div>
-                                <div>
-                                    <label class="text-[11px] text-gray-400 mb-1 block">First Name</label>
-                                    <input id="profile_firstName" type="text" class="text-inputs w-full">
-                                </div>
-                                <div>
-                                    <label class="text-[11px] text-gray-400 mb-1 block">Middle Name</label>
-                                    <input id="profile_middleName" type="text" class="text-inputs w-full">
-                                </div>
-                            </div>
-                        </div>
-
-                        <label class="text-xs font-bold text-gray-600 uppercase tracking-wide block mb-2">Contact Information</label>
-                        <div class="flex flex-col lg:flex-row justify-between gap-3">
-                            <!-- CONTACT -->
-                            <div class="w-full">
-                                <label class="text-[11px] text-gray-400 mb-1 block">Contact Number</label>
-                                <div class="relative">
-                                    <i data-lucide="phone" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm w-4 h-4"></i>
-                                    <input id="profile_contact" type="text" maxlength="11" class="text-inputs w-full pl-10">
-                                </div>
-                            </div>
-
-                            <!-- EMAIL -->
-                            <div class="w-full">
-                                <label class="text-[11px] text-gray-400 mb-1 block">Account Email</label>
-                                <div class="relative">
-                                    <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm w-4 h-4"></i>
-                                    <input id="profile_emailReadonly" type="email" disabled class="text-inputs w-full pl-10 bg-gray-50 text-gray-400 cursor-not-allowed">
-                                </div>
-                                <p class="flex text-[11px] text-gray-400 mt-2">
-                                    <i data-lucide="lock" class="mr-1 w-4 h-4"></i>
-                                    Email address cannot be changed.
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- SAVE -->
-                        <div class="pt-1 flex justify-center lg:justify-end">
-                            <button
-                                type="button"
-                                id="saveProfileBtn"
-                                class="h-11 px-7 bg-[#234CA1] hover:bg-[#1a3a80] text-white rounded-xl font-eurostile-bold text-xs uppercase tracking-wide flex items-center justify-center gap-2 shadow-sm transition">
-                                <i data-lucide="save" class="w-4 h-4"></i>
-                                Save Changes
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex flex-col lg:flex-row gap-3">
-                    <!-- ACCOUNT STATUS -->
-                    <div class="w-full bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
-                        <div class="flex items-center gap-4">
-                            <div class="w-11 h-11 rounded-xl bg-green-50 flex items-center justify-center">
-                                <i data-lucide="shield-check" class=" text-green-600 text-xs w-6 h-6"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="font-eurostile-bold text-gray-800">Account Security</h3>
-                                <p class="text-xs text-gray-400 mt-0.5">Your account is protected</p>
-                            </div>
-                            <span class="px-2.5 py-1 rounded-full bg-green-50 text-green-600 text-[11px] font-bold">Active</span>
-                        </div>
-                    </div>
     
-                    <!-- CHANGE PASSWORD TRIGGER -->
-                    <button
-                        type="button"
-                        id="openChangePasswordBtn"
-                        class="w-full bg-white rounded-2xl border border-gray-200 shadow-sm p-4 flex items-center justify-between hover:border-[#234CA1]/30 hover:shadow-md transition text-left">
-                        <div class="flex items-center gap-4">
-                            <div class="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center">
-                                <i data-lucide="lock" class="text-[#D02027] w-4 h-4"></i>
-                            </div>
-                            <div>
-                                <h2 class="font-eurostile-bold text-gray-800">Change Password</h2>
-                                <p class="text-xs text-gray-400 mt-1 w-40 md:w-full">Keep your account secure with a strong password.</p>
+            <!-- MAIN GRID -->
+            <div class="grid grid-cols-1 gap-4 items-start">
+                <!--PROFILE SUMMARY -->
+                <div class="flex flex-col lg:flex-row w-full items-center justify-center gap-4">
+                    <!-- PROFILE CARD -->
+                    <div class="bg-white w-full lg:w-[45%] rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                        <!-- BLUE HEADER -->
+                        <div class="h-32 bg-gradient-to-r from-[#234CA1] to-[#3563C4] relative">
+                            <div class="absolute inset-0 opacity-10">
+                                <div class="w-64 h-64 rounded-full border-[35px] border-white absolute -right-20 -top-32"></div>
+                                <div class="w-40 h-40 rounded-full border-[25px] border-white absolute -left-16 top-10"></div>
                             </div>
                         </div>
-                        <i data-lucide="chevron-right" class="text-gray-300 w-5 h-5 shrink-0"></i>
-                    </button>
-                </div>
-            </div>
-            <!-- CHANGE PASSWORD MODAL -->
-            <div id="changePasswordModalOverlay" class="hidden fixed inset-0 bg-black/50 z-50 items-center justify-center p-4">
-                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
-
-                    <button type="button" id="closeChangePasswordBtn" class="absolute top-5 right-5 w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition">
-                        <i data-lucide="x" class="w-5 h-5"></i>
-                    </button>
-
-                    <div class="flex items-start gap-4 mb-5">
-                        <div class="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
-                            <i data-lucide="lock" class="text-[#D02027] w-4 h-4"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-lg font-eurostile-bold text-gray-800">Change Password</h2>
-                            <p class="text-xs text-gray-400 mt-1">Keep your account secure with a strong password.</p>
+    
+                        <!-- PROFILE CONTENT -->
+                        <div class="px-5 pb-10">
+                            <!-- AVATAR -->
+                            <div class="relative w-40 h-40 mx-auto -mt-20">
+                                <div class="w-40 h-40 rounded-full bg-white p-1.5 shadow-lg">
+                                    <div
+                                        id="profileAvatar"
+                                        class="w-full h-full rounded-full overflow-hidden bg-[#234CA1] text-white flex items-center justify-center text-3xl font-bold">
+    
+                                        <span id="profileInitials"></span>
+    
+                                        <img
+                                            id="profilePreview"
+                                            src=""
+                                            alt="Profile Picture"
+                                            class="hidden w-full h-full object-cover">
+                                    </div>
+                                </div>
+    
+                                <label class="absolute bottom-1 right-0 w-9 h-9 rounded-full bg-[#234CA1] text-white flex items-center justify-center cursor-pointer border-4 border-white shadow-md hover:bg-[#1a3a80] transition">
+                                    <i data-lucide="camera" class=" text-white text-xs w-4 h-4"></i>
+                                    <input
+                                        type="file"
+                                        id="profilePictureInput"
+                                        accept="image/*"
+                                        class="hidden">
+                                </label>
+                            </div>
+    
+                            <!-- NAME -->
+                            <div class="text-center mt-4">
+                                <h2 id="profileNameDisplay" class="text-xl font-eurostile-bold text-gray-800">Loading...</h2>
+                                <p id="profileEmailDisplay" class="text-sm text-gray-500 mt-1"></p>
+    
+                                <div id="profileDesignation" class="inline-flex items-center gap-2 mt-3 px-3 py-1.5 rounded-full bg-[#234CA1]/10 text-[#234CA1] text-xs font-bold">
+                                    <i data-lucide="user-round" class=" text-[#234CA1] text-xs w-4 h-4"></i>
+                                    <span>—</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="space-y-4">
-                        <!-- CURRENT PASSWORD -->
-                        <div>
-                            <label class="text-xs font-bold text-gray-600 uppercase tracking-wide block mb-2">Current Password</label>
-                            <div class="relative">
-                                <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm w-4 h-4"></i>
-                                <input id="pw_current" type="password" class="text-inputs w-full pl-10 pr-11">
+                    <!-- PROFILE DETAILS -->
+                    <div class="w-full lg:w-[55%] flex justify-center flex-col bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+                        <div class="flex items-center justify-between mb-1">
+                            <div>
+                                <h3 class="font-bold text-gray-800 text-sm">Profile Details</h3>
+                                <p class="text-xs text-gray-400 mt-0.5">Account information</p>
+                            </div>
+                            <i data-lucide="id-card" class=" text-gray-400 text-xs w-6 h-6"></i>
+                        </div>
+    
+                        <div class="space-y-4">
+                            <!-- BRAND -->
+                            <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
+                                <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                    <i data-lucide="car-front" class=" text-[#234CA1] text-xs w-4 h-4"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Brand</p>
+                                    <p id="profileBrands" class="text-sm text-gray-700 font-medium truncate">—</p>
+                                </div>
+                            </div>
+    
+                            <!-- DEALERSHIP -->
+                            <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
+                                <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                    <i data-lucide="building-2" class=" text-[#234CA1] text-xs w-4 h-4"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Dealership</p>
+                                    <p id="profileDealership" class="text-sm text-gray-700 font-medium truncate">—</p>
+                                </div>
+                            </div>
+    
+                            <!-- BIRTHDATE -->
+                            <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
+                                <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                    <i data-lucide="cake" class=" text-[#234CA1] text-xs w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Birthdate</p>
+                                    <p id="profileBirthdate" class="text-sm text-gray-700 font-medium">—</p>
+                                </div>
+                            </div>
+    
+                            <!-- DATE HIRED -->
+                            <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition">
+                                <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                                    <i data-lucide="calendar" class=" text-[#234CA1] text-xs w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] uppercase tracking-wide text-gray-400 font-bold">Date Hired</p>
+                                    <p id="profileHireDate" class="text-sm text-gray-700 font-medium">—</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--SETTINGS -->
+                <div class="space-y-4">
+                    <!-- PERSONAL INFORMATION -->
+                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+                        <div class="flex items-start justify-between mb-5">
+                            <div class="flex items-center gap-4">
+                                <div class="w-11 h-11 rounded-xl bg-[#234CA1]/10 flex items-center justify-center">
+                                    <i data-lucide="user-pen" class=" text-[#234CA1] text-xs w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-lg font-eurostile-bold text-gray-800">Personal Information</h2>
+                                    <p class="text-xs text-gray-400 mt-1">Update your personal details</p>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="space-y-4">
+                            <!-- NAME -->
+                            <div>
+                                <label class="text-xs font-bold text-gray-600 uppercase tracking-wide block mb-2">Full Name</label>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                    <div>
+                                        <label class="text-[11px] text-gray-400 mb-1 block">Last Name</label>
+                                        <input id="profile_lastName" type="text" class="text-inputs w-full">
+                                    </div>
+                                    <div>
+                                        <label class="text-[11px] text-gray-400 mb-1 block">First Name</label>
+                                        <input id="profile_firstName" type="text" class="text-inputs w-full">
+                                    </div>
+                                    <div>
+                                        <label class="text-[11px] text-gray-400 mb-1 block">Middle Name</label>
+                                        <input id="profile_middleName" type="text" class="text-inputs w-full">
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <label class="text-xs font-bold text-gray-600 uppercase tracking-wide block mb-2">Contact Information</label>
+                            <div class="flex flex-col lg:flex-row justify-between gap-3">
+                                <!-- CONTACT -->
+                                <div class="w-full">
+                                    <label class="text-[11px] text-gray-400 mb-1 block">Contact Number</label>
+                                    <div class="relative">
+                                        <i data-lucide="phone" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm w-4 h-4"></i>
+                                        <input id="profile_contact" type="text" maxlength="11" class="text-inputs w-full pl-10">
+                                    </div>
+                                </div>
+    
+                                <!-- EMAIL -->
+                                <div class="w-full">
+                                    <label class="text-[11px] text-gray-400 mb-1 block">Account Email</label>
+                                    <div class="relative">
+                                        <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm w-4 h-4"></i>
+                                        <input id="profile_emailReadonly" type="email" disabled class="text-inputs w-full pl-10 bg-gray-50 text-gray-400 cursor-not-allowed">
+                                    </div>
+                                    <p class="flex text-[11px] text-gray-400 mt-2">
+                                        <i data-lucide="lock" class="mr-1 w-4 h-4"></i>
+                                        Email address cannot be changed.
+                                    </p>
+                                </div>
+                            </div>
+    
+                            <!-- SAVE -->
+                            <div class="pt-1 flex justify-center lg:justify-end">
                                 <button
                                     type="button"
-                                    class="password-toggle absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
-                                    data-target="pw_current"
-                                    aria-label="Show password">
-                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                    id="saveProfileBtn"
+                                    class="h-11 px-7 bg-[#234CA1] hover:bg-[#1a3a80] text-white rounded-xl font-eurostile-bold text-xs uppercase tracking-wide flex items-center justify-center gap-2 shadow-sm transition">
+                                    <i data-lucide="save" class="w-4 h-4"></i>
+                                    Save Changes
                                 </button>
                             </div>
                         </div>
-
-                        <!-- NEW PASSWORDS -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-xs font-bold text-gray-600 uppercase tracking-wide block mb-2">New Password</label>
-                                <div class="relative">
-                                    <i data-lucide="key-round" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm w-4 h-4"></i>
-                                    <input id="pw_new" type="password" class="text-inputs w-full pl-10 pr-11">
-                                    <button
-                                        type="button"
-                                        class="password-toggle absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
-                                        data-target="pw_new"
-                                        aria-label="Show password">
-                                        <i data-lucide="eye" class="w-4 h-4"></i>
-                                    </button>
-                                </div>
-                                <div id="passwordRequirements" class="mt-3 space-y-1.5">
-
-                                    <p id="reqLength" class="flex items-center gap-2 text-xs text-gray-400 transition-colors duration-200">
-                                        <i data-lucide="circle-x" class="w-4 h-4"></i>
-                                        <span>At least 8 characters</span>
-                                    </p>
-
-                                    <p id="reqUpper" class="flex items-center gap-2 text-xs text-gray-400 transition-colors duration-200">
-                                        <i data-lucide="circle-x" class="w-4 h-4"></i>
-                                        <span>One uppercase letter</span>
-                                    </p>
-
-                                    <p id="reqLower" class="flex items-center gap-2 text-xs text-gray-400 transition-colors duration-200">
-                                        <i data-lucide="circle-x" class="w-4 h-4"></i>
-                                        <span>One lowercase letter</span>
-                                    </p>
-
-                                    <p id="reqNumber" class="flex items-center gap-2 text-xs text-gray-400 transition-colors duration-200">
-                                        <i data-lucide="circle-x" class="w-4 h-4"></i>
-                                        <span>One number</span>
-                                    </p>
-
-                                    <p id="reqSpecial" class="flex items-center gap-2 text-xs text-gray-400 transition-colors duration-200">
-                                        <i data-lucide="circle-x" class="w-4 h-4"></i>
-                                        <span>One special character</span>
-                                    </p>
-
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="text-xs font-bold text-gray-600 uppercase tracking-wide block mb-2">Confirm Password</label>
-                                <div class="relative">
-                                    <i data-lucide="key-round" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm w-4 h-4"></i>
-                                    <input id="pw_confirm" type="password" class="text-inputs w-full pl-10 pr-11">
-                                    <button
-                                        type="button"
-                                        class="password-toggle absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
-                                        data-target="pw_confirm"
-                                        aria-label="Show password">
-                                        <i data-lucide="eye" class="w-4 h-4"></i>
-                                    </button>
-                                </div>
-                                <p id="passwordMatch" class="mt-2 flex items-center gap-2 text-xs text-gray-400 transition-colors duration-200">
-                                    <i data-lucide="circle-x" class="w-4 h-4"></i>
-                                    <span>Passwords must match</span>
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- PASSWORD BUTTON -->
-                        <div class="pt-1 flex justify-center lg:justify-end">
-                            <button
-                                type="button"
-                                id="changePasswordBtn"
-                                class="h-11 px-7 bg-[#D02027] hover:bg-[#b51b22] text-white rounded-xl font-eurostile-bold text-xs uppercase tracking-wide flex items-center justify-center gap-2 shadow-sm transition">
-                                <i data-lucide="shield-half" class="w-4 h-4"></i>
-                                Change Password
-                            </button>
-                        </div>
                     </div>
-
+    
+                    <div class="flex flex-col lg:flex-row gap-3">
+                        <!-- ACCOUNT STATUS -->
+                        <div class="w-full bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-11 h-11 rounded-xl bg-green-50 flex items-center justify-center">
+                                    <i data-lucide="shield-check" class=" text-green-600 text-xs w-6 h-6"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-eurostile-bold text-gray-800">Account Security</h3>
+                                    <p class="text-xs text-gray-400 mt-0.5">Your account is protected</p>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full bg-green-50 text-green-600 text-[11px] font-bold">Active</span>
+                            </div>
+                        </div>
+        
+                        <!-- CHANGE PASSWORD TRIGGER -->
+                        <button
+                            type="button"
+                            id="openChangePasswordBtn"
+                            class="w-full bg-white rounded-2xl border border-gray-200 shadow-sm p-4 flex items-center justify-between hover:border-[#234CA1]/30 hover:shadow-md transition text-left">
+                            <div class="flex items-center gap-4">
+                                <div class="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center">
+                                    <i data-lucide="lock" class="text-[#D02027] w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <h2 class="font-eurostile-bold text-gray-800">Change Password</h2>
+                                    <p class="text-xs text-gray-400 mt-1 w-40 md:w-full">Keep your account secure with a strong password.</p>
+                                </div>
+                            </div>
+                            <i data-lucide="chevron-right" class="text-gray-300 w-5 h-5 shrink-0"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- CHANGE PASSWORD MODAL -->
+                <div id="changePasswordModalOverlay" class="hidden fixed inset-0 bg-black/50 z-50 items-center justify-center p-4">
+                    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+    
+                        <button type="button" id="closeChangePasswordBtn" class="absolute top-5 right-5 w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+    
+                        <div class="flex items-start gap-4 mb-5">
+                            <div class="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
+                                <i data-lucide="lock" class="text-[#D02027] w-4 h-4"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-lg font-eurostile-bold text-gray-800">Change Password</h2>
+                                <p class="text-xs text-gray-400 mt-1">Keep your account secure with a strong password.</p>
+                            </div>
+                        </div>
+    
+                        <div class="space-y-4">
+                            <!-- CURRENT PASSWORD -->
+                            <div>
+                                <label class="text-xs font-bold text-gray-600 uppercase tracking-wide block mb-2">Current Password</label>
+                                <div class="relative">
+                                    <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm w-4 h-4"></i>
+                                    <input id="pw_current" type="password" class="text-inputs w-full pl-10 pr-11">
+                                    <button
+                                        type="button"
+                                        class="password-toggle absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                                        data-target="pw_current"
+                                        aria-label="Show password">
+                                        <i data-lucide="eye" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+    
+                            <!-- NEW PASSWORDS -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-xs font-bold text-gray-600 uppercase tracking-wide block mb-2">New Password</label>
+                                    <div class="relative">
+                                        <i data-lucide="key-round" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm w-4 h-4"></i>
+                                        <input id="pw_new" type="password" class="text-inputs w-full pl-10 pr-11">
+                                        <button
+                                            type="button"
+                                            class="password-toggle absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                                            data-target="pw_new"
+                                            aria-label="Show password">
+                                            <i data-lucide="eye" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                    <div id="passwordRequirements" class="mt-3 space-y-1.5">
+    
+                                        <p id="reqLength" class="flex items-center gap-2 text-xs text-gray-400 transition-colors duration-200">
+                                            <i data-lucide="circle-x" class="w-4 h-4"></i>
+                                            <span>At least 8 characters</span>
+                                        </p>
+    
+                                        <p id="reqUpper" class="flex items-center gap-2 text-xs text-gray-400 transition-colors duration-200">
+                                            <i data-lucide="circle-x" class="w-4 h-4"></i>
+                                            <span>One uppercase letter</span>
+                                        </p>
+    
+                                        <p id="reqLower" class="flex items-center gap-2 text-xs text-gray-400 transition-colors duration-200">
+                                            <i data-lucide="circle-x" class="w-4 h-4"></i>
+                                            <span>One lowercase letter</span>
+                                        </p>
+    
+                                        <p id="reqNumber" class="flex items-center gap-2 text-xs text-gray-400 transition-colors duration-200">
+                                            <i data-lucide="circle-x" class="w-4 h-4"></i>
+                                            <span>One number</span>
+                                        </p>
+    
+                                        <p id="reqSpecial" class="flex items-center gap-2 text-xs text-gray-400 transition-colors duration-200">
+                                            <i data-lucide="circle-x" class="w-4 h-4"></i>
+                                            <span>One special character</span>
+                                        </p>
+    
+                                    </div>
+                                </div>
+    
+                                <div>
+                                    <label class="text-xs font-bold text-gray-600 uppercase tracking-wide block mb-2">Confirm Password</label>
+                                    <div class="relative">
+                                        <i data-lucide="key-round" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm w-4 h-4"></i>
+                                        <input id="pw_confirm" type="password" class="text-inputs w-full pl-10 pr-11">
+                                        <button
+                                            type="button"
+                                            class="password-toggle absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                                            data-target="pw_confirm"
+                                            aria-label="Show password">
+                                            <i data-lucide="eye" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                    <p id="passwordMatch" class="mt-2 flex items-center gap-2 text-xs text-gray-400 transition-colors duration-200">
+                                        <i data-lucide="circle-x" class="w-4 h-4"></i>
+                                        <span>Passwords must match</span>
+                                    </p>
+                                </div>
+                            </div>
+    
+                            <!-- PASSWORD BUTTON -->
+                            <div class="pt-1 flex justify-center lg:justify-end">
+                                <button
+                                    type="button"
+                                    id="changePasswordBtn"
+                                    class="h-11 px-7 bg-[#D02027] hover:bg-[#b51b22] text-white rounded-xl font-eurostile-bold text-xs uppercase tracking-wide flex items-center justify-center gap-2 shadow-sm transition">
+                                    <i data-lucide="shield-half" class="w-4 h-4"></i>
+                                    Change Password
+                                </button>
+                            </div>
+                        </div>
+    
+                    </div>
                 </div>
             </div>
         </div>

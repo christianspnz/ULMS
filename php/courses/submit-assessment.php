@@ -157,12 +157,13 @@ try {
     }
 
     mysqli_commit($conn);
-    // Certificate of completion: only when the Post-Test was passed
+
+    // Certificate for the completed course (the course's own settings decide whether passing is needed)
     $certificate = null;
 
-    if ($type === 'Post-Test' && $passed) {
+    if ($type === 'Post-Test') {
         try {
-            $certificate = issueCourseCertificate($conn, $userId, $courseId);
+            $certificate = issueCourseCertificate($conn, $userId, $courseId, true, (bool) $passed);
         } catch (Throwable $e) {
             error_log("Course certificate failed: " . $e->getMessage());
         }

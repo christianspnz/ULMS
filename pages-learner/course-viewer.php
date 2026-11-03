@@ -87,11 +87,11 @@ requireRole([1, 2]);
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased">
+<body class=" antialiased">
     <?php include '../sidebar-learner.php'; ?>
     <main>
 
-        <div class="flex justify-between items-center w-full">
+        <div class="main-header">
             <span class="page-breadcrumbs">
                 <a href="courses.php">Courses</a>
                 <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
@@ -102,7 +102,7 @@ requireRole([1, 2]);
             <?php include '../notification-bell.php'; ?>
         </div>
 
-        <div id="viewerRoot" class="flex flex-col gap-5 mt-5">
+        <div id="viewerRoot" class="main-container">
             <div class="rounded-3xl bg-white border border-slate-200 p-10 text-center text-slate-400">
                 <i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading course...
             </div>
@@ -111,8 +111,10 @@ requireRole([1, 2]);
         <?php include '../feedback-button.php'; ?>
     </main>
 
+    <?php include '../downloadable-assets.php'; ?>
     <?php include '../reward-modal.php'; ?>
     <?php include '../course-feedback-modal.php'; ?>
+    <?php include '../media-viewer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
@@ -127,6 +129,7 @@ requireRole([1, 2]);
 
         let course = null;
         let modules = [];
+        let mediaInstances = [];
         let activeModuleId = null;
 
         const flags = {
@@ -386,7 +389,7 @@ requireRole([1, 2]);
                                     stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"
                                     style="transition: stroke-dashoffset .8s ease" />
                             </svg>
-                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <div class="absolute w-full inset-0 flex flex-col items-center justify-center">
                                 <span class="text-xl font-black">${pct}%</span>
                                 <span class="text-[9px] uppercase tracking-wider text-slate-300">complete</span>
                             </div>
@@ -551,19 +554,10 @@ requireRole([1, 2]);
 
             let body = "";
 
-            if (file.file_type === "video") {
+            if (file.file_type === "video" || file.file_type === "pdf") {
 
-                body = `
-                    <div class="bg-slate-900">
-                        <video controls preload="metadata" class="w-full max-h-[480px]">
-                            <source src="${escapeAttr(url)}" type="${escapeAttr(file.mime_type)}">
-                            Your browser does not support video playback.
-                        </video>
-                    </div>`;
-
-            } else if (file.file_type === "pdf") {
-
-                body = `<iframe src="${escapeAttr(url)}" class="w-full block" style="height: 640px;" title="${escapeAttr(file.original_filename)}"></iframe>`;
+                // The shared viewer is mounted here once the card is on the page
+                body = `<div class="p-3 bg-slate-50"><div data-mv-host="${mod.module_id}-${i}"></div></div>`;
 
             } else if (file.file_type === "word") {
 
@@ -605,6 +599,7 @@ requireRole([1, 2]);
 
         function renderModuleContent() {
 
+            mediaInstances.splice(0).forEach(m => m.destroy());
             const content = document.getElementById("moduleContent");
             const idx = modules.findIndex(m => m.module_id === activeModuleId);
             const mod = modules[idx];
@@ -666,6 +661,24 @@ requireRole([1, 2]);
                     </button>
                 </div>
             `;
+
+            // Videos and PDFs: the shared viewer (remembers the place in this browser)
+            mod.files.forEach((file, i) => {
+
+                if (file.file_type !== "video" && file.file_type !== "pdf") return;
+
+                const host = document.querySelector(`[data-mv-host="${mod.module_id}-${i}"]`);
+                if (!host) return;
+
+                mediaInstances.push(MediaViewer.mount(host, {
+                    type: file.file_type,
+                    url: fileUrl(file),
+                    title: file.original_filename,
+                    storageKey: `course:${courseId}:module:${mod.module_id}:file:${file.original_filename}`,
+                    allowOpen: false // the card header already has an "Open" link
+                }));
+
+            });
 
             // Word files: render now that their containers exist
             mod.files.forEach((file, i) => {

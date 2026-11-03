@@ -43,349 +43,347 @@ if (empty($_SESSION['course_id'])) {
                     <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor" />
                 </svg>
                 Assessment
-                <!-- <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0L1 1.5L3.5 4L1 6.5L2.5 8l4-4l-4-4z" fill="currentColor"/>
-            </svg>
-            Review & Publish -->
             </span>
             <?php include '../notification-bell.php'; ?>
         </div>
-        <?php $currentStep = 3;
-        include 'course-stepper.php'; ?>
-        <form id="assessmentForm" class="add-course-form" method="POST" action="../php/courses/save-step3.php">
-            <div class="flex justify-between items-center w-full">
-                <div>
-                    <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
-                        Assessment
-                    </h2>
-                    <p class="font-eurostile text-gray-500 mt-1">
-                        Create the Pre-Test and Post-Test for this course.
-                    </p>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl z-9999 shadow-md border border-gray-200 p-6 flex gap-y-4 flex-col w-full">
-                <label class="label-inputs-add-course">Load Existing Assessment (Optional)</label>
-
-                <div class="dropdown relative inline-block w-full" id="assessmentPickerDropdown">
-
-                    <button type="button" class="dropdown-button dropdown-select">
-                        <span class="selected-option flex-1 text-left">Select an assessment to reuse</span>
-                        <svg class="arrow w-5 h-5 transition-transform duration-200 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-
-                    <input type="hidden" class="selected-id" id="selectedAssessmentId">
-
-                    <div class="dropdown-menu absolute left-0 z-9999 hidden w-full mt-2 bg-white border border-[#234CA1] rounded-md shadow-lg overflow-y-auto max-h-60 custom-scrollbar" id="assessmentPickerMenu">
-                        <div class="px-4 py-3 text-gray-400 text-sm">Loading...</div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- QUESTIONS -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 w-full">
-                <div class="bg-[#234CA1] px-6 py-4 flex justify-between items-center rounded-t-2xl">
+        <div class="main-container">
+            <?php $currentStep = 3;
+            include 'course-stepper.php'; ?>
+            <form id="assessmentForm" class="add-course-form" method="POST" action="../php/courses/save-step3.php">
+                <div class="flex justify-between items-center w-full">
                     <div>
-                        <p class="text-white text-sm">Assessment</p>
-                        <h3 class="text-white text-xl font-eurostile-bold">
-                            Pre-Test / Post Test
-                        </h3>
-                    </div>
-
-                    <button type="button" class="add-question bg-white text-[#234CA1] px-4 py-2 rounded-lg font-eurostile-bold">
-                        <i class="fa-solid fa-plus mr-2"></i>
-                        Add Question
-                    </button>
-                </div>
-
-                <div class="p-6 space-y-5">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                        <div>
-                            <label class="label-inputs-add-course">
-                                Passing Score
-                            </label>
-
-                            <input
-                                type="number"
-                                name="passing_score"
-                                class="text-inputs"
-                                placeholder="e.g. 80">
-                        </div>
-
-                        <div>
-                            <label class="label-inputs-add-course">
-                                Time Limit (minutes)
-                            </label>
-
-                            <input
-                                type="number"
-                                name="time_limit"
-                                class="text-inputs"
-                                placeholder="e.g. 30">
-                        </div>
-
-                        <div>
-                            <label class="label-inputs-add-course">
-                                Max Attempts
-                            </label>
-
-                            <input
-                                type="number"
-                                name="max_attempts"
-                                class="text-inputs"
-                                placeholder="e.g. 3">
-                        </div>
-                    </div>
-                    <input type="hidden" name="questions_json" id="questionsJson">
-                    <div id="questions" class="space-y-6"></div>
-                </div>
-            </div>
-
-            <div class="flex flex-col lg:flex-row gap-2 justify-end gap-x-5 w-full">
-                <button
-                    type="button"
-                    onclick="window.location.href='add-course-step2.php'"
-                    class="bg-[#D02027] font-eurostile-bold uppercase text-white px-10 rounded-xl h-12">
-                    Previous
-                </button>
-
-                <button
-                    type="submit"
-                    class="bg-[#234CA1] font-eurostile-bold uppercase text-white px-10 rounded-xl h-12">
-                    Save & Continue
-                </button>
-            </div>
-        </form>
-
-        <template id="questionTemplate">
-            <div class="border rounded-xl p-5 bg-gray-50 question-card">
-                <div class="flex justify-between items-center mb-5">
-                    <div>
-                        <p class="question-number text-sm font-medium text-[#234CA1]">
-                            Question 1
+                        <h2 class="text-3xl font-eurostile-black text-[#234CA1]">
+                            Assessment
+                        </h2>
+                        <p class="font-eurostile text-gray-500 mt-1">
+                            Create the Pre-Test and Post-Test for this course.
                         </p>
-
-                        <h4 class="question-title text-lg font-eurostile-bold text-[#234CA1]">
-                            New Question
-                        </h4>
                     </div>
-
+                </div>
+    
+                <div class="bg-white rounded-2xl z-9999 shadow-md border border-gray-200 p-6 flex gap-y-4 flex-col w-full">
+                    <label class="label-inputs-add-course">Load Existing Assessment (Optional)</label>
+    
+                    <div class="dropdown relative inline-block w-full" id="assessmentPickerDropdown">
+    
+                        <button type="button" class="dropdown-button dropdown-select">
+                            <span class="selected-option flex-1 text-left">Select an assessment to reuse</span>
+                            <svg class="arrow w-5 h-5 transition-transform duration-200 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+    
+                        <input type="hidden" class="selected-id" id="selectedAssessmentId">
+    
+                        <div class="dropdown-menu absolute left-0 z-9999 hidden w-full mt-2 bg-white border border-[#234CA1] rounded-md shadow-lg overflow-y-auto max-h-60 custom-scrollbar" id="assessmentPickerMenu">
+                            <div class="px-4 py-3 text-gray-400 text-sm">Loading...</div>
+                        </div>
+    
+                    </div>
+                </div>
+    
+                <!-- QUESTIONS -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 w-full">
+                    <div class="bg-[#234CA1] px-6 py-4 flex justify-between items-center rounded-t-2xl">
+                        <div>
+                            <p class="text-white text-sm">Assessment</p>
+                            <h3 class="text-white text-xl font-eurostile-bold">
+                                Pre-Test / Post Test
+                            </h3>
+                        </div>
+    
+                        <button type="button" class="add-question bg-white text-[#234CA1] px-4 py-2 rounded-lg font-eurostile-bold">
+                            <i class="fa-solid fa-plus mr-2"></i>
+                            Add Question
+                        </button>
+                    </div>
+    
+                    <div class="p-6 space-y-5">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                            <div>
+                                <label class="label-inputs-add-course">
+                                    Passing Score
+                                </label>
+    
+                                <input
+                                    type="number"
+                                    name="passing_score"
+                                    class="text-inputs"
+                                    placeholder="e.g. 80">
+                            </div>
+    
+                            <div>
+                                <label class="label-inputs-add-course">
+                                    Time Limit (minutes)
+                                </label>
+    
+                                <input
+                                    type="number"
+                                    name="time_limit"
+                                    class="text-inputs"
+                                    placeholder="e.g. 30">
+                            </div>
+    
+                            <div>
+                                <label class="label-inputs-add-course">
+                                    Max Attempts
+                                </label>
+    
+                                <input
+                                    type="number"
+                                    name="max_attempts"
+                                    class="text-inputs"
+                                    placeholder="e.g. 3">
+                            </div>
+                        </div>
+                        <input type="hidden" name="questions_json" id="questionsJson">
+                        <div id="questions" class="space-y-6"></div>
+                    </div>
+                </div>
+    
+                <div class="flex flex-col lg:flex-row gap-2 justify-end gap-x-5 w-full">
                     <button
                         type="button"
-                        class="remove-question text-red-500">
-                        <i class="fa-solid fa-trash"></i>
+                        onclick="window.location.href='add-course-step2.php'"
+                        class="bg-[#D02027] font-eurostile-bold uppercase text-white px-10 rounded-xl h-12">
+                        Previous
+                    </button>
+    
+                    <button
+                        type="submit"
+                        class="bg-[#234CA1] font-eurostile-bold uppercase text-white px-10 rounded-xl h-12">
+                        Save & Continue
                     </button>
                 </div>
-
-                <div class="space-y-5">
-                    <div>
-                        <label class="label-inputs-add-course">
-                            Question
-                        </label>
-
-                        <textarea
-                            class="text-inputs p-3 question-input"
-                            rows="3"
-                            name="question[]"
-                            placeholder="Enter question"></textarea>
+            </form>
+    
+            <template id="questionTemplate">
+                <div class="border rounded-xl p-5 bg-gray-50 question-card">
+                    <div class="flex justify-between items-center mb-5">
+                        <div>
+                            <p class="question-number text-sm font-medium text-[#234CA1]">
+                                Question 1
+                            </p>
+    
+                            <h4 class="question-title text-lg font-eurostile-bold text-[#234CA1]">
+                                New Question
+                            </h4>
+                        </div>
+    
+                        <button
+                            type="button"
+                            class="remove-question text-red-500">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
                     </div>
-
+    
+                    <div class="space-y-5">
+                        <div>
+                            <label class="label-inputs-add-course">
+                                Question
+                            </label>
+    
+                            <textarea
+                                class="text-inputs p-3 question-input"
+                                rows="3"
+                                name="question[]"
+                                placeholder="Enter question"></textarea>
+                        </div>
+    
+                        <div class="label-inputs-col">
+                            <span class="label-inputs">Question Type</span>
+    
+                            <div class="dropdown relative inline-block w-full">
+    
+                                <button
+                                    type="button"
+                                    class="dropdown-button dropdown-select">
+    
+                                    <span class="selected-option flex-1 text-left">
+                                        Multiple Choice
+                                    </span>
+    
+                                    <svg
+                                        class="arrow w-5 h-5 transition-transform duration-200 flex-shrink-0"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor">
+    
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+    
+                                    </svg>
+    
+                                </button>
+    
+                                <input
+                                    type="hidden"
+                                    name="question_type[]"
+                                    class="selected-id question-type"
+                                    value="multiple_choice">
+    
+                                <div class="dropdown-menu absolute left-0 z-50 hidden w-full mt-2 bg-white border border-[#234CA1] rounded-md shadow-lg overflow-y-auto max-h-60 custom-scrollbar">
+    
+                                    <button
+                                        type="button"
+                                        class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white"
+                                        data-value="multiple_choice">
+                                        Multiple Choice
+                                    </button>
+    
+                                    <button
+                                        type="button"
+                                        class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white"
+                                        data-value="true_false">
+                                        True / False
+                                    </button>
+    
+                                </div>
+    
+                            </div>
+                        </div>
+    
+                        <div class="question-options"></div>
+                    </div>
+                </div>
+            </template>
+    
+            <template id="multipleChoiceTemplate">
+    
+                <div class="multiple-choice-options space-y-5">
+    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    
+                        <div>
+                            <label class="label-inputs">Choice A</label>
+                            <input class="text-inputs" name="choice_a[]" type="text">
+                        </div>
+    
+                        <div>
+                            <label class="label-inputs">Choice B</label>
+                            <input class="text-inputs" name="choice_b[]" type="text">
+                        </div>
+    
+                        <div>
+                            <label class="label-inputs">Choice C</label>
+                            <input class="text-inputs" name="choice_c[]" type="text">
+                        </div>
+    
+                        <div>
+                            <label class="label-inputs">Choice D</label>
+                            <input class="text-inputs" name="choice_d[]" type="text">
+                        </div>
+    
+                    </div>
+    
                     <div class="label-inputs-col">
-                        <span class="label-inputs">Question Type</span>
-
+                        <span class="label-inputs">Correct Answer</span>
+    
                         <div class="dropdown relative inline-block w-full">
-
+    
                             <button
                                 type="button"
                                 class="dropdown-button dropdown-select">
-
+    
                                 <span class="selected-option flex-1 text-left">
-                                    Multiple Choice
+                                    Select Correct Answer
                                 </span>
-
+    
                                 <svg
                                     class="arrow w-5 h-5 transition-transform duration-200 flex-shrink-0"
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
                                     viewBox="0 0 24 24"
                                     stroke="currentColor">
-
+    
                                     <path
                                         stroke-linecap="round"
                                         stroke-linejoin="round"
                                         stroke-width="2"
                                         d="M19 9l-7 7-7-7" />
-
+    
                                 </svg>
-
+    
                             </button>
-
+    
                             <input
                                 type="hidden"
-                                name="question_type[]"
-                                class="selected-id question-type"
-                                value="multiple_choice">
-
-                            <div class="dropdown-menu absolute left-0 z-50 hidden w-full mt-2 bg-white border border-[#234CA1] rounded-md shadow-lg overflow-y-auto max-h-60 custom-scrollbar">
-
-                                <button
-                                    type="button"
-                                    class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white"
-                                    data-value="multiple_choice">
-                                    Multiple Choice
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white"
-                                    data-value="true_false">
-                                    True / False
-                                </button>
-
+                                name="correct_answer[]"
+                                class="selected-id">
+    
+                            <div class="dropdown-menu absolute left-0 z-50 hidden w-full mt-2 bg-white border border-[#234CA1] rounded-md shadow-lg">
+    
+                                <button type="button" class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white" data-value="A">Choice A</button>
+                                <button type="button" class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white" data-value="B">Choice B</button>
+                                <button type="button" class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white" data-value="C">Choice C</button>
+                                <button type="button" class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white" data-value="D">Choice D</button>
+    
                             </div>
-
+    
                         </div>
                     </div>
-
-                    <div class="question-options"></div>
+    
                 </div>
-            </div>
-        </template>
-
-        <template id="multipleChoiceTemplate">
-
-            <div class="multiple-choice-options space-y-5">
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                    <div>
-                        <label class="label-inputs">Choice A</label>
-                        <input class="text-inputs" name="choice_a[]" type="text">
-                    </div>
-
-                    <div>
-                        <label class="label-inputs">Choice B</label>
-                        <input class="text-inputs" name="choice_b[]" type="text">
-                    </div>
-
-                    <div>
-                        <label class="label-inputs">Choice C</label>
-                        <input class="text-inputs" name="choice_c[]" type="text">
-                    </div>
-
-                    <div>
-                        <label class="label-inputs">Choice D</label>
-                        <input class="text-inputs" name="choice_d[]" type="text">
-                    </div>
-
-                </div>
-
-                <div class="label-inputs-col">
-                    <span class="label-inputs">Correct Answer</span>
-
-                    <div class="dropdown relative inline-block w-full">
-
-                        <button
-                            type="button"
-                            class="dropdown-button dropdown-select">
-
-                            <span class="selected-option flex-1 text-left">
-                                Select Correct Answer
-                            </span>
-
-                            <svg
-                                class="arrow w-5 h-5 transition-transform duration-200 flex-shrink-0"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor">
-
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M19 9l-7 7-7-7" />
-
-                            </svg>
-
-                        </button>
-
-                        <input
-                            type="hidden"
-                            name="correct_answer[]"
-                            class="selected-id">
-
-                        <div class="dropdown-menu absolute left-0 z-50 hidden w-full mt-2 bg-white border border-[#234CA1] rounded-md shadow-lg">
-
-                            <button type="button" class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white" data-value="A">Choice A</button>
-                            <button type="button" class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white" data-value="B">Choice B</button>
-                            <button type="button" class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white" data-value="C">Choice C</button>
-                            <button type="button" class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white" data-value="D">Choice D</button>
-
+    
+            </template>
+    
+            <template id="trueFalseTemplate">
+    
+                <div class="space-y-5">
+    
+                    <div class="label-inputs-col">
+                        <span class="label-inputs">Correct Answer</span>
+    
+                        <div class="dropdown relative inline-block w-full">
+    
+                            <button
+                                type="button"
+                                class="dropdown-button dropdown-select">
+    
+                                <span class="selected-option flex-1 text-left">
+                                    Select Answer
+                                </span>
+    
+                                <svg
+                                    class="arrow w-5 h-5 transition-transform duration-200 flex-shrink-0"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor">
+    
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+    
+                                </svg>
+    
+                            </button>
+    
+                            <input
+                                type="hidden"
+                                name="correct_answer[]"
+                                class="selected-id">
+    
+                            <div class="dropdown-menu absolute left-0 z-50 hidden w-full mt-2 bg-white border border-[#234CA1] rounded-md shadow-lg">
+    
+                                <button type="button" class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white" data-value="True">True</button>
+                                <button type="button" class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white" data-value="False">False</button>
+    
+                            </div>
+    
                         </div>
-
                     </div>
+    
                 </div>
-
-            </div>
-
-        </template>
-
-        <template id="trueFalseTemplate">
-
-            <div class="space-y-5">
-
-                <div class="label-inputs-col">
-                    <span class="label-inputs">Correct Answer</span>
-
-                    <div class="dropdown relative inline-block w-full">
-
-                        <button
-                            type="button"
-                            class="dropdown-button dropdown-select">
-
-                            <span class="selected-option flex-1 text-left">
-                                Select Answer
-                            </span>
-
-                            <svg
-                                class="arrow w-5 h-5 transition-transform duration-200 flex-shrink-0"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor">
-
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M19 9l-7 7-7-7" />
-
-                            </svg>
-
-                        </button>
-
-                        <input
-                            type="hidden"
-                            name="correct_answer[]"
-                            class="selected-id">
-
-                        <div class="dropdown-menu absolute left-0 z-50 hidden w-full mt-2 bg-white border border-[#234CA1] rounded-md shadow-lg">
-
-                            <button type="button" class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white" data-value="True">True</button>
-                            <button type="button" class="dropdown-item w-full px-4 py-3 text-left hover:bg-[#234CA1] hover:text-white" data-value="False">False</button>
-
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-
-        </template>
+    
+            </template>
+        </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>

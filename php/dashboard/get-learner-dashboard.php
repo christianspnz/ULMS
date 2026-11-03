@@ -61,7 +61,7 @@ try {
     $courseList = function (string $status, int $limit) use ($conn, $userId, $thumbSelect) {
         return dashFetchAll(
             $conn,
-            "SELECT e.course_id, c.course_title{$thumbSelect}
+            "SELECT e.course_id, e.progress, c.course_title{$thumbSelect}
              FROM enrollments e
              JOIN courses c ON c.course_id = e.course_id
              WHERE e.user_id = ? AND e.status = ?

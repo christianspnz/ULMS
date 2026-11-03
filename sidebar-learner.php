@@ -6,8 +6,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 
 include "../php/login/user_info.php";
 
-include "hamburger-btn.php";
-
 // Define DRY classes for navigation states
 $activeClass   = 'bg-[#234CA1] text-white';
 $inactiveClass = 'text-[#234CA1] hover:bg-[#EEF3FF] hover:text-[#234CA1] transition-colors duration-100';
@@ -22,10 +20,15 @@ function isActive(array|string $pages, string $current): bool
 }
 ?>
 
-<aside id="sidebar" class="sidebar hidden lg:flex fixed lg:top-0 lg:left-0 top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 lg:translate-y-0 lg:translate-x-0 z-40 lg:m-5">
-    <div class="flex flex-col lg:flex-row w-full justify-center items-center gap-x-1 gap-y-1 shrink-0">
-        <img src="../assets/ulh-logo.png" alt="UAAGI LMS Logo" class="w-14 lg:w-10">
-        <img src="../assets/Logo.png" alt="UAAGI LMS Logo" class="w-40 lg:w-32">
+<aside id="sidebar" class="sidebar hidden lg:flex z-40">
+    <div class="sidebar-head flex w-full items-center justify-center shrink-0">
+        <div class="flex flex-col lg:flex-row justify-center items-center gap-x-1 gap-y-1">
+            <img src="../assets/ulh-logo.png" alt="UAAGI LMS Logo" class="h-[2rem] w-14 lg:w-10">
+            <img src="../assets/Logo.png" alt="UAAGI LMS Logo" class="h-[1rem] w-auto lg:w-32">
+        </div>
+        <button type="button" id="sidebarClose" aria-label="Close menu">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
     </div>
     <nav class="sidebar-nav">
 
@@ -36,14 +39,20 @@ function isActive(array|string $pages, string $current): bool
             Dashboard
         </a>
 
-         <div class="sidebar-divider"></div>
+        <div class="sidebar-divider"></div>
 
         <span class="sidebar-section-label">Learning Management</span>
-        
+
         <!-- Courses (Handles multiple related pages) -->
         <a href="courses.php" class="sidebar-text <?= isActive(['courses.php', 'course-viewer.php', 'assessment.php'], $currentPage) ? $activeClass : $inactiveClass ?>">
             <i data-lucide="layers" class="sidebar-icon"></i>
             Courses
+        </a>
+
+        <!-- Library -->
+        <a href="library.php" class="sidebar-text <?= isActive(['library.php', 'library-viewer.php'], $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="library" class="sidebar-icon"></i>
+            Library
         </a>
 
         <!-- Calendar -->
@@ -185,5 +194,5 @@ function isActive(array|string $pages, string $current): bool
         });
     });
 </script>
-
+<?php include __DIR__ . '/mobile-nav.php'; ?>
 <?php include __DIR__ . '/schedule-alerts.php'; ?>

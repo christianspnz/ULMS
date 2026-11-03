@@ -22,6 +22,7 @@ try {
         mysqli_begin_transaction($conn);
         certExec($conn, "UPDATE certificate_templates SET archived_at = NOW(), is_default = 0 WHERE template_id = ?", "i", [$templateId]);
         certExec($conn, "UPDATE schedules SET certificate_template_id = NULL WHERE certificate_template_id = ?", "i", [$templateId]);
+        certExec($conn, "UPDATE courses SET certificate_template_id = NULL WHERE certificate_template_id = ?", "i", [$templateId]);
         mysqli_commit($conn);
 
         echo json_encode(["status" => "success"]);
@@ -37,6 +38,7 @@ try {
     $restyle = !empty($_POST['restyle_issued']);
     $copyFrom = (int) ($_POST['copy_from'] ?? 0);
     $layoutJson = json_encode(sanitizeCertificateLayout(json_decode($_POST['layout'] ?? '', true)));
+    $appliesTo = in_array($_POST['applies_to'] ?? '', ['Both', 'Training', 'Course'], true) ? $_POST['applies_to'] : 'Both';
 
     if ($brandId < 0) {
         throw new Exception("Invalid brand.");
@@ -73,10 +75,10 @@ try {
 
     $stmt = mysqli_prepare(
         $conn,
-        "INSERT INTO certificate_templates (name, brand_id, is_default, background_path, layout, valid_months)
-         VALUES (?, ?, ?, ?, ?, ?)"
+        "INSERT INTO certificate_templates (name, brand_id, applies_to, is_default, background_path, layout, valid_months)
+         VALUES (?, ?, ?, ?, ?, ?, ?)"
     );
-    mysqli_stmt_bind_param($stmt, "siissi", $name, $brandId, $isDefault, $background, $layoutJson, $validMonths);
+    mysqli_stmt_bind_param($stmt, "sisissi", $name, $brandId, $appliesTo, $isDefault, $background, $layoutJson, $validMonths);
 
     if (!mysqli_stmt_execute($stmt)) {
         throw new Exception("Failed to save the template.");
@@ -89,6 +91,7 @@ try {
         // The old version is archived (kept), and anything pointing at it moves to the new version
         certExec($conn, "UPDATE certificate_templates SET archived_at = NOW(), is_default = 0 WHERE template_id = ?", "i", [$templateId]);
         certExec($conn, "UPDATE schedules SET certificate_template_id = ? WHERE certificate_template_id = ?", "ii", [$newId, $templateId]);
+        certExec($conn, "UPDATE courses SET certificate_template_id = ? WHERE certificate_template_id = ?", "ii", [$newId, $templateId]);
 
         if ($restyle) {
             certExec($conn, "UPDATE certificates SET template_id = ? WHERE template_id = ?", "ii", [$newId, $templateId]);
@@ -98,9 +101,10 @@ try {
     if ($isDefault) {
         certExec(
             $conn,
-            "UPDATE certificate_templates SET is_default = 0 WHERE brand_id = ? AND template_id <> ? AND archived_at IS NULL",
-            "ii",
-            [$brandId, $newId]
+            "UPDATE certificate_templates SET is_default = 0
+             WHERE brand_id = ? AND applies_to = ? AND template_id <> ? AND archived_at IS NULL",
+            "isi",
+            [$brandId, $appliesTo, $newId]
         );
     }
 

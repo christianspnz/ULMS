@@ -45,6 +45,7 @@ requireRole([1, 2]);
         <?php include '../feedback-button.php'; ?>
     </main>
 
+    <?php include '../downloadable-assets.php'; ?>
     <?php include '../reward-modal.php'; ?>
     <?php include '../course-feedback-modal.php'; ?>
 

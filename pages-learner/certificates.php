@@ -29,38 +29,40 @@ requireRole(1);
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased">
+<body class=" antialiased">
     <?php include '../sidebar-learner.php'; ?>
     <main>
 
-        <div class="flex justify-between items-center w-full">
+        <div class="main-header">
             <span class="page-breadcrumbs">Certificates</span>
             <?php include '../notification-bell.php'; ?>
         </div>
 
-        <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg mt-5">
-            <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
-            <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
-            <div class="hero-grid absolute inset-0 pointer-events-none"></div>
-
-            <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-                <div class="space-y-2 min-w-0">
-                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
-                        <i class="fa-solid fa-certificate text-amber-400"></i> My Certificates
-                    </span>
-                    <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Your Certificates</h1>
-                    <p class="text-slate-300 text-sm max-w-xl">Earned by attending a training and timing out when it ends. Download any of them as a PDF.</p>
+        <div class="main-container">
+            <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg">
+                <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+                <div class="hero-grid absolute inset-0 pointer-events-none"></div>
+    
+                <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+                    <div class="space-y-2 min-w-0">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                            <i class="fa-solid fa-certificate text-amber-400"></i> My Certificates
+                        </span>
+                        <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Your Certificates</h1>
+                        <p class="text-slate-300 text-sm max-w-xl">Earned by attending a training and timing out when it ends. Download any of them as a PDF.</p>
+                    </div>
+    
+                    <div class="shrink-0 rounded-2xl bg-white/10 border border-white/10 px-6 py-4 text-center">
+                        <p id="certCount" class="text-4xl font-black">—</p>
+                        <p class="text-[11px] uppercase tracking-wider text-slate-300">Earned</p>
+                    </div>
                 </div>
-
-                <div class="shrink-0 rounded-2xl bg-white/10 border border-white/10 px-6 py-4 text-center">
-                    <p id="certCount" class="text-4xl font-black">—</p>
-                    <p class="text-[11px] uppercase tracking-wider text-slate-300">Earned</p>
-                </div>
+            </section>
+    
+            <div id="certGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mt-5">
+                <div class="col-span-full text-center text-gray-400 py-10"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading...</div>
             </div>
-        </section>
-
-        <div id="certGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mt-5">
-            <div class="col-span-full text-center text-gray-400 py-10"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading...</div>
         </div>
 
         <?php include '../feedback-button.php'; ?>

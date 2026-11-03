@@ -9,7 +9,7 @@ header("Content-Type: application/json");
 
 try {
 
-    $userId = $_SESSION['user_id'];
+    $userId = (int) $_SESSION['user_id'];
 
     // ---------- MY COURSES (already enrolled) ----------
 
@@ -48,47 +48,68 @@ try {
     $availResult = mysqli_stmt_get_result($availStmt);
     $availableCourses = $availResult ? $availResult->fetch_all(MYSQLI_ASSOC) : [];
 
-    $ratedCourseIds = [];
-    $rateStmt = mysqli_prepare($conn, "SELECT course_id FROM course_feedback WHERE user_id = ?");
+    // ---------- Extras (each one is skipped quietly if its table isn't set up yet) ----------
 
-    if ($rateStmt) {
-        mysqli_stmt_bind_param($rateStmt, "i", $userId);
-        mysqli_stmt_execute($rateStmt);
-        $rateResult = mysqli_stmt_get_result($rateStmt);
-        $ratedCourseIds = $rateResult ? array_map('intval', array_column($rateResult->fetch_all(MYSQLI_ASSOC), 'course_id')) : [];
-        mysqli_stmt_close($rateStmt);
+    $idsFrom = function (string $sql) use ($conn, $userId): array {
+        try {
+            $stmt = mysqli_prepare($conn, $sql);
+
+            if (!$stmt) {
+                return [];
+            }
+
+            mysqli_stmt_bind_param($stmt, "i", $userId);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            $rows = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+            mysqli_stmt_close($stmt);
+
+            return array_map('intval', array_column($rows, 'course_id'));
+        } catch (Throwable $e) {
+            return [];
+        }
+    };
+
+    $ratedCourseIds = $idsFrom("SELECT course_id FROM course_feedback WHERE user_id = ?");
+    $certifiedCourseIds = $idsFrom(
+        "SELECT source_id AS course_id FROM certificates
+         WHERE user_id = ? AND source_type = 'Course' AND revoked_at IS NULL"
+    );
+
+    try {
+        $ratings = getCourseRatings($conn, array_merge(
+            array_column($myCourses, 'course_id'),
+            array_column($availableCourses, 'course_id')
+        ));
+    } catch (Throwable $e) {
+        $ratings = [];
     }
 
     foreach ($myCourses as &$c) {
-        $c['has_feedback'] = in_array((int) $c['course_id'], $ratedCourseIds, true);
+        $id = (int) $c['course_id'];
+        $c['has_feedback'] = in_array($id, $ratedCourseIds, true);
+        $c['has_certificate'] = in_array($id, $certifiedCourseIds, true);
+        $c['rating_avg'] = $ratings[$id]['avg'] ?? null;
+        $c['rating_count'] = $ratings[$id]['count'] ?? 0;
     }
     unset($c);
 
+    foreach ($availableCourses as &$c) {
+        $id = (int) $c['course_id'];
+        $c['rating_avg'] = $ratings[$id]['avg'] ?? null;
+        $c['rating_count'] = $ratings[$id]['count'] ?? 0;
+    }
+    unset($c);
+
+    // One response, sent last, after everything has been added
     echo json_encode([
         "status" => "success",
         "my_courses" => $myCourses,
         "available_courses" => $availableCourses
     ]);
+} catch (Throwable $e) {
 
-
-    $ratings = getCourseRatings($conn, array_merge(
-        array_column($myCourses, 'course_id'),
-        array_column($availableCourses, 'course_id')
-    ));
-
-    foreach ($myCourses as &$c) {
-        $c['rating_avg'] = $ratings[(int) $c['course_id']]['avg'] ?? null;
-        $c['rating_count'] = $ratings[(int) $c['course_id']]['count'] ?? 0;
-    }
-    unset($c);
-
-    foreach ($availableCourses as &$c) {
-        $c['rating_avg'] = $ratings[(int) $c['course_id']]['avg'] ?? null;
-        $c['rating_count'] = $ratings[(int) $c['course_id']]['count'] ?? 0;
-    }
-    unset($c);
-} catch (Exception $e) {
-
+    // Throwable (not just Exception), so a database error comes back as JSON instead of breaking the page
     echo json_encode([
         "status" => "error",
         "message" => $e->getMessage()

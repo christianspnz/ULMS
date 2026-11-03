@@ -56,203 +56,204 @@ $allTiers = getAllTiers();
     <?php include('../sidebar-superadmin.php') ?>
     <main>
 
-        <div class="flex justify-between items-center w-full">
+        <div class="main-header">
             <span class="page-breadcrumbs">Leaderboard</span>
             <?php include '../notification-bell.php'; ?>
         </div>
 
-        <!-- HERO -->
-        <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-6 md:p-8 text-white shadow-lg mt-5">
-            <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
-            <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
-            <div class="hero-grid absolute inset-0 pointer-events-none"></div>
-
-            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                <div class="space-y-3 min-w-0">
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
-                            <i class="fa-solid fa-trophy text-amber-400"></i> Leadership Overview
-                        </span>
-                        <span id="periodChip" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 font-mono text-[11px] text-slate-200">All time</span>
+        <div class="main-container">
+            <!-- HERO -->
+            <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-6 md:p-8 text-white shadow-lg">
+                <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+                <div class="hero-grid absolute inset-0 pointer-events-none"></div>
+    
+                <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    <div class="space-y-3 min-w-0">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                                <i class="fa-solid fa-trophy text-amber-400"></i> Leadership Overview
+                            </span>
+                            <span id="periodChip" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 font-mono text-[11px] text-slate-200">All time</span>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl md:text-4xl font-extrabold tracking-tight">Learner Leaderboard</h1>
+                        <p class="text-slate-300 text-sm max-w-xl">Overall ranking of every active learner, with participation, tier and dealership insights. Filter, export to CSV, or print a PDF report.</p>
                     </div>
-                    <h1 class="text-xl sm:text-2xl md:text-4xl font-extrabold tracking-tight">Learner Leaderboard</h1>
-                    <p class="text-slate-300 text-sm max-w-xl">Overall ranking of every active learner, with participation, tier and dealership insights. Filter, export to CSV, or print a PDF report.</p>
-                </div>
-
-                <div class="no-print flex flex-wrap items-center gap-2 shrink-0">
-                    <button type="button" id="exportCsvBtn" class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-sm font-eurostile-bold transition-colors">
-                        <i class="fa-solid fa-file-csv"></i> CSV
-                    </button>
-                    <button type="button" id="printPdfBtn" class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white text-[#234CA1] hover:bg-gray-100 text-sm font-eurostile-bold transition-colors">
-                        <i class="fa-solid fa-file-pdf"></i> Print PDF
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- FILTERS -->
-        <div class="no-print bg-white rounded-2xl shadow-md border border-gray-200 p-5 mt-5">
-
-            <div class="flex flex-wrap items-center gap-2 mb-4">
-                <span class="text-xs font-bold text-[#234CA1] uppercase mr-1">Period</span>
-                <button type="button" data-preset="all" class="preset-btn px-3 py-1.5 rounded-full text-xs font-semibold border transition bg-white text-gray-600 border-gray-200">All Time</button>
-                <button type="button" data-preset="today" class="preset-btn px-3 py-1.5 rounded-full text-xs font-semibold border transition bg-white text-gray-600 border-gray-200">Today</button>
-                <button type="button" data-preset="week" class="preset-btn px-3 py-1.5 rounded-full text-xs font-semibold border transition bg-white text-gray-600 border-gray-200">This Week</button>
-                <button type="button" data-preset="month" class="preset-btn px-3 py-1.5 rounded-full text-xs font-semibold border transition bg-white text-gray-600 border-gray-200">This Month</button>
-                <button type="button" data-preset="30d" class="preset-btn px-3 py-1.5 rounded-full text-xs font-semibold border transition bg-white text-gray-600 border-gray-200">Last 30 Days</button>
-            </div>
-
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
-                    <input type="date" id="lb_dateFrom" class="text-inputs">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
-                    <input type="date" id="lb_dateTo" class="text-inputs">
-                </div>
-                <div class="flex items-end">
-                    <button type="button" id="lb_applyBtn" class="w-full bg-[#234CA1] text-white rounded-lg py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
-                </div>
-                <div class="flex items-end">
-                    <button type="button" id="lb_resetBtn" class="w-full bg-gray-100 text-gray-600 rounded-lg py-2.5 text-sm font-eurostile-bold">Reset</button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div>
-                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brands</label>
-                    <div class="flex flex-wrap gap-2">
-                        <?php foreach ($allBrands as $b): ?>
-                            <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
-                                <input type="checkbox" class="lb-brand-checkbox" value="<?= $b['brand_id'] ?>">
-                                <?= htmlspecialchars($b['brand_name']) ?>
-                            </label>
-                        <?php endforeach; ?>
+    
+                    <div class="no-print flex flex-wrap items-center gap-2 shrink-0">
+                        <button type="button" id="exportCsvBtn" class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-sm font-eurostile-bold transition-colors">
+                            <i class="fa-solid fa-file-csv"></i> CSV
+                        </button>
+                        <button type="button" id="printPdfBtn" class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white text-[#234CA1] hover:bg-gray-100 text-sm font-eurostile-bold transition-colors">
+                            <i class="fa-solid fa-file-pdf"></i> Print PDF
+                        </button>
                     </div>
                 </div>
-                <div>
-                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealerships</label>
-                    <div class="flex flex-wrap gap-2 max-h-24 overflow-y-auto">
-                        <?php foreach ($allDealerships as $d): ?>
-                            <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
-                                <input type="checkbox" class="lb-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
-                                <?= htmlspecialchars($d['dealership_name']) ?>
-                            </label>
-                        <?php endforeach; ?>
+            </section>
+    
+            <!-- FILTERS -->
+            <div class="no-print bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+    
+                <div class="flex flex-wrap items-center gap-2 mb-4">
+                    <span class="text-xs font-bold text-[#234CA1] uppercase mr-1">Period</span>
+                    <button type="button" data-preset="all" class="preset-btn px-3 py-1.5 rounded-full text-xs font-semibold border transition bg-white text-gray-600 border-gray-200">All Time</button>
+                    <button type="button" data-preset="today" class="preset-btn px-3 py-1.5 rounded-full text-xs font-semibold border transition bg-white text-gray-600 border-gray-200">Today</button>
+                    <button type="button" data-preset="week" class="preset-btn px-3 py-1.5 rounded-full text-xs font-semibold border transition bg-white text-gray-600 border-gray-200">This Week</button>
+                    <button type="button" data-preset="month" class="preset-btn px-3 py-1.5 rounded-full text-xs font-semibold border transition bg-white text-gray-600 border-gray-200">This Month</button>
+                    <button type="button" data-preset="30d" class="preset-btn px-3 py-1.5 rounded-full text-xs font-semibold border transition bg-white text-gray-600 border-gray-200">Last 30 Days</button>
+                </div>
+    
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
+                        <input type="date" id="lb_dateFrom" class="text-inputs">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
+                        <input type="date" id="lb_dateTo" class="text-inputs">
+                    </div>
+                    <div class="flex items-end">
+                        <button type="button" id="lb_applyBtn" class="w-full bg-[#234CA1] text-white rounded-lg py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="button" id="lb_resetBtn" class="w-full bg-gray-100 text-gray-600 rounded-lg py-2.5 text-sm font-eurostile-bold">Reset</button>
+                    </div>
+                </div>
+    
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brands</label>
+                        <div class="flex flex-wrap gap-2">
+                            <?php foreach ($allBrands as $b): ?>
+                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" class="lb-brand-checkbox" value="<?= $b['brand_id'] ?>">
+                                    <?= htmlspecialchars($b['brand_name']) ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealerships</label>
+                        <div class="flex flex-wrap gap-2 max-h-24 overflow-y-auto">
+                            <?php foreach ($allDealerships as $d): ?>
+                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                    <input type="checkbox" class="lb-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
+                                    <?= htmlspecialchars($d['dealership_name']) ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- KPI CARDS -->
-        <div id="kpiCards" class="grid grid-cols-2 lg:grid-cols-5 gap-4 mt-5">
-            <div class="col-span-full text-center text-gray-400 py-6">Loading...</div>
-        </div>
-
-        <!-- TOP 3 -->
-        <div id="topPerformers" class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-5"></div>
-
-        <!-- CHARTS ROW A -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-5">
-            <div class="lg:col-span-2 bg-white rounded-2xl shadow-md border border-gray-200 p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Points Over Time</h3>
-                    <span id="trendLabel" class="font-mono text-[11px] uppercase tracking-wider text-gray-400"></span>
+    
+            <!-- KPI CARDS -->
+            <div id="kpiCards" class="grid grid-cols-2 lg:grid-cols-5 gap-4 ">
+                <div class="col-span-full text-center text-gray-400 py-6">Loading...</div>
+            </div>
+    
+            <!-- TOP 3 -->
+            <div id="topPerformers" class="grid grid-cols-1 lg:grid-cols-3 gap-4 "></div>
+    
+            <!-- CHARTS ROW A -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 ">
+                <div class="lg:col-span-2 bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Points Over Time</h3>
+                        <span id="trendLabel" class="font-mono text-[11px] uppercase tracking-wider text-gray-400"></span>
+                    </div>
+                    <div class="relative h-64"><canvas id="trendChart"></canvas></div>
                 </div>
-                <div class="relative h-64"><canvas id="trendChart"></canvas></div>
+    
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                    <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Tier Distribution</h3>
+                    <div class="relative h-64"><canvas id="tierChart"></canvas></div>
+                </div>
             </div>
-
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
-                <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Tier Distribution</h3>
-                <div class="relative h-64"><canvas id="tierChart"></canvas></div>
+    
+            <!-- ROW B -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 ">
+    
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                    <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Points by Source</h3>
+                    <div class="relative h-64"><canvas id="sourceChart"></canvas></div>
+                </div>
+    
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                    <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Top Dealerships</h3>
+                    <div class="overflow-y-auto max-h-64">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-200 text-xs text-gray-400 uppercase">
+                                    <th class="text-left py-2 px-2">#</th>
+                                    <th class="text-left py-2 px-2">Dealership</th>
+                                    <th class="text-center py-2 px-2">Learners</th>
+                                    <th class="text-center py-2 px-2">Points</th>
+                                    <th class="text-center py-2 px-2">Avg</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dealershipBody">
+                                <tr>
+                                    <td colspan="5" class="text-center text-gray-400 py-8">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+    
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                    <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Brand Comparison</h3>
+                    <div id="brandBars" class="space-y-3 overflow-y-auto max-h-64">
+                        <p class="text-gray-400 text-sm">Loading...</p>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <!-- ROW B -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-5">
-
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
-                <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Points by Source</h3>
-                <div class="relative h-64"><canvas id="sourceChart"></canvas></div>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
-                <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Top Dealerships</h3>
-                <div class="overflow-y-auto max-h-64">
+    
+            <!-- RANKING TABLE -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 ">
+                <div class="flex flex-col xl:flex-row gap-3 justify-between xl:items-center mb-4">
+                    <div>
+                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Overall Ranking</h3>
+                        <p id="tableMeta" class="text-xs text-gray-400 mt-0.5"></p>
+                    </div>
+                    <div class="no-print flex flex-wrap items-center gap-2">
+                        <input type="search" id="lb_search" placeholder="Search learner, brand, dealership" class="text-inputs w-64">
+                        <select id="lb_tier" class="text-inputs w-40">
+                            <option value="">All tiers</option>
+                            <?php foreach ($allTiers as $t): ?>
+                                <option value="<?= htmlspecialchars($t['name']) ?>"><?= htmlspecialchars($t['name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                            <input type="checkbox" id="lb_hideZero"> Hide 0 pts
+                        </label>
+                    </div>
+                </div>
+    
+                <div class="overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead>
-                            <tr class="border-b border-gray-200 text-xs text-gray-400 uppercase">
-                                <th class="text-left py-2 px-2">#</th>
-                                <th class="text-left py-2 px-2">Dealership</th>
-                                <th class="text-center py-2 px-2">Learners</th>
-                                <th class="text-center py-2 px-2">Points</th>
-                                <th class="text-center py-2 px-2">Avg</th>
+                            <tr class="border-b border-gray-200">
+                                <th data-sort="rank" class="sortable text-left py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">Rank <i data-sort-icon="rank" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
+                                <th data-sort="name" class="sortable text-left py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">Learner <i data-sort-icon="name" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
+                                <th data-sort="brand_name" class="sortable text-left py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">Brand <i data-sort-icon="brand_name" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
+                                <th data-sort="dealership_name" class="sortable text-left py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">Dealership <i data-sort-icon="dealership_name" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
+                                <th data-sort="tier" class="sortable text-center py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">Tier <i data-sort-icon="tier" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
+                                <th data-sort="period_points" class="sortable text-center py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">Points <i data-sort-icon="period_points" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
+                                <th data-sort="alltime_points" class="sortable text-center py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">All-Time <i data-sort-icon="alltime_points" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
+                                <th data-sort="completed_courses" class="sortable text-center py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">Courses <i data-sort-icon="completed_courses" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
                             </tr>
                         </thead>
-                        <tbody id="dealershipBody">
+                        <tbody id="rankingBody">
                             <tr>
-                                <td colspan="5" class="text-center text-gray-400 py-8">Loading...</td>
+                                <td colspan="8" class="text-center text-gray-400 py-12">Loading...</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-            </div>
-
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
-                <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Brand Comparison</h3>
-                <div id="brandBars" class="space-y-3 overflow-y-auto max-h-64">
-                    <p class="text-gray-400 text-sm">Loading...</p>
-                </div>
+    
+                <div id="pager" class="no-print flex flex-col sm:flex-row justify-between items-center gap-3 mt-4"></div>
             </div>
         </div>
-
-        <!-- RANKING TABLE -->
-        <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-            <div class="flex flex-col xl:flex-row gap-3 justify-between xl:items-center mb-4">
-                <div>
-                    <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Overall Ranking</h3>
-                    <p id="tableMeta" class="text-xs text-gray-400 mt-0.5"></p>
-                </div>
-                <div class="no-print flex flex-wrap items-center gap-2">
-                    <input type="search" id="lb_search" placeholder="Search learner, brand, dealership" class="text-inputs w-64">
-                    <select id="lb_tier" class="text-inputs w-40">
-                        <option value="">All tiers</option>
-                        <?php foreach ($allTiers as $t): ?>
-                            <option value="<?= htmlspecialchars($t['name']) ?>"><?= htmlspecialchars($t['name']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-                        <input type="checkbox" id="lb_hideZero"> Hide 0 pts
-                    </label>
-                </div>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="border-b border-gray-200">
-                            <th data-sort="rank" class="sortable text-left py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">Rank <i data-sort-icon="rank" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
-                            <th data-sort="name" class="sortable text-left py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">Learner <i data-sort-icon="name" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
-                            <th data-sort="brand_name" class="sortable text-left py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">Brand <i data-sort-icon="brand_name" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
-                            <th data-sort="dealership_name" class="sortable text-left py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">Dealership <i data-sort-icon="dealership_name" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
-                            <th data-sort="tier" class="sortable text-center py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">Tier <i data-sort-icon="tier" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
-                            <th data-sort="period_points" class="sortable text-center py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">Points <i data-sort-icon="period_points" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
-                            <th data-sort="alltime_points" class="sortable text-center py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">All-Time <i data-sort-icon="alltime_points" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
-                            <th data-sort="completed_courses" class="sortable text-center py-3 px-3 font-eurostile-bold text-[#234CA1] cursor-pointer select-none whitespace-nowrap">Courses <i data-sort-icon="completed_courses" class="fa-solid fa-sort ml-1 text-gray-300"></i></th>
-                        </tr>
-                    </thead>
-                    <tbody id="rankingBody">
-                        <tr>
-                            <td colspan="8" class="text-center text-gray-400 py-12">Loading...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div id="pager" class="no-print flex flex-col sm:flex-row justify-between items-center gap-3 mt-4"></div>
-        </div>
-
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>

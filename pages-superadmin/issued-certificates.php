@@ -34,108 +34,110 @@ $allBrands = $brandsResult ? $brandsResult->fetch_all(MYSQLI_ASSOC) : [];
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased h-auto">
+<body class=" antialiased h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
 
-        <div class="flex justify-between items-center w-full">
+        <div class="main-header">
             <span class="page-breadcrumbs">Issued Certificates</span>
             <?php include '../notification-bell.php'; ?>
         </div>
 
-        <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg mt-5">
-            <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
-            <div class="hero-grid absolute inset-0 pointer-events-none"></div>
-
-            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-                <div class="space-y-2 min-w-0">
-                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
-                        <i class="fa-solid fa-award text-amber-400"></i> Certificate Register
-                    </span>
-                    <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Issued Certificates</h1>
-                    <p class="text-slate-300 text-sm max-w-xl">Every certificate given to learners. Search, filter, download and export.</p>
-                </div>
-                <div class="flex flex-wrap items-center gap-2 shrink-0">
-                    <button type="button" id="csvBtn" class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-sm font-eurostile-bold transition-colors"><i class="fa-solid fa-file-csv"></i> CSV</button>
-                    <button type="button" id="zipBtn" class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white text-[#234CA1] hover:bg-gray-100 text-sm font-eurostile-bold transition-colors"><i class="fa-solid fa-file-zipper"></i> Download ZIP</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- FILTERS -->
-        <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5 mt-5">
-            <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
-                <div class="col-span-2">
-                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Search</label>
-                    <input type="search" id="f_q" placeholder="Name, training or certificate no." class="text-inputs">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brand</label>
-                    <select id="f_brand" class="text-inputs">
-                        <option value="">All brands</option>
-                        <?php foreach ($allBrands as $b): ?>
-                            <option value="<?= $b['brand_id'] ?>"><?= htmlspecialchars($b['brand_name']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Type</label>
-                    <select id="f_type" class="text-inputs">
-                        <option value="">Trainings &amp; courses</option>
-                        <option value="Training">Trainings</option>
-                        <option value="Course">Courses</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Status</label>
-                    <select id="f_status" class="text-inputs">
-                        <option value="">Any</option>
-                        <option value="valid">Valid</option>
-                        <option value="expired">Expired</option>
-                        <option value="revoked">Revoked</option>
-                    </select>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
-                        <input type="date" id="f_from" class="text-inputs">
+        <div class="main-container">
+            <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg ">
+                <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+                <div class="hero-grid absolute inset-0 pointer-events-none"></div>
+    
+                <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+                    <div class="space-y-2 min-w-0">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                            <i class="fa-solid fa-award text-amber-400"></i> Certificate Register
+                        </span>
+                        <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Issued Certificates</h1>
+                        <p class="text-slate-300 text-sm max-w-xl">Every certificate given to learners. Search, filter, download and export.</p>
                     </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
-                        <input type="date" id="f_to" class="text-inputs">
+                    <div class="flex flex-wrap items-center gap-2 shrink-0">
+                        <button type="button" id="csvBtn" class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-sm font-eurostile-bold transition-colors"><i class="fa-solid fa-file-csv"></i> CSV</button>
+                        <button type="button" id="zipBtn" class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white text-[#234CA1] hover:bg-gray-100 text-sm font-eurostile-bold transition-colors"><i class="fa-solid fa-file-zipper"></i> Download ZIP</button>
                     </div>
                 </div>
+            </section>
+    
+            <!-- FILTERS -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5 ">
+                <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
+                    <div class="col-span-2">
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Search</label>
+                        <input type="search" id="f_q" placeholder="Name, training or certificate no." class="text-inputs">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brand</label>
+                        <select id="f_brand" class="text-inputs">
+                            <option value="">All brands</option>
+                            <?php foreach ($allBrands as $b): ?>
+                                <option value="<?= $b['brand_id'] ?>"><?= htmlspecialchars($b['brand_name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Type</label>
+                        <select id="f_type" class="text-inputs">
+                            <option value="">Trainings &amp; courses</option>
+                            <option value="Training">Trainings</option>
+                            <option value="Course">Courses</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Status</label>
+                        <select id="f_status" class="text-inputs">
+                            <option value="">Any</option>
+                            <option value="valid">Valid</option>
+                            <option value="expired">Expired</option>
+                            <option value="revoked">Revoked</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
+                            <input type="date" id="f_from" class="text-inputs">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
+                            <input type="date" id="f_to" class="text-inputs">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row justify-end gap-3 mt-4">
+                    <button type="button" id="resetBtn" class="bg-gray-100 text-gray-600 rounded-lg px-8 py-2.5 text-sm font-eurostile-bold">Reset</button>
+                    <button type="button" id="applyBtn" class="bg-[#234CA1] text-white rounded-lg px-8 py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
+                </div>
             </div>
-            <div class="flex flex-col sm:flex-row justify-end gap-3 mt-4">
-                <button type="button" id="resetBtn" class="bg-gray-100 text-gray-600 rounded-lg px-8 py-2.5 text-sm font-eurostile-bold">Reset</button>
-                <button type="button" id="applyBtn" class="bg-[#234CA1] text-white rounded-lg px-8 py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
+    
+            <!-- TABLE -->
+            <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6 ">
+                <p id="meta" class="text-xs text-gray-400 mb-3"></p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-200 text-left text-xs uppercase text-gray-400">
+                                <th class="py-3 px-3">Recipient</th>
+                                <th class="py-3 px-3">Training / Course</th>
+                                <th class="py-3 px-3">Brand</th>
+                                <th class="py-3 px-3 text-center">Date</th>
+                                <th class="py-3 px-3 text-center">Status</th>
+                                <th class="py-3 px-3">Certificate no.</th>
+                                <th class="py-3 px-3 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="certBody">
+                            <tr>
+                                <td colspan="7" class="text-center text-gray-400 py-10">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="pager" class="flex flex-col sm:flex-row justify-between items-center gap-3 mt-4"></div>
             </div>
-        </div>
-
-        <!-- TABLE -->
-        <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-            <p id="meta" class="text-xs text-gray-400 mb-3"></p>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="border-b border-gray-200 text-left text-xs uppercase text-gray-400">
-                            <th class="py-3 px-3">Recipient</th>
-                            <th class="py-3 px-3">Training / Course</th>
-                            <th class="py-3 px-3">Brand</th>
-                            <th class="py-3 px-3 text-center">Date</th>
-                            <th class="py-3 px-3 text-center">Status</th>
-                            <th class="py-3 px-3">Certificate no.</th>
-                            <th class="py-3 px-3 text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="certBody">
-                        <tr>
-                            <td colspan="7" class="text-center text-gray-400 py-10">Loading...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div id="pager" class="flex flex-col sm:flex-row justify-between items-center gap-3 mt-4"></div>
         </div>
 
     </main>

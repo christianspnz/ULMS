@@ -44,11 +44,11 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
     <title>UTH - Landing Page</title>
 </head>
 
-<body class="p-0 flex-col lg:px-10">
+<body class="p-0 flex-col lg:px-10 bg-[#fbfcf8]">
 
-    <header class="px-10 lg:px-16">
+    <div class="px-10 lg:px-16">
         <?php include 'header.php'; ?>
-    </header>
+    </div>
     <main class="w-full lg:gap-y-20 ml-0 px-10 lg:px-16 pb-10 pt-0">
         <div class="flex flex-col lg:flex-row justify-center items-center gap-y-10 w-full mb-10">
             <div class="flex flex-col justify-center lg:justify-start items-center lg:items-start gap-y-1 w-full lg:w-[55%] ">
@@ -183,44 +183,6 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
 
             </div>
         </div>
-        <!-- Stats / Trust Bar -->
-        <!-- <section class="lg:px-16 mb-10">
-
-            <div data-aos="fade-up" class="bg-white rounded-3xl shadow-md border border-gray-100 p-8 lg:p-10">
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
-
-                    <div class="text-center">
-                        <p class="text-4xl font-eurostile-black text-[#234CA1]"><?= $courseCount ?>+</p>
-                        <p class="text-gray-500 text-sm mt-1">Active Courses</p>
-                    </div>
-
-                    <div class="text-center">
-                        <p class="text-4xl font-eurostile-black text-[#234CA1]"><?= $userCount ?>+</p>
-                        <p class="text-gray-500 text-sm mt-1">Active Learners</p>
-                    </div>
-
-                    <?php
-                    $brandCountResult = mysqli_query($conn, "SELECT COUNT(*) as total FROM brands");
-                    $brandCount = $brandCountResult ? mysqli_fetch_assoc($brandCountResult)['total'] : 0;
-
-                    $completedCountResult = mysqli_query($conn, "SELECT COUNT(*) as total FROM enrollments WHERE status = 'Completed'");
-                    $completedCount = $completedCountResult ? mysqli_fetch_assoc($completedCountResult)['total'] : 0;
-                    ?>
-
-                    <div class="text-center">
-                        <p class="text-4xl font-eurostile-black text-[#234CA1]"><?= $brandCount ?></p>
-                        <p class="text-gray-500 text-sm mt-1">Brands Covered</p>
-                    </div>
-
-                    <div class="text-center">
-                        <p class="text-4xl font-eurostile-black text-[#234CA1]"><?= $completedCount ?>+</p>
-                        <p class="text-gray-500 text-sm mt-1">Courses Completed</p>
-                    </div>
-
-                </div>
-            </div>
-
-        </section> -->
         <!-- Feedbacks -->
         <section id="feedback" class="lg:px-16 mb-10">
             <div data-aos="zoom-in" class="text-center mb-10">

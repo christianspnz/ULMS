@@ -23,20 +23,36 @@ requireRole(4);
     <?php include('../sidebar-superadmin.php') ?>
     <main>
 
-        <span class="page-breadcrumbs">Bonus Questions</span>
-
-        <div class="flex justify-between items-center w-full">
-            <div>
-                <h2 class="text-3xl font-eurostile-black text-[#234CA1]">Bonus Question Bank</h2>
-                <p class="text-gray-500 mt-1">One question is randomly selected each day for learners.</p>
-            </div>
-            <button type="button" id="addQuestionBtn" class="bg-[#234CA1] px-6 py-3 text-white rounded-lg font-eurostile-bold uppercase flex items-center gap-2">
-                <i class="fa-solid fa-plus"></i> Add Question
-            </button>
+        <div class="main-header">
+            <span class="page-breadcrumbs">Bonus questions</span>
+            <?php include '../notification-bell.php'; ?>
         </div>
 
-        <div id="questionsList" class="space-y-3 mt-6">
-            <p class="text-gray-400 text-center py-10">Loading...</p>
+        <div class="main-container">
+            <!-- HERO -->
+            <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg">
+                <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+                <div class="hero-grid absolute inset-0 pointer-events-none"></div>
+
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                    <div class="space-y-2 min-w-0">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                            <i class="fa-solid fa-circle-question text-white"></i> Daily Questions
+                        </span>
+                        <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Bonus Questions Bank</h1>
+                        <p class="text-slate-300 text-sm max-w-xl">One question is randomly selected each day for learners.</p>
+                    </div>
+
+                    <button type="button" id="addQuestionBtn"
+                        class="shrink-0 w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 h-12 rounded-xl bg-white text-[#234CA1] hover:bg-gray-100 font-eurostile-bold text-sm transition-colors">
+                        <i class="fa-solid fa-plus"></i> Add Questions
+                    </button>
+                </div>
+            </section>
+            <div id="questionsList" class="space-y-3 mt-6">
+                <p class="text-gray-400 text-center py-10">Loading...</p>
+            </div>
         </div>
 
     </main>

@@ -60,310 +60,146 @@ $allSchedules = $schedulesResult ? $schedulesResult->fetch_all(MYSQLI_ASSOC) : [
     <?php include('../sidebar-superadmin.php') ?>
     <main>
 
-        <div class="flex justify-between items-center w-full">
+        <div class="main-header">
             <span class="page-breadcrumbs">Reports</span>
             <?php include '../notification-bell.php'; ?>
         </div>
 
-        <div class="flex justify-between items-center w-full">
-            <div>
-                <h2 class="text-3xl font-eurostile-black text-[#234CA1]">Reports & Analytics</h2>
-                <p class="text-gray-500 mt-1">System-wide performance and completion tracking.</p>
-            </div>
-        </div>
+        <div class="main-container">
+            <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg">
+                <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+                <div class="hero-grid absolute inset-0 pointer-events-none"></div>
 
-        <!-- Section Tabs -->
-        <div id="reportSectionTabs" class="relative flex overflow-x-auto gap-x-2 bg-gray-100 w-full rounded-lg mt-5 p-1">
-            <span id="reportTabSlider" class="absolute top-1 bottom-1 left-1 rounded-md bg-[#FFFFFF] shadow-sm transition-all duration-300 ease-in-out pointer-events-none"></span>
-            <?php
-            $tabs = [
-                'courseTraining' => 'Course & Training',
-                'assessment' => 'Assessment & Performance',
-                'enrollment' => 'Enrollment',
-                'attendance' => 'Attendance & Schedule',
-                'userTeam' => 'User & Team',
-                'systemWide' => 'System-Wide Analytics'
-            ];
-            foreach ($tabs as $key => $label): ?>
-                <button type="button"
-                    id="report-tab-<?= $key ?>"
-                    data-section="<?= $key ?>"
-                    class="universal-tabs relative z-10 !bg-transparent whitespace-nowrap transition-colors duration-300 <?= $activeSection === $key ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>">
-                    <?= htmlspecialchars($label) ?>
-                </button>
-            <?php endforeach; ?>
-        </div>
-
-        <!-- ============ SECTION: Course & Training Reports ============ -->
-        <div id="section-courseTraining" class="report-section mt-6 <?= $activeSection !== 'courseTraining' ? 'hidden' : '' ?>">
-            <!-- Section filter bar -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
-
-                <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
-
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Date Type</label>
-                        <select id="ct_dateType" class="text-inputs">
-                            <option value="created">Created</option>
-                            <option value="published">Published</option>
-                        </select>
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                    <div class="space-y-2 min-w-0">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                            <i class="fa-solid fa-users text-white"></i> Reports
+                        </span>
+                        <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Analytics</h1>
+                        <p class="text-slate-300 text-sm max-w-xl">System-wide performance and completion tracking.</p>
                     </div>
-
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
-                        <input type="date" id="ct_dateFrom" class="text-inputs">
-                    </div>
-
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
-                        <input type="date" id="ct_dateTo" class="text-inputs">
-                    </div>
-
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Course Status</label>
-                        <select id="ct_status" class="text-inputs">
-                            <option value="">All Statuses</option>
-                            <option value="Draft">Draft</option>
-                            <option value="Published">Published</option>
-                            <option value="Archived">Archived</option>
-                        </select>
-                    </div>
-
-                    <div class="flex items-end">
-                        <button type="button" id="ct_applyBtn" class="w-full bg-[#234CA1] text-white rounded-lg py-2.5 text-sm font-eurostile-bold">
-                            Apply Filters
-                        </button>
-                    </div>
-
                 </div>
+            </section>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <div class="mt-4">
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brands</label>
-                        <div class="flex flex-wrap gap-2">
-                            <?php foreach ($allBrands as $b): ?>
-                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" class="ct-brand-checkbox" value="<?= $b['brand_id'] ?>">
-                                    <?= htmlspecialchars($b['brand_name']) ?>
-                                </label>
-                            <?php endforeach; ?>
+            <!-- Section Tabs -->
+            <div id="reportSectionTabs" class="relative flex overflow-x-auto gap-x-2 bg-gray-100 w-full rounded-lg mt-5 p-1">
+                <span id="reportTabSlider" class="absolute top-1 bottom-1 left-1 rounded-md bg-[#FFFFFF] shadow-sm transition-all duration-300 ease-in-out pointer-events-none"></span>
+                <?php
+                $tabs = [
+                    'courseTraining' => 'Course & Training',
+                    'assessment' => 'Assessment & Performance',
+                    'enrollment' => 'Enrollment',
+                    'attendance' => 'Attendance & Schedule',
+                    'userTeam' => 'User & Team',
+                    'systemWide' => 'System-Wide Analytics'
+                ];
+                foreach ($tabs as $key => $label): ?>
+                    <button type="button"
+                        id="report-tab-<?= $key ?>"
+                        data-section="<?= $key ?>"
+                        class="universal-tabs relative z-10 !bg-transparent whitespace-nowrap transition-colors duration-300 <?= $activeSection === $key ? 'universal-tabs-active' : 'universal-tabs-inactive' ?>">
+                        <?= htmlspecialchars($label) ?>
+                    </button>
+                <?php endforeach; ?>
+            </div>
+
+            <!-- ============ SECTION: Course & Training Reports ============ -->
+            <div id="section-courseTraining" class="report-section mt-6 <?= $activeSection !== 'courseTraining' ? 'hidden' : '' ?>">
+                <!-- Section filter bar -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+
+                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Date Type</label>
+                            <select id="ct_dateType" class="text-inputs">
+                                <option value="created">Created</option>
+                                <option value="published">Published</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
+                            <input type="date" id="ct_dateFrom" class="text-inputs">
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
+                            <input type="date" id="ct_dateTo" class="text-inputs">
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Course Status</label>
+                            <select id="ct_status" class="text-inputs">
+                                <option value="">All Statuses</option>
+                                <option value="Draft">Draft</option>
+                                <option value="Published">Published</option>
+                                <option value="Archived">Archived</option>
+                            </select>
+                        </div>
+
+                        <div class="flex items-end">
+                            <button type="button" id="ct_applyBtn" class="w-full bg-[#234CA1] text-white rounded-lg py-2.5 text-sm font-eurostile-bold">
+                                Apply Filters
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div class="mt-4">
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brands</label>
+                            <div class="flex flex-wrap gap-2">
+                                <?php foreach ($allBrands as $b): ?>
+                                    <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                        <input type="checkbox" class="ct-brand-checkbox" value="<?= $b['brand_id'] ?>">
+                                        <?= htmlspecialchars($b['brand_name']) ?>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealerships</label>
+                            <div div class="flex flex-wrap gap-2 max-h-24 overflow-y-auto">
+                                <?php foreach ($allDealerships as $d): ?>
+                                    <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                        <input type="checkbox" class="ct-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
+                                        <?= htmlspecialchars($d['dealership_name']) ?>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="mt-4">
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealerships</label>
-                        <div div class="flex flex-wrap gap-2 max-h-24 overflow-y-auto">
-                            <?php foreach ($allDealerships as $d): ?>
-                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" class="ct-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
-                                    <?= htmlspecialchars($d['dealership_name']) ?>
-                                </label>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Report 1: Course Completion Rates -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <div class="flex flex-col lg:flex-row gap-2 justify-between items-center mb-4">
-                    <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Course Completion Rates</h3>
-                    <div class="flex gap-x-2">
-                        <button type="button" id="pdfCompletionBtn" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                            <i class="fa-solid fa-file-pdf"></i> PDF
-                        </button>
-                        <button type="button" id="exportCompletionCsvBtn" class="no-print bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                            <i class="fa-solid fa-file-csv"></i> CSV
-                        </button>
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-200">
-                                <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Enrolled</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Completed</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">In Progress</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Not Started</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Completion Rate</th>
-                            </tr>
-                        </thead>
-                        <tbody id="completionTableBody">
-                            <tr>
-                                <td colspan="6" class="text-center text-gray-400 py-10">Loading...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Report 2: Course Catalog Summary -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <div class="flex flex-col lg:flex-row gap-2 justify-between items-center mb-4">
-                    <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Course Catalog Summary</h3>
-                    <div class="flex gap-x-2">
-                        <button type="button" id="pdfCatalogBtn" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                            <i class="fa-solid fa-file-pdf"></i> PDF
-                        </button>
-                        <button type="button" id="exportCatalogCsvBtn" class="no-print bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                            <i class="fa-solid fa-file-csv"></i> CSV
-                        </button>
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-200">
-                                <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Status</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Modules</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Questions</th>
-                                <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Brands</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Created</th>
-                            </tr>
-                        </thead>
-                        <tbody id="catalogTableBody">
-                            <tr>
-                                <td colspan="6" class="text-center text-gray-400 py-10">Loading...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <!-- Report 3: Course Popularity Ranking -->
-                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Course Popularity Ranking</h3>
-                        <button type="button" id="pdfPopularityBtn" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                            <i class="fa-solid fa-file-pdf"></i> PDF
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto max-h-96">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="border-b border-gray-200">
-                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1] w-16">Rank</th>
-                                    <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
-                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Enrollments</th>
-                                </tr>
-                            </thead>
-                            <tbody id="popularityTableBody">
-                                <tr>
-                                    <td colspan="3" class="text-center text-gray-400 py-10">Loading...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
 
-                <!-- Report 4: Module-Level Drop-off -->
+                <!-- Report 1: Course Completion Rates -->
                 <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
                     <div class="flex flex-col lg:flex-row gap-2 justify-between items-center mb-4">
-                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Module-Level Drop-off</h3>
-                        <select id="dropoffCourseSelect" class="text-inputs w-64">
-                            <option value="">Select a course</option>
-                            <?php foreach ($allCourses as $c): ?>
-                                <option value="<?= $c['course_id'] ?>"><?= htmlspecialchars($c['course_title']) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div id="dropoffContent">
-                        <p class="text-gray-400 text-sm">Select a course above to view its module completion breakdown.</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- ============ SECTION: Assessments & Performance Reports ============ -->
-        <div id="section-assessment" class="report-section mt-6 <?= $activeSection !== 'assessment' ? 'hidden' : '' ?>">
-
-            <!-- Filter bar -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
-                        <input type="date" id="as_dateFrom" class="text-inputs">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
-                        <input type="date" id="as_dateTo" class="text-inputs">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Course</label>
-                        <select id="as_course" class="text-inputs">
-                            <option value="">All Courses</option>
-                            <?php foreach ($allCourses as $c): ?>
-                                <option value="<?= $c['course_id'] ?>"><?= htmlspecialchars($c['course_title']) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Type</label>
-                        <select id="as_type" class="text-inputs">
-                            <option value="">Pre & Post</option>
-                            <option value="Pre-Test">Pre-Test</option>
-                            <option value="Post-Test">Post-Test</option>
-                        </select>
-                    </div>
-                    <div class="flex items-end">
-                        <button type="button" id="as_applyBtn" class="w-full bg-[#234CA1] text-white rounded-lg py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <!-- Pre/Post Comparison -->
-                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Pre-Test vs Post-Test Comparison</h3>
-                        <button type="button" onclick="openPrintReport('prepost')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                            <i class="fa-solid fa-file-pdf"></i> PDF
-                        </button>
+                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Course Completion Rates</h3>
+                        <div class="flex gap-x-2">
+                            <button type="button" id="pdfCompletionBtn" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                            <button type="button" id="exportCompletionCsvBtn" class="no-print bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-csv"></i> CSV
+                            </button>
+                        </div>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
                             <thead>
                                 <tr class="border-b border-gray-200">
                                     <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
-                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Pre-Test Avg</th>
-                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Post-Test Avg</th>
-                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Improvement</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Enrolled</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Completed</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">In Progress</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Not Started</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Completion Rate</th>
                                 </tr>
                             </thead>
-                            <tbody id="prepostTableBody">
-                                <tr>
-                                    <td colspan="4" class="text-center text-gray-400 py-10">Loading...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Pass/Fail Rates -->
-                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Pass / Fail Rates</h3>
-                        <button type="button" onclick="openPrintReport('passfail')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                            <i class="fa-solid fa-file-pdf"></i> PDF
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto max-h-96">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="border-b border-gray-200">
-                                    <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
-                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Type</th>
-                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Attempts</th>
-                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Passed</th>
-                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Failed</th>
-                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Pass Rate</th>
-                                </tr>
-                            </thead>
-                            <tbody id="passfailTableBody">
+                            <tbody id="completionTableBody">
                                 <tr>
                                     <td colspan="6" class="text-center text-gray-400 py-10">Loading...</td>
                                 </tr>
@@ -371,341 +207,392 @@ $allSchedules = $schedulesResult ? $schedulesResult->fetch_all(MYSQLI_ASSOC) : [
                         </table>
                     </div>
                 </div>
-            </div>
 
-            <!-- Attempt History -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <div class="flex flex-col lg:flex-row gap-2 justify-between items-center mb-4">
-                    <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Attempt History</h3>
-                    <div class="flex gap-x-2">
-                        <select id="as_passFail" class="text-inputs w-40">
-                            <option value="">All</option>
-                            <option value="pass">Passed Only</option>
-                            <option value="fail">Failed Only</option>
-                        </select>
-                        <button type="button" onclick="openPrintReport('attempts')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                            <i class="fa-solid fa-file-pdf"></i> PDF
-                        </button>
-                    </div>
-                </div>
-                <div class="overflow-x-auto max-h-96">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-200">
-                                <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Learner</th>
-                                <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Type</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Attempt #</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Score</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Result</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="attemptsTableBody">
-                            <tr>
-                                <td colspan="7" class="text-center text-gray-400 py-10">Loading...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Individual Learner History -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <div class="flex flex-col lg:flex-row gap-2 justify-between items-center mb-4">
-                    <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Individual Learner Assessment History</h3>
-                    <select id="learnerSelect" class="text-inputs w-64">
-                        <option value="">Select a learner</option>
-                        <?php
-                        $usersResult = mysqli_query($conn, "SELECT user_id, first_name, last_name FROM users WHERE status = 'Active' ORDER BY last_name ASC");
-                        $allUsers = $usersResult ? $usersResult->fetch_all(MYSQLI_ASSOC) : [];
-                        foreach ($allUsers as $u):
-                        ?>
-                            <option value="<?= $u['user_id'] ?>"><?= htmlspecialchars($u['first_name'] . ' ' . $u['last_name']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class=" overflow-x-auto max-h-96">
-                    <div id="learnerHistoryContent">
-                        <p class="text-gray-400 text-sm">Select a learner above to view their assessment history.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Question-Level Analysis — needs new schema, see note in chat -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-10 mt-5 text-center text-gray-400">
-                <i class="fa-solid fa-circle-info text-2xl mb-2"></i>
-                <p>Question-Level Analysis requires storing individual answer choices per attempt, which isn't currently tracked. Let Claude know if you'd like this added.</p>
-            </div>
-
-        </div>
-
-        <!-- ============ SECTION: Enrollments ============ -->
-        <div id="section-enrollment" class="report-section mt-6 <?= $activeSection !== 'enrollment' ? 'hidden' : '' ?>">
-
-            <!-- Filter bar -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
-                <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
-                        <input type="date" id="en_dateFrom" class="text-inputs">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
-                        <input type="date" id="en_dateTo" class="text-inputs">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Course</label>
-                        <select id="en_course" class="text-inputs">
-                            <option value="">All Courses</option>
-                            <?php foreach ($allCourses as $c): ?>
-                                <option value="<?= $c['course_id'] ?>"><?= htmlspecialchars($c['course_title']) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Status</label>
-                        <select id="en_status" class="text-inputs">
-                            <option value="">All Statuses</option>
-                            <option value="Not Started">Not Started</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Completed">Completed</option>
-                        </select>
-                    </div>
-                    <div class="flex items-end">
-                        <button type="button" id="en_applyBtn" class="w-full bg-[#234CA1] text-white rounded-lg py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brands</label>
-                        <div class="flex flex-wrap gap-2">
-                            <?php foreach ($allBrands as $b): ?>
-                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" class="en-brand-checkbox" value="<?= $b['brand_id'] ?>">
-                                    <?= htmlspecialchars($b['brand_name']) ?>
-                                </label>
-                            <?php endforeach; ?>
+                <!-- Report 2: Course Catalog Summary -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                    <div class="flex flex-col lg:flex-row gap-2 justify-between items-center mb-4">
+                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Course Catalog Summary</h3>
+                        <div class="flex gap-x-2">
+                            <button type="button" id="pdfCatalogBtn" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                            <button type="button" id="exportCatalogCsvBtn" class="no-print bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-csv"></i> CSV
+                            </button>
                         </div>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealerships</label>
-                        <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
-                            <?php
-                            $dealershipsResult = mysqli_query($conn, "SELECT dealership_id, dealership_name FROM dealerships ORDER BY dealership_name ASC");
-                            $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSOC) : [];
-                            foreach ($allDealerships as $d):
-                            ?>
-                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" class="en-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
-                                    <?= htmlspecialchars($d['dealership_name']) ?>
-                                </label>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Enrollment Trends -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Enrollment Trends Over Time</h3>
-                    <button type="button" onclick="openPrintReport('trends')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                        <i class="fa-solid fa-file-pdf"></i> PDF
-                    </button>
-                </div>
-                <canvas id="trendsChart" height="80"></canvas>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-5">
-
-                <!-- Status Breakdown -->
-                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 lg:col-span-1">
-                    <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Status Breakdown</h3>
-                    <div id="enrollmentStatusBreakdown" class="space-y-3">
-                        <p class="text-gray-400 text-sm">Loading...</p>
-                    </div>
-                </div>
-
-                <!-- Completion Time -->
-                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 lg:col-span-2">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Completion Time by Course</h3>
-                        <button type="button" onclick="openPrintReport('completiontime')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                            <i class="fa-solid fa-file-pdf"></i> PDF
-                        </button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
                             <thead>
                                 <tr class="border-b border-gray-200">
-                                    <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
-                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Completed</th>
-                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Avg Minutes</th>
-                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Fastest (min)</th>
-                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Slowest (min)</th>
+                                    <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Status</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Modules</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Questions</th>
+                                    <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Brands</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Created</th>
                                 </tr>
                             </thead>
-                            <tbody id="completionTimeTableBody">
+                            <tbody id="catalogTableBody">
                                 <tr>
-                                    <td colspan="5" class="text-center text-gray-400 py-10">Loading...</td>
+                                    <td colspan="6" class="text-center text-gray-400 py-10">Loading...</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-            </div>
-
-            <!-- Stale Enrollments -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <div class="flex flex-col lg:flex-row gap-3 justify-between items-center mb-4">
-                    <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Stale Enrollments</h3>
-                    <div class="flex flex-wrap justify-center items-center gap-3">
-                        <label class="text-sm text-gray-500">No progress for</label>
-                        <input type="number" id="en_staleDays" value="14" min="1" class="text-inputs w-20 text-center">
-                        <label class="text-sm text-gray-500">days</label>
-                        <button type="button" id="en_staleApplyBtn" class="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-eurostile-bold">Refresh</button>
-                        <button type="button" onclick="openPrintReport('stale')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                            <i class="fa-solid fa-file-pdf"></i> PDF
-                        </button>
-                    </div>
-                </div>
-                <div class="overflow-x-auto max-h-96">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-200">
-                                <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Learner</th>
-                                <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Enrolled</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Days Idle</th>
-                            </tr>
-                        </thead>
-                        <tbody id="staleTableBody">
-                            <tr>
-                                <td colspan="4" class="text-center text-gray-400 py-10">Loading...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- ============ SECTION: Attendance & Schedule ============ -->
-        <div id="section-attendance" class="report-section mt-6 <?= $activeSection !== 'attendance' ? 'hidden' : '' ?>">
-
-            <!-- Filter bar -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
-                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
-                        <input type="date" id="at_dateFrom" class="text-inputs">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
-                        <input type="date" id="at_dateTo" class="text-inputs">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Schedule Type</label>
-                        <select id="at_scheduleType" class="text-inputs">
-                            <option value="">Online & F2F</option>
-                            <option value="Online">Online</option>
-                            <option value="Face-to-Face">Face-to-Face</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Audience</label>
-                        <select id="at_audience" class="text-inputs">
-                            <option value="">All Audiences</option>
-                            <option value="Learners">Learners</option>
-                            <option value="Managers">Managers</option>
-                            <option value="Both">Both</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Attendance Status</label>
-                        <select id="at_attendanceStatus" class="text-inputs">
-                            <option value="">All Statuses</option>
-                            <option value="Present">Present</option>
-                            <option value="Left Early">Left Early</option>
-                            <option value="Late Time Out">Late Time Out</option>
-                            <option value="No Time Out">No Time Out</option>
-                            <option value="Absent">Absent</option>
-                            <option value="Not Started">Not Started</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Schedule</label>
-                        <select id="at_schedule" class="text-inputs">
-                            <option value="">All Schedules</option>
-                            <?php foreach ($allSchedules as $s): ?>
-                                <option value="<?= $s['schedule_id'] ?>">
-                                    <?= htmlspecialchars($s['title']) ?> (<?= $s['event_date'] ?>)
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brands</label>
-                        <div class="flex flex-wrap gap-2">
-                            <?php foreach ($allBrands as $b): ?>
-                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" class="at-brand-checkbox" value="<?= $b['brand_id'] ?>">
-                                    <?= htmlspecialchars($b['brand_name']) ?>
-                                </label>
-                            <?php endforeach; ?>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <!-- Report 3: Course Popularity Ranking -->
+                    <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Course Popularity Ranking</h3>
+                            <button type="button" id="pdfPopularityBtn" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto max-h-96">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1] w-16">Rank</th>
+                                        <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
+                                        <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Enrollments</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="popularityTableBody">
+                                    <tr>
+                                        <td colspan="3" class="text-center text-gray-400 py-10">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealerships</label>
-                        <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
-                            <?php foreach ($allDealerships as $d): ?>
-                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" class="at-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
-                                    <?= htmlspecialchars($d['dealership_name']) ?>
-                                </label>
-                            <?php endforeach; ?>
+
+                    <!-- Report 4: Module-Level Drop-off -->
+                    <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                        <div class="flex flex-col lg:flex-row gap-2 justify-between items-center mb-4">
+                            <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Module-Level Drop-off</h3>
+                            <select id="dropoffCourseSelect" class="text-inputs w-64">
+                                <option value="">Select a course</option>
+                                <?php foreach ($allCourses as $c): ?>
+                                    <option value="<?= $c['course_id'] ?>"><?= htmlspecialchars($c['course_title']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div id="dropoffContent">
+                            <p class="text-gray-400 text-sm">Select a course above to view its module completion breakdown.</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex justify-end mt-4">
-                    <button type="button" id="at_applyBtn" class="bg-[#234CA1] text-white rounded-lg px-8 py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
+            </div>
+
+            <!-- ============ SECTION: Assessments & Performance Reports ============ -->
+            <div id="section-assessment" class="report-section mt-6 <?= $activeSection !== 'assessment' ? 'hidden' : '' ?>">
+
+                <!-- Filter bar -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
+                            <input type="date" id="as_dateFrom" class="text-inputs">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
+                            <input type="date" id="as_dateTo" class="text-inputs">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Course</label>
+                            <select id="as_course" class="text-inputs">
+                                <option value="">All Courses</option>
+                                <?php foreach ($allCourses as $c): ?>
+                                    <option value="<?= $c['course_id'] ?>"><?= htmlspecialchars($c['course_title']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Type</label>
+                            <select id="as_type" class="text-inputs">
+                                <option value="">Pre & Post</option>
+                                <option value="Pre-Test">Pre-Test</option>
+                                <option value="Post-Test">Post-Test</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button type="button" id="as_applyBtn" class="w-full bg-[#234CA1] text-white rounded-lg py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Upcoming Schedule Load -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <h3 class="text-xl font-eurostile-bold text-[#234CA1] mb-4">Upcoming Schedule Load (Next 30 Days)</h3>
-                <canvas id="scheduleLoadChart" height="70"></canvas>
-            </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <!-- Pre/Post Comparison -->
+                    <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Pre-Test vs Post-Test Comparison</h3>
+                            <button type="button" onclick="openPrintReport('prepost')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
+                                        <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Pre-Test Avg</th>
+                                        <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Post-Test Avg</th>
+                                        <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Improvement</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="prepostTableBody">
+                                    <tr>
+                                        <td colspan="4" class="text-center text-gray-400 py-10">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
+                    <!-- Pass/Fail Rates -->
+                    <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Pass / Fail Rates</h3>
+                            <button type="button" onclick="openPrintReport('passfail')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto max-h-96">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
+                                        <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Type</th>
+                                        <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Attempts</th>
+                                        <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Passed</th>
+                                        <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Failed</th>
+                                        <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Pass Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="passfailTableBody">
+                                    <tr>
+                                        <td colspan="6" class="text-center text-gray-400 py-10">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
-                <!-- Attendance Rate by Learner -->
-                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Attendance Rate by Learner</h3>
-                        <button type="button" onclick="openPrintReport('attendancerate')" class="no-print bg-[#D02027] text-white px-3 py-1.5 rounded-lg text-xs font-eurostile-bold flex items-center gap-2">
-                            <i class="fa-solid fa-file-pdf"></i> PDF
-                        </button>
+                <!-- Attempt History -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                    <div class="flex flex-col lg:flex-row gap-2 justify-between items-center mb-4">
+                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Attempt History</h3>
+                        <div class="flex gap-x-2">
+                            <select id="as_passFail" class="text-inputs w-40">
+                                <option value="">All</option>
+                                <option value="pass">Passed Only</option>
+                                <option value="fail">Failed Only</option>
+                            </select>
+                            <button type="button" onclick="openPrintReport('attempts')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                        </div>
                     </div>
                     <div class="overflow-x-auto max-h-96">
                         <table class="w-full text-sm">
                             <thead>
                                 <tr class="border-b border-gray-200">
-                                    <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Learner</th>
-                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Attended</th>
-                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Total</th>
-                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Rate</th>
+                                    <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Learner</th>
+                                    <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Type</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Attempt #</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Score</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Result</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Date</th>
                                 </tr>
                             </thead>
-                            <tbody id="attendanceRateTableBody">
+                            <tbody id="attemptsTableBody">
+                                <tr>
+                                    <td colspan="7" class="text-center text-gray-400 py-10">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Individual Learner History -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                    <div class="flex flex-col lg:flex-row gap-2 justify-between items-center mb-4">
+                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Individual Learner Assessment History</h3>
+                        <select id="learnerSelect" class="text-inputs w-64">
+                            <option value="">Select a learner</option>
+                            <?php
+                            $usersResult = mysqli_query($conn, "SELECT user_id, first_name, last_name FROM users WHERE status = 'Active' ORDER BY last_name ASC");
+                            $allUsers = $usersResult ? $usersResult->fetch_all(MYSQLI_ASSOC) : [];
+                            foreach ($allUsers as $u):
+                            ?>
+                                <option value="<?= $u['user_id'] ?>"><?= htmlspecialchars($u['first_name'] . ' ' . $u['last_name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class=" overflow-x-auto max-h-96">
+                        <div id="learnerHistoryContent">
+                            <p class="text-gray-400 text-sm">Select a learner above to view their assessment history.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question-Level Analysis — needs new schema, see note in chat -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-10 mt-5 text-center text-gray-400">
+                    <i class="fa-solid fa-circle-info text-2xl mb-2"></i>
+                    <p>Question-Level Analysis requires storing individual answer choices per attempt, which isn't currently tracked. Let Claude know if you'd like this added.</p>
+                </div>
+
+            </div>
+
+            <!-- ============ SECTION: Enrollments ============ -->
+            <div id="section-enrollment" class="report-section mt-6 <?= $activeSection !== 'enrollment' ? 'hidden' : '' ?>">
+
+                <!-- Filter bar -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
+                            <input type="date" id="en_dateFrom" class="text-inputs">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
+                            <input type="date" id="en_dateTo" class="text-inputs">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Course</label>
+                            <select id="en_course" class="text-inputs">
+                                <option value="">All Courses</option>
+                                <?php foreach ($allCourses as $c): ?>
+                                    <option value="<?= $c['course_id'] ?>"><?= htmlspecialchars($c['course_title']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Status</label>
+                            <select id="en_status" class="text-inputs">
+                                <option value="">All Statuses</option>
+                                <option value="Not Started">Not Started</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button type="button" id="en_applyBtn" class="w-full bg-[#234CA1] text-white rounded-lg py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brands</label>
+                            <div class="flex flex-wrap gap-2">
+                                <?php foreach ($allBrands as $b): ?>
+                                    <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                        <input type="checkbox" class="en-brand-checkbox" value="<?= $b['brand_id'] ?>">
+                                        <?= htmlspecialchars($b['brand_name']) ?>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealerships</label>
+                            <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
+                                <?php
+                                $dealershipsResult = mysqli_query($conn, "SELECT dealership_id, dealership_name FROM dealerships ORDER BY dealership_name ASC");
+                                $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSOC) : [];
+                                foreach ($allDealerships as $d):
+                                ?>
+                                    <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                        <input type="checkbox" class="en-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
+                                        <?= htmlspecialchars($d['dealership_name']) ?>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enrollment Trends -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Enrollment Trends Over Time</h3>
+                        <button type="button" onclick="openPrintReport('trends')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                            <i class="fa-solid fa-file-pdf"></i> PDF
+                        </button>
+                    </div>
+                    <canvas id="trendsChart" height="80"></canvas>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-5">
+
+                    <!-- Status Breakdown -->
+                    <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 lg:col-span-1">
+                        <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Status Breakdown</h3>
+                        <div id="enrollmentStatusBreakdown" class="space-y-3">
+                            <p class="text-gray-400 text-sm">Loading...</p>
+                        </div>
+                    </div>
+
+                    <!-- Completion Time -->
+                    <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 lg:col-span-2">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Completion Time by Course</h3>
+                            <button type="button" onclick="openPrintReport('completiontime')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
+                                        <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Completed</th>
+                                        <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Avg Minutes</th>
+                                        <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Fastest (min)</th>
+                                        <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Slowest (min)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="completionTimeTableBody">
+                                    <tr>
+                                        <td colspan="5" class="text-center text-gray-400 py-10">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Stale Enrollments -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                    <div class="flex flex-col lg:flex-row gap-3 justify-between items-center mb-4">
+                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Stale Enrollments</h3>
+                        <div class="flex flex-wrap justify-center items-center gap-3">
+                            <label class="text-sm text-gray-500">No progress for</label>
+                            <input type="number" id="en_staleDays" value="14" min="1" class="text-inputs w-20 text-center">
+                            <label class="text-sm text-gray-500">days</label>
+                            <button type="button" id="en_staleApplyBtn" class="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-eurostile-bold">Refresh</button>
+                            <button type="button" onclick="openPrintReport('stale')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto max-h-96">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Learner</th>
+                                    <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Course</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Enrolled</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Days Idle</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staleTableBody">
                                 <tr>
                                     <td colspan="4" class="text-center text-gray-400 py-10">Loading...</td>
                                 </tr>
@@ -714,268 +601,107 @@ $allSchedules = $schedulesResult ? $schedulesResult->fetch_all(MYSQLI_ASSOC) : [
                     </div>
                 </div>
 
-                <!-- Late / Left Early -->
-                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Late / Left Early</h3>
-                        <div class="flex items-center gap-x-2">
-                            <input type="number" id="at_lateMinutes" value="10" min="1" class="text-inputs w-16 text-center text-xs">
-                            <span class="text-xs text-gray-500">min = late</span>
-                            <button type="button" onclick="openPrintReport('latelearly')" class="no-print bg-[#D02027] text-white px-3 py-1.5 rounded-lg text-xs font-eurostile-bold flex items-center gap-2">
-                                <i class="fa-solid fa-file-pdf"></i> PDF
-                            </button>
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto max-h-96">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="border-b border-gray-200">
-                                    <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Learner</th>
-                                    <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Schedule</th>
-                                    <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Issue</th>
-                                </tr>
-                            </thead>
-                            <tbody id="lateLeftEarlyTableBody">
-                                <tr>
-                                    <td colspan="3" class="text-center text-gray-400 py-10">Loading...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
             </div>
 
-            <!-- Attendance Log -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Schedule Attendance Log</h3>
-                    <button type="button" onclick="openPrintReport('attendancelog')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                        <i class="fa-solid fa-file-pdf"></i> PDF
-                    </button>
-                </div>
-                <div class="overflow-x-auto max-h-96">
-                    <table class="w-full text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-200">
-                                <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Schedule</th>
-                                <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Learner</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Date</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">RSVP</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Time In</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Time Out</th>
-                                <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="attendanceLogTableBody">
-                            <tr>
-                                <td colspan="7" class="text-center text-gray-400 py-10">Loading...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <!-- ============ SECTION: Attendance & Schedule ============ -->
+            <div id="section-attendance" class="report-section mt-6 <?= $activeSection !== 'attendance' ? 'hidden' : '' ?>">
 
-        </div>
-
-        <!-- ============ SECTION: User & Team ============ -->
-        <div id="section-userTeam" class="report-section mt-6 <?= $activeSection !== 'userTeam' ? 'hidden' : '' ?>">
-
-            <!-- Filter bar -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Status</label>
-                        <select id="ut_status" class="text-inputs">
-                            <option value="">All Statuses</option>
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Date Hired From</label>
-                        <input type="date" id="ut_hiredFrom" class="text-inputs">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Date Hired To</label>
-                        <input type="date" id="ut_hiredTo" class="text-inputs">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Designation</label>
-                        <div class="flex flex-wrap gap-2">
-                            <?php foreach ($allDesignations as $d): ?>
-                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" class="ut-designation-checkbox" value="<?= $d['designation_id'] ?>">
-                                    <?= htmlspecialchars($d['designation_name']) ?>
-                                </label>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brand</label>
-                        <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
-                            <?php foreach ($allBrands as $b): ?>
-                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" class="ut-brand-checkbox" value="<?= $b['brand_id'] ?>">
-                                    <?= htmlspecialchars($b['brand_name']) ?>
-                                </label>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealership</label>
-                        <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
-                            <?php foreach ($allDealerships as $d): ?>
-                                <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
-                                    <input type="checkbox" class="ut-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
-                                    <?= htmlspecialchars($d['dealership_name']) ?>
-                                </label>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex justify-end mt-4">
-                    <button type="button" id="ut_applyBtn" class="bg-[#234CA1] text-white rounded-lg px-8 py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
-                </div>
-
-            </div>
-
-            <div class="max-w-full h-auto mt-5">
-
-                <!-- Sales Executives -->
-                <div class="w-full bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                    <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3 mb-4">
+                <!-- Filter bar -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
                         <div>
-                            <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Sales Executives</h3>
-                            <p id="seMeta" class="text-xs text-gray-400 mt-0.5">Click a row to open the profile.</p>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
+                            <input type="date" id="at_dateFrom" class="text-inputs">
                         </div>
-                        <div class="flex flex-col sm:flex-row gap-2 w-full xl:w-auto">
-                            <input type="search" id="se_search" placeholder="Search name, brand or dealership" class="text-inputs sm:w-72">
-                            <select id="se_brand" class="text-inputs sm:w-44">
-                                <option value="">All brands</option>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
+                            <input type="date" id="at_dateTo" class="text-inputs">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Schedule Type</label>
+                            <select id="at_scheduleType" class="text-inputs">
+                                <option value="">Online & F2F</option>
+                                <option value="Online">Online</option>
+                                <option value="Face-to-Face">Face-to-Face</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Audience</label>
+                            <select id="at_audience" class="text-inputs">
+                                <option value="">All Audiences</option>
+                                <option value="Learners">Learners</option>
+                                <option value="Managers">Managers</option>
+                                <option value="Both">Both</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Attendance Status</label>
+                            <select id="at_attendanceStatus" class="text-inputs">
+                                <option value="">All Statuses</option>
+                                <option value="Present">Present</option>
+                                <option value="Left Early">Left Early</option>
+                                <option value="Late Time Out">Late Time Out</option>
+                                <option value="No Time Out">No Time Out</option>
+                                <option value="Absent">Absent</option>
+                                <option value="Not Started">Not Started</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Schedule</label>
+                            <select id="at_schedule" class="text-inputs">
+                                <option value="">All Schedules</option>
+                                <?php foreach ($allSchedules as $s): ?>
+                                    <option value="<?= $s['schedule_id'] ?>">
+                                        <?= htmlspecialchars($s['title']) ?> (<?= $s['event_date'] ?>)
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brands</label>
+                            <div class="flex flex-wrap gap-2">
                                 <?php foreach ($allBrands as $b): ?>
-                                    <option value="<?= $b['brand_id'] ?>"><?= htmlspecialchars($b['brand_name']) ?></option>
+                                    <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                        <input type="checkbox" class="at-brand-checkbox" value="<?= $b['brand_id'] ?>">
+                                        <?= htmlspecialchars($b['brand_name']) ?>
+                                    </label>
                                 <?php endforeach; ?>
-                            </select>
-                            <select id="se_dealership" class="text-inputs sm:w-52">
-                                <option value="">All dealerships</option>
-                                <?php foreach ($allDealerships as $d): ?>
-                                    <option value="<?= $d['dealership_id'] ?>"><?= htmlspecialchars($d['dealership_name']) ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="border-b border-gray-200 text-left">
-                                    <th class="py-3 px-3 font-eurostile-bold text-[#234CA1]">Sales Executive</th>
-                                    <th class="py-3 px-3 font-eurostile-bold text-[#234CA1]">Brand</th>
-                                    <th class="py-3 px-3 font-eurostile-bold text-[#234CA1]">Dealership</th>
-                                    <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Courses</th>
-                                    <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Trainings</th>
-                                    <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Certificates</th>
-                                    <th class="py-3 px-3 w-8"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="seBody">
-                                <tr>
-                                    <td colspan="7" class="text-center text-gray-400 py-10">Loading...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div id="sePager" class="flex flex-col sm:flex-row justify-between items-center gap-3 mt-4"></div>
-                </div>
-
-                <!-- User Directory Export -->
-                <div class="w-full bg-white rounded-2xl shadow-md border border-gray-200 p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">User Directory</h3>
-                        <div class="flex gap-x-2">
-                            <button type="button" id="exportUserDirCsvBtn" class="no-print bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                                <i class="fa-solid fa-file-csv"></i> CSV
-                            </button>
-                            <button type="button" onclick="openPrintReport('userdirectory')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                                <i class="fa-solid fa-file-pdf"></i> PDF
-                            </button>
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto max-h-96">
-                        <table class="max-w-full w-full text-sm">
-                            <thead>
-                                <tr class="border-b border-gray-200">
-                                    <th class="text-left py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Name</th>
-                                    <th class="text-left py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Designation</th>
-                                    <th class="text-left py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Brand</th>
-                                    <th class="text-left py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Dealership</th>
-                                    <th class="text-left py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Email</th>
-                                    <th class="text-center py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Hired</th>
-                                    <th class="text-center py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="userDirectoryTableBody">
-                                <tr>
-                                    <td colspan="7" class="text-center text-gray-400 py-10">Loading...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Team Progress Matrix -->
-                <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-
-                    <div class="flex justify-between items-center mb-2">
                         <div>
-                            <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Team Progress Matrix</h3>
-                            <p class="text-xs text-gray-400 mt-0.5">Hover a cell to see course and status details</p>
-                        </div>
-                        <button type="button" onclick="openPrintReport('teammatrix')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
-                            <i class="fa-solid fa-file-pdf"></i> PDF
-                        </button>
-                    </div>
-
-                    <!-- Legend -->
-                    <div class="flex items-center gap-x-4 mb-4 mt-3">
-                        <div class="flex items-center gap-x-1.5">
-                            <span class="w-3 h-3 rounded-sm bg-green-500"></span>
-                            <span class="text-xs text-gray-500">Completed</span>
-                        </div>
-                        <div class="flex items-center gap-x-1.5">
-                            <span class="w-3 h-3 rounded-sm bg-yellow-400"></span>
-                            <span class="text-xs text-gray-500">In Progress</span>
-                        </div>
-                        <div class="flex items-center gap-x-1.5">
-                            <span class="w-3 h-3 rounded-sm bg-gray-300"></span>
-                            <span class="text-xs text-gray-500">Not Started</span>
-                        </div>
-                        <div class="flex items-center gap-x-1.5">
-                            <span class="w-3 h-3 rounded-sm bg-red-100"></span>
-                            <span class="text-xs text-gray-500">Not Enrolled</span>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealerships</label>
+                            <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
+                                <?php foreach ($allDealerships as $d): ?>
+                                    <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                        <input type="checkbox" class="at-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
+                                        <?= htmlspecialchars($d['dealership_name']) ?>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="teamMatrixWrapper" class="overflow-x-auto">
-                        <p class="text-gray-400 text-sm text-center py-10">Loading...</p>
+                    <div class="flex justify-end mt-4">
+                        <button type="button" id="at_applyBtn" class="bg-[#234CA1] text-white rounded-lg px-8 py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
                     </div>
-
                 </div>
 
-                <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
+                <!-- Upcoming Schedule Load -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                    <h3 class="text-xl font-eurostile-bold text-[#234CA1] mb-4">Upcoming Schedule Load (Next 30 Days)</h3>
+                    <canvas id="scheduleLoadChart" height="70"></canvas>
+                </div>
 
-                    <!-- Inactive Users -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
+
+                    <!-- Attendance Rate by Learner -->
                     <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Inactive Users</h3>
-                            <button type="button" onclick="openPrintReport('inactive')" class="no-print bg-[#D02027] text-white px-3 py-1.5 rounded-lg text-xs font-eurostile-bold flex items-center gap-2">
+                            <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Attendance Rate by Learner</h3>
+                            <button type="button" onclick="openPrintReport('attendancerate')" class="no-print bg-[#D02027] text-white px-3 py-1.5 rounded-lg text-xs font-eurostile-bold flex items-center gap-2">
                                 <i class="fa-solid fa-file-pdf"></i> PDF
                             </button>
                         </div>
@@ -983,37 +709,43 @@ $allSchedules = $schedulesResult ? $schedulesResult->fetch_all(MYSQLI_ASSOC) : [
                             <table class="w-full text-sm">
                                 <thead>
                                     <tr class="border-b border-gray-200">
-                                        <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Name</th>
-                                        <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Dealership</th>
+                                        <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Learner</th>
+                                        <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Attended</th>
+                                        <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Total</th>
+                                        <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Rate</th>
                                     </tr>
                                 </thead>
-                                <tbody id="inactiveUsersTableBody">
+                                <tbody id="attendanceRateTableBody">
                                     <tr>
-                                        <td colspan="2" class="text-center text-gray-400 py-10">Loading...</td>
+                                        <td colspan="4" class="text-center text-gray-400 py-10">Loading...</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- New Hires Onboarding -->
+                    <!-- Late / Left Early -->
                     <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-eurostile-bold text-[#234CA1]">New Hires Onboarding</h3>
-                            <button type="button" onclick="openPrintReport('newhires')" class="no-print bg-[#D02027] text-white px-3 py-1.5 rounded-lg text-xs font-eurostile-bold flex items-center gap-2">
-                                <i class="fa-solid fa-file-pdf"></i> PDF
-                            </button>
+                            <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Late / Left Early</h3>
+                            <div class="flex items-center gap-x-2">
+                                <input type="number" id="at_lateMinutes" value="10" min="1" class="text-inputs w-16 text-center text-xs">
+                                <span class="text-xs text-gray-500">min = late</span>
+                                <button type="button" onclick="openPrintReport('latelearly')" class="no-print bg-[#D02027] text-white px-3 py-1.5 rounded-lg text-xs font-eurostile-bold flex items-center gap-2">
+                                    <i class="fa-solid fa-file-pdf"></i> PDF
+                                </button>
+                            </div>
                         </div>
                         <div class="overflow-x-auto max-h-96">
                             <table class="w-full text-sm">
                                 <thead>
                                     <tr class="border-b border-gray-200">
-                                        <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Name</th>
-                                        <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Hired</th>
-                                        <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Progress</th>
+                                        <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Learner</th>
+                                        <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Schedule</th>
+                                        <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Issue</th>
                                     </tr>
                                 </thead>
-                                <tbody id="newHiresTableBody">
+                                <tbody id="lateLeftEarlyTableBody">
                                     <tr>
                                         <td colspan="3" class="text-center text-gray-400 py-10">Loading...</td>
                                     </tr>
@@ -1023,76 +755,353 @@ $allSchedules = $schedulesResult ? $schedulesResult->fetch_all(MYSQLI_ASSOC) : [
                     </div>
 
                 </div>
+
+                <!-- Attendance Log -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Schedule Attendance Log</h3>
+                        <button type="button" onclick="openPrintReport('attendancelog')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                            <i class="fa-solid fa-file-pdf"></i> PDF
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto max-h-96">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-200">
+                                    <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Schedule</th>
+                                    <th class="text-left py-3 px-3 font-eurostile-bold text-[#234CA1]">Learner</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Date</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">RSVP</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Time In</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Time Out</th>
+                                    <th class="text-center py-3 px-3 font-eurostile-bold text-[#234CA1]">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceLogTableBody">
+                                <tr>
+                                    <td colspan="7" class="text-center text-gray-400 py-10">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
 
+            <!-- ============ SECTION: User & Team ============ -->
+            <div id="section-userTeam" class="report-section mt-6 <?= $activeSection !== 'userTeam' ? 'hidden' : '' ?>">
+
+                <!-- Filter bar -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Status</label>
+                            <select id="ut_status" class="text-inputs">
+                                <option value="">All Statuses</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Date Hired From</label>
+                            <input type="date" id="ut_hiredFrom" class="text-inputs">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Date Hired To</label>
+                            <input type="date" id="ut_hiredTo" class="text-inputs">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Designation</label>
+                            <div class="flex flex-wrap gap-2">
+                                <?php foreach ($allDesignations as $d): ?>
+                                    <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                        <input type="checkbox" class="ut-designation-checkbox" value="<?= $d['designation_id'] ?>">
+                                        <?= htmlspecialchars($d['designation_name']) ?>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Brand</label>
+                            <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
+                                <?php foreach ($allBrands as $b): ?>
+                                    <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                        <input type="checkbox" class="ut-brand-checkbox" value="<?= $b['brand_id'] ?>">
+                                        <?= htmlspecialchars($b['brand_name']) ?>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Dealership</label>
+                            <div class="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
+                                <?php foreach ($allDealerships as $d): ?>
+                                    <label class="flex items-center gap-1.5 text-sm border rounded-full px-3 py-1.5 cursor-pointer hover:bg-blue-50">
+                                        <input type="checkbox" class="ut-dealership-checkbox" value="<?= $d['dealership_id'] ?>">
+                                        <?= htmlspecialchars($d['dealership_name']) ?>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end mt-4">
+                        <button type="button" id="ut_applyBtn" class="bg-[#234CA1] text-white rounded-lg px-8 py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
+                    </div>
+
+                </div>
+
+                <div class="max-w-full h-auto mt-5">
+
+                    <!-- Sales Executives -->
+                    <div class="w-full bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                        <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3 mb-4">
+                            <div>
+                                <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Sales Executives</h3>
+                                <p id="seMeta" class="text-xs text-gray-400 mt-0.5">Click a row to open the profile.</p>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-2 w-full xl:w-auto">
+                                <input type="search" id="se_search" placeholder="Search name, brand or dealership" class="text-inputs sm:w-72">
+                                <select id="se_brand" class="text-inputs sm:w-44">
+                                    <option value="">All brands</option>
+                                    <?php foreach ($allBrands as $b): ?>
+                                        <option value="<?= $b['brand_id'] ?>"><?= htmlspecialchars($b['brand_name']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <select id="se_dealership" class="text-inputs sm:w-52">
+                                    <option value="">All dealerships</option>
+                                    <?php foreach ($allDealerships as $d): ?>
+                                        <option value="<?= $d['dealership_id'] ?>"><?= htmlspecialchars($d['dealership_name']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-200 text-left">
+                                        <th class="py-3 px-3 font-eurostile-bold text-[#234CA1]">Sales Executive</th>
+                                        <th class="py-3 px-3 font-eurostile-bold text-[#234CA1]">Brand</th>
+                                        <th class="py-3 px-3 font-eurostile-bold text-[#234CA1]">Dealership</th>
+                                        <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Courses</th>
+                                        <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Trainings</th>
+                                        <th class="py-3 px-3 font-eurostile-bold text-[#234CA1] text-center">Certificates</th>
+                                        <th class="py-3 px-3 w-8"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="seBody">
+                                    <tr>
+                                        <td colspan="7" class="text-center text-gray-400 py-10">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="sePager" class="flex flex-col sm:flex-row justify-between items-center gap-3 mt-4"></div>
+                    </div>
+
+                    <!-- User Directory Export -->
+                    <div class="w-full bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-eurostile-bold text-[#234CA1]">User Directory</h3>
+                            <div class="flex gap-x-2">
+                                <button type="button" id="exportUserDirCsvBtn" class="no-print bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                                    <i class="fa-solid fa-file-csv"></i> CSV
+                                </button>
+                                <button type="button" onclick="openPrintReport('userdirectory')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                                    <i class="fa-solid fa-file-pdf"></i> PDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto max-h-96">
+                            <table class="max-w-full w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="text-left py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Name</th>
+                                        <th class="text-left py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Designation</th>
+                                        <th class="text-left py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Brand</th>
+                                        <th class="text-left py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Dealership</th>
+                                        <th class="text-left py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Email</th>
+                                        <th class="text-center py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Hired</th>
+                                        <th class="text-center py-2 px-3 font-eurostile-bold whitespace-nowrap text-[#234CA1]">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="userDirectoryTableBody">
+                                    <tr>
+                                        <td colspan="7" class="text-center text-gray-400 py-10">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Team Progress Matrix -->
+                    <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+
+                        <div class="flex justify-between items-center mb-2">
+                            <div>
+                                <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Team Progress Matrix</h3>
+                                <p class="text-xs text-gray-400 mt-0.5">Hover a cell to see course and status details</p>
+                            </div>
+                            <button type="button" onclick="openPrintReport('teammatrix')" class="no-print bg-[#D02027] text-white px-4 py-2 rounded-lg text-sm font-eurostile-bold flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
+                            </button>
+                        </div>
+
+                        <!-- Legend -->
+                        <div class="flex items-center gap-x-4 mb-4 mt-3">
+                            <div class="flex items-center gap-x-1.5">
+                                <span class="w-3 h-3 rounded-sm bg-green-500"></span>
+                                <span class="text-xs text-gray-500">Completed</span>
+                            </div>
+                            <div class="flex items-center gap-x-1.5">
+                                <span class="w-3 h-3 rounded-sm bg-yellow-400"></span>
+                                <span class="text-xs text-gray-500">In Progress</span>
+                            </div>
+                            <div class="flex items-center gap-x-1.5">
+                                <span class="w-3 h-3 rounded-sm bg-gray-300"></span>
+                                <span class="text-xs text-gray-500">Not Started</span>
+                            </div>
+                            <div class="flex items-center gap-x-1.5">
+                                <span class="w-3 h-3 rounded-sm bg-red-100"></span>
+                                <span class="text-xs text-gray-500">Not Enrolled</span>
+                            </div>
+                        </div>
+
+                        <div id="teamMatrixWrapper" class="overflow-x-auto">
+                            <p class="text-gray-400 text-sm text-center py-10">Loading...</p>
+                        </div>
+
+                    </div>
+
+                    <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
+
+                        <!-- Inactive Users -->
+                        <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Inactive Users</h3>
+                                <button type="button" onclick="openPrintReport('inactive')" class="no-print bg-[#D02027] text-white px-3 py-1.5 rounded-lg text-xs font-eurostile-bold flex items-center gap-2">
+                                    <i class="fa-solid fa-file-pdf"></i> PDF
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto max-h-96">
+                                <table class="w-full text-sm">
+                                    <thead>
+                                        <tr class="border-b border-gray-200">
+                                            <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Name</th>
+                                            <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Dealership</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="inactiveUsersTableBody">
+                                        <tr>
+                                            <td colspan="2" class="text-center text-gray-400 py-10">Loading...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- New Hires Onboarding -->
+                        <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-eurostile-bold text-[#234CA1]">New Hires Onboarding</h3>
+                                <button type="button" onclick="openPrintReport('newhires')" class="no-print bg-[#D02027] text-white px-3 py-1.5 rounded-lg text-xs font-eurostile-bold flex items-center gap-2">
+                                    <i class="fa-solid fa-file-pdf"></i> PDF
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto max-h-96">
+                                <table class="w-full text-sm">
+                                    <thead>
+                                        <tr class="border-b border-gray-200">
+                                            <th class="text-left py-2 px-3 font-eurostile-bold text-[#234CA1]">Name</th>
+                                            <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Hired</th>
+                                            <th class="text-center py-2 px-3 font-eurostile-bold text-[#234CA1]">Progress</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="newHiresTableBody">
+                                        <tr>
+                                            <td colspan="3" class="text-center text-gray-400 py-10">Loading...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ============ SECTION: System-Wide Analytics ============ -->
+            <div id="section-systemWide" class="report-section mt-6 <?= $activeSection !== 'systemWide' ? 'hidden' : '' ?>">
+
+                <!-- Filter bar -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
+                            <input type="date" id="sw_dateFrom" class="text-inputs">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
+                            <input type="date" id="sw_dateTo" class="text-inputs">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="button" id="sw_applyBtn" class="w-full bg-[#234CA1] text-white rounded-lg py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Headline Stats -->
+                <div id="systemOverviewCards" class="grid grid-cols-2 lg:grid-cols-4 gap-5 mt-5">
+                    <div class="col-span-full text-center text-gray-400 py-10">Loading overview...</div>
+                </div>
+
+                <!-- Activity Heatmap -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Activity by Day of Week</h3>
+                        <select id="sw_heatmapMetric" class="text-inputs w-44">
+                            <option value="enrollments">Enrollments</option>
+                            <option value="completions">Completions</option>
+                            <option value="logins">Logins</option>
+                        </select>
+                    </div>
+                    <canvas id="activityHeatmapChart" height="70"></canvas>
+                </div>
+
+                <!-- Growth Over Time -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
+                    <h3 class="text-xl font-eurostile-bold text-[#234CA1] mb-4">Growth Over Time</h3>
+                    <canvas id="growthChart" height="80"></canvas>
+                </div>
+
+                <!-- Brand / Dealership Comparison -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5 max-h-96">
+
+                    <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                        <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Completion Rate by Brand</h3>
+                        <div id="brandComparisonList" class="space-y-3">
+                            <p class="text-gray-400 text-sm">Loading...</p>
+                        </div>
+                    </div>
+
+                    <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6">
+                        <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Completion Rate by Dealership</h3>
+                        <div id="dealershipComparisonList" class="space-y-3 max-h-80 overflow-y-auto">
+                            <p class="text-gray-400 text-sm">Loading...</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
-
-        <!-- ============ SECTION: System-Wide Analytics ============ -->
-        <div id="section-systemWide" class="report-section mt-6 <?= $activeSection !== 'systemWide' ? 'hidden' : '' ?>">
-
-            <!-- Filter bar -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">From</label>
-                        <input type="date" id="sw_dateFrom" class="text-inputs">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">To</label>
-                        <input type="date" id="sw_dateTo" class="text-inputs">
-                    </div>
-                    <div class="flex items-end">
-                        <button type="button" id="sw_applyBtn" class="w-full bg-[#234CA1] text-white rounded-lg py-2.5 text-sm font-eurostile-bold">Apply Filters</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Headline Stats -->
-            <div id="systemOverviewCards" class="grid grid-cols-2 lg:grid-cols-4 gap-5 mt-5">
-                <div class="col-span-full text-center text-gray-400 py-10">Loading overview...</div>
-            </div>
-
-            <!-- Activity Heatmap -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-eurostile-bold text-[#234CA1]">Activity by Day of Week</h3>
-                    <select id="sw_heatmapMetric" class="text-inputs w-44">
-                        <option value="enrollments">Enrollments</option>
-                        <option value="completions">Completions</option>
-                        <option value="logins">Logins</option>
-                    </select>
-                </div>
-                <canvas id="activityHeatmapChart" height="70"></canvas>
-            </div>
-
-            <!-- Growth Over Time -->
-            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mt-5">
-                <h3 class="text-xl font-eurostile-bold text-[#234CA1] mb-4">Growth Over Time</h3>
-                <canvas id="growthChart" height="80"></canvas>
-            </div>
-
-            <!-- Brand / Dealership Comparison -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5 max-h-96">
-
-                <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6">
-                    <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Completion Rate by Brand</h3>
-                    <div id="brandComparisonList" class="space-y-3">
-                        <p class="text-gray-400 text-sm">Loading...</p>
-                    </div>
-                </div>
-
-                <div class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-6">
-                    <h3 class="text-lg font-eurostile-bold text-[#234CA1] mb-4">Completion Rate by Dealership</h3>
-                    <div id="dealershipComparisonList" class="space-y-3 max-h-80 overflow-y-auto">
-                        <p class="text-gray-400 text-sm">Loading...</p>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>

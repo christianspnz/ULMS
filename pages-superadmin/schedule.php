@@ -6,8 +6,8 @@ requireRole(4);
 $tplResult = mysqli_query(
     $conn,
     "SELECT t.template_id, t.name, COALESCE(b.brand_name, '') AS brand_name
-     FROM certificate_templates t LEFT JOIN brands b ON b.brand_id = t.brand_id
-     WHERE t.archived_at IS NULL ORDER BY t.name"
+    FROM certificate_templates t LEFT JOIN brands b ON b.brand_id = t.brand_id
+    WHERE t.archived_at IS NULL AND t.applies_to IN ('Both', 'Training') ORDER BY t.name"
 );
 $certTemplates = $tplResult ? $tplResult->fetch_all(MYSQLI_ASSOC) : [];
 
@@ -43,63 +43,65 @@ $allDealerships = $dealershipsResult ? $dealershipsResult->fetch_all(MYSQLI_ASSO
     <?php include '../datepicker-theme.php'; ?>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased h-auto">
+<body class=" antialiased h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
 
-        <div class="flex justify-between items-center w-full">
+        <div class="main-header">
             <span class="page-breadcrumbs">Schedule</span>
             <?php include '../notification-bell.php'; ?>
         </div>
 
-        <!-- HERO -->
-        <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg mt-5">
-            <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
-            <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
-            <div class="hero-grid absolute inset-0 pointer-events-none"></div>
-
-            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
-                <div class="space-y-2 min-w-0">
-                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
-                        <i class="fa-solid fa-calendar-days"></i> Schedule Management
-                    </span>
-                    <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Training Schedule</h1>
-                    <p class="text-slate-300 text-sm max-w-xl">Plan sessions, share meeting links and track attendance. Click a date on the calendar, or use the button.</p>
+        <div class="main-container">
+            <!-- HERO -->
+            <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg">
+                <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+                <div class="hero-grid absolute inset-0 pointer-events-none"></div>
+    
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                    <div class="space-y-2 min-w-0">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                            <i class="fa-solid fa-calendar-days text-white"></i> Schedule Management
+                        </span>
+                        <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Training Schedule</h1>
+                        <p class="text-slate-300 text-sm max-w-xl">Plan sessions, share meeting links and track attendance. Click a date on the calendar, or use the button.</p>
+                    </div>
+    
+                    <button type="button" id="addScheduleBtn"
+                        class="shrink-0 w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 h-12 rounded-xl bg-white text-[#234CA1] hover:bg-gray-100 font-eurostile-bold text-sm transition-colors">
+                        <i class="fa-solid fa-plus"></i> Add Schedule
+                    </button>
                 </div>
-
-                <button type="button" id="addScheduleBtn"
-                    class="shrink-0 w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 h-12 rounded-xl bg-white text-[#234CA1] hover:bg-gray-100 font-eurostile-bold text-sm transition-colors">
-                    <i class="fa-solid fa-plus"></i> Add Schedule
-                </button>
-            </div>
-        </section>
-
-        <!-- STATS -->
-        <div id="statCards" class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mt-5"></div>
-
-        <!-- CALENDAR + UPCOMING -->
-        <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] gap-5 mt-5 items-start">
-
-            <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-3 sm:p-5">
-                <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-1 pb-3 text-xs text-gray-500">
-                    <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#234CA1]"></span>Online</span>
-                    <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#7c3aed]"></span>Face-to-Face</span>
-                    <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#D02027]"></span>Live now</span>
-                    <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>Ended</span>
-                </div>
-                <div id="calendar"></div>
             </section>
-
-            <aside class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-4 sm:p-5 xl:sticky xl:top-5">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Upcoming Schedules</h3>
-                    <span id="upcomingCount" class="font-mono text-[11px] font-bold px-2 py-1 rounded-md bg-slate-100 text-slate-500">0</span>
-                </div>
-                <div id="upcomingSchedulesList" class="space-y-4 xl:max-h-[640px] xl:overflow-y-auto pr-1">
-                    <p class="text-gray-400 text-sm">Loading...</p>
-                </div>
-            </aside>
-
+    
+            <!-- STATS -->
+            <div id="statCards" class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mt-5"></div>
+    
+            <!-- CALENDAR + UPCOMING -->
+            <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] gap-5 mt-5 items-start">
+    
+                <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-3 sm:p-5">
+                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-1 pb-3 text-xs text-gray-500">
+                        <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#234CA1]"></span>Online</span>
+                        <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#7c3aed]"></span>Face-to-Face</span>
+                        <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#D02027]"></span>Live now</span>
+                        <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>Ended</span>
+                    </div>
+                    <div id="calendar"></div>
+                </section>
+    
+                <aside class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-4 sm:p-5 xl:sticky xl:top-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Upcoming Schedules</h3>
+                        <span id="upcomingCount" class="font-mono text-[11px] font-bold px-2 py-1 rounded-md bg-slate-100 text-slate-500">0</span>
+                    </div>
+                    <div id="upcomingSchedulesList" class="space-y-4 xl:max-h-[640px] xl:overflow-y-auto pr-1">
+                        <p class="text-gray-400 text-sm">Loading...</p>
+                    </div>
+                </aside>
+    
+            </div>
         </div>
 
     </main>

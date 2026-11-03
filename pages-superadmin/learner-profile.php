@@ -30,7 +30,7 @@ requireRole(4);
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-800 antialiased h-auto">
+<body class=" antialiased h-auto">
     <?php include('../sidebar-superadmin.php') ?>
     <main>
 
