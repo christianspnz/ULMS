@@ -153,3 +153,7 @@ function isActive(array|string $pages, string$current): bool {
         });
     });
 </script>
+<?php include __DIR__ . '/urgent-announcement-popup.php'; ?>
+<?php include __DIR__ . '/announcement-badge.php'; ?>
+<?php include __DIR__ . '/mobile-nav.php'; ?>
+<?php include __DIR__ . '/schedule-alerts.php'; ?>

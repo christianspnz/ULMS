@@ -30,13 +30,20 @@ function isActive(array|string $pages, string $current): bool
             <i class="fa-solid fa-xmark"></i>
         </button>
     </div>
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav no-scrollbar">
 
         <span class="sidebar-section-label">Main</span>
         <!-- Dashboard -->
         <a href="dashboard.php" class="sidebar-text <?= isActive('dashboard.php', $currentPage) ? $activeClass : $inactiveClass ?>">
             <i data-lucide="layout-dashboard" class="sidebar-icon"></i>
             Dashboard
+        </a>
+
+        <!-- Announcements -->
+        <a href="announcements.php" class="sidebar-text <?= isActive('announcements.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="megaphone" class="sidebar-icon"></i>
+            Announcements
+            <span id="annBadge"></span>
         </a>
 
         <div class="sidebar-divider"></div>
@@ -194,5 +201,7 @@ function isActive(array|string $pages, string $current): bool
         });
     });
 </script>
+<?php include __DIR__ . '/urgent-announcement-popup.php'; ?>
+<?php include __DIR__ . '/announcement-badge.php'; ?>
 <?php include __DIR__ . '/mobile-nav.php'; ?>
 <?php include __DIR__ . '/schedule-alerts.php'; ?>

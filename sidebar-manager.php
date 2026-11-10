@@ -21,35 +21,89 @@ function isActive(array|string $pages, string $current): bool
     return $current === $pages;
 }
 ?>
-<aside id="sidebar" class="sidebar hidden lg:flex z-40 lg:m-5">
+<aside id="sidebar" class="sidebar hidden lg:flex z-40">
     <div class="flex flex-col lg:flex-row w-full justify-center items-center gap-x-1 gap-y-1">
         <img src="../assets/ulh-logo.png" alt="UAAGI LMS Logo" class="w-14 lg:w-10">
         <img src="../assets/Logo.png" alt="UAAGI LMS Logo" class="w-auto lg:w-32">
     </div>
-    <nav class="sidebar-nav">
-        <!-- Courses (Handles multiple related pages cleanly) -->
+    <nav class="sidebar-nav no-scrollbar">
+        <span class="sidebar-section-label">Main</span>
+        <!-- Dashboard -->
+        <a href="dashboard.php" class="sidebar-text <?= isActive('dashboard.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="layout-dashboard" class="sidebar-icon"></i>
+            Dashboard
+        </a>
+
+        <!-- Announcements -->
+        <a href="announcements.php" class="sidebar-text <?= isActive('announcements.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="megaphone" class="sidebar-icon"></i>
+            Announcements
+            <span id="annBadge"></span>
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <span class="sidebar-section-label">Learning Management</span>
+
+        <!-- Courses (Handles multiple related pages) -->
         <a href="courses.php" class="sidebar-text <?= isActive(['courses.php', 'course-viewer.php', 'assessment.php'], $currentPage) ? $activeClass : $inactiveClass ?>">
             <i data-lucide="layers" class="sidebar-icon"></i>
             Courses
         </a>
 
+        <!-- Library -->
+        <a href="library.php" class="sidebar-text <?= isActive(['library.php', 'library-viewer.php'], $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="library" class="sidebar-icon"></i>
+            Library
+        </a>
+
+        <!-- Calendar -->
+        <a href="calendar.php" class="sidebar-text <?= isActive('calendar.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="calendar-days" class="sidebar-icon"></i>
+            Calendar
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <span class="sidebar-section-label">Performance</span>
         <!-- Reports -->
         <a href="reports.php" class="sidebar-text <?= isActive('reports.php', $currentPage) ? $activeClass : $inactiveClass ?>">
             <i data-lucide="clipboard-pen" class="sidebar-icon"></i>
             Reports
         </a>
 
-        <!-- Calendar -->
-        <a href="calendar.php" class="sidebar-text <?= isActive('calendar.php', $currentPage) ? $activeClass : $inactiveClass ?>">
-            <i data-lucide="calendar" class="sidebar-icon"></i>
-            Calendar
+        <!-- Leaderboard -->
+        <a href="leaderboard.php" class="sidebar-text <?= isActive('leaderboard.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="podium" class="sidebar-icon"></i>
+            Leaderboard
         </a>
+
+        <!-- Certificates -->
+        <a href="certificates.php" class="sidebar-text <?= isActive('certificates.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="award" class="sidebar-icon"></i>
+            Certificates
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <span class="sidebar-section-label">Contacts</span>
 
         <!-- Contact Us -->
         <a href="contacts.php" class="sidebar-text <?= isActive('contacts.php', $currentPage) ? $activeClass : $inactiveClass ?>">
             <i data-lucide="notebook-tabs" class="sidebar-icon"></i>
             Contact Us
         </a>
+
+        <div class="sidebar-divider"></div>
+
+        <span class="sidebar-section-label">Account</span>
+
+        <!-- Profile -->
+        <a href="profile.php" class="sidebar-text <?= isActive('profile.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="user-round-cog" class="sidebar-icon"></i>
+            Profile
+        </a>
+
     </nav>
     <div class="logout-container">
         <a href="profile.php" class="logout-row group">
@@ -149,3 +203,7 @@ function isActive(array|string $pages, string $current): bool
         });
     });
 </script>
+<?php include __DIR__ . '/urgent-announcement-popup.php'; ?>
+<?php include __DIR__ . '/announcement-badge.php'; ?>
+<?php include __DIR__ . '/mobile-nav.php'; ?>
+<?php include __DIR__ . '/schedule-alerts.php'; ?>

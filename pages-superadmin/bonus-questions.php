@@ -50,7 +50,7 @@ requireRole(4);
                     </button>
                 </div>
             </section>
-            <div id="questionsList" class="space-y-3 mt-6">
+            <div id="questionsList" class="flex flex-wrap gap-5 justify-center items-center">
                 <p class="text-gray-400 text-center py-10">Loading...</p>
             </div>
         </div>
@@ -83,12 +83,22 @@ requireRole(4);
                 }
 
                 container.innerHTML = data.questions.map(q => `
-                    <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                    <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5 w-[49%] h-40">
                         <div class="flex justify-between items-start">
                             <div class="flex-1">
-                                <span class="text-xs font-bold uppercase px-2 py-1 rounded-full ${q.is_active == 1 ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
-                                    ${q.is_active == 1 ? 'Active' : 'Inactive'}
-                                </span>
+                                <div class="flex flex-row justify-between items-center">
+                                    <span class="text-xs font-bold uppercase px-2 py-1 rounded-full ${q.is_active == 1 ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
+                                        ${q.is_active == 1 ? 'Active' : 'Inactive'}
+                                    </span>
+                                    <div class="flex gap-x-2 shrink-0 ml-4">
+                                        <button type="button" class="toggle-active-btn text-gray-500 px-3 py-1.5 rounded-lg text-xs font-eurostile-bold border" data-id="${q.question_id}" data-active="${q.is_active}">
+                                            ${q.is_active == 1 ? 'Deactivate' : 'Activate'}
+                                        </button>
+                                        <button type="button" class="delete-question-btn text-[#D02027] px-3 py-1.5 rounded-lg text-xs font-eurostile-bold border border-[#D02027]" data-id="${q.question_id}">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
                                 <p class="font-eurostile-bold text-gray-800 mt-2">${escapeHtml(q.question_text)}</p>
                                 <div class="grid grid-cols-2 gap-2 mt-3 text-sm">
                                     <p class="${q.correct_answer === 'A' ? 'text-green-600 font-bold' : 'text-gray-500'}">A. ${escapeHtml(q.choice_a)}</p>
@@ -96,14 +106,6 @@ requireRole(4);
                                     <p class="${q.correct_answer === 'C' ? 'text-green-600 font-bold' : 'text-gray-500'}">C. ${escapeHtml(q.choice_c)}</p>
                                     <p class="${q.correct_answer === 'D' ? 'text-green-600 font-bold' : 'text-gray-500'}">D. ${escapeHtml(q.choice_d)}</p>
                                 </div>
-                            </div>
-                            <div class="flex gap-x-2 shrink-0 ml-4">
-                                <button type="button" class="toggle-active-btn text-gray-500 px-3 py-1.5 rounded-lg text-xs font-eurostile-bold border" data-id="${q.question_id}" data-active="${q.is_active}">
-                                    ${q.is_active == 1 ? 'Deactivate' : 'Activate'}
-                                </button>
-                                <button type="button" class="delete-question-btn text-[#D02027] px-3 py-1.5 rounded-lg text-xs font-eurostile-bold border border-[#D02027]" data-id="${q.question_id}">
-                                    Delete
-                                </button>
                             </div>
                         </div>
                     </div>

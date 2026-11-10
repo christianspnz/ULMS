@@ -37,7 +37,7 @@ if ($triggerBonusPopup) {
 
 <body class="antialiased">
     <?php include '../sidebar-learner.php'; ?>
-    
+
     <main>
         <header class="main-header">
             <span class="page-breadcrumbs">Dashboard</span>
@@ -50,16 +50,16 @@ if ($triggerBonusPopup) {
                 <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
                 <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
                 <div class="hero-grid absolute inset-0 pointer-events-none"></div>
-    
+
                 <div class="relative z-10 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] gap-6 items-center">
-    
+
                     <div class="space-y-3 min-w-0">
                         <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
                             <i class="fa-solid fa-gauge-high"></i> Dashboard
                         </span>
                         <h1 id="greeting" data-name="<?= htmlspecialchars($user['first_name'] ?? '', ENT_QUOTES) ?>" class="text-2xl md:text-4xl font-extrabold tracking-tight break-words">Welcome back</h1>
                         <p id="todayLabel" class="text-slate-300 text-sm"></p>
-    
+
                         <div class="grid grid-cols-3 gap-3 max-w-md pt-1">
                             <div class="rounded-xl bg-white/10 border border-white/10 px-3 py-2.5">
                                 <p class="text-[10px] uppercase tracking-wider text-slate-300">Points</p>
@@ -74,24 +74,49 @@ if ($triggerBonusPopup) {
                                 <p id="heroStreak" class="text-xl font-black leading-tight text-orange-300">—</p>
                             </div>
                         </div>
-    
+
                         <button type="button" onclick="openPointsHistory()"
                             class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-eurostile-bold transition-colors">
                             <i class="fa-solid fa-clock-rotate-left"></i> Points History
                         </button>
                     </div>
-    
+
                     <div id="nextAction" class="rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md p-5 min-w-0">
                         <p class="text-slate-300 text-sm">Finding your next step...</p>
                     </div>
-    
+
                 </div>
             </section>
-    
+
             <!-- COURSE COUNTS -->
             <div id="countCards" class="grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 mt-5"></div>
-    
+
             <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_380px] gap-5 mt-5 items-start">
+                <div class="space-y-5 min-w-0">
+                    <!-- ANNOUNCEMENTS -->
+                    <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                        <div class="flex items-center justify-between gap-3 mb-4">
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Announcements</h3>
+                                <span id="annUnreadChip" class="hidden text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#D02027] text-white"></span>
+                            </div>
+                            <a href="announcements.php" class="text-xs font-bold text-[#234CA1] hover:underline shrink-0">View all <i class="fa-solid fa-arrow-right ml-1"></i></a>
+                        </div>
+                        <div id="annList" class="space-y-2.5">
+                            <p class="text-gray-400 text-sm">Loading...</p>
+                        </div>
+                    </section>
+                    <!-- UPCOMING -->
+                    <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                        <div class="flex items-center justify-between gap-3 mb-4">
+                            <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Upcoming Schedule</h3>
+                            <a href="calendar.php" class="text-xs font-bold text-[#234CA1] hover:underline shrink-0">Calendar <i class="fa-solid fa-arrow-right ml-1"></i></a>
+                        </div>
+                        <div id="upcomingList" class="space-y-2.5">
+                            <p class="text-gray-400 text-sm">Loading...</p>
+                        </div>
+                    </section>
+                </div>
                 <div class="space-y-5 min-w-0">
                     <!-- NOT STARTED -->
                     <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-5">
@@ -106,7 +131,7 @@ if ($triggerBonusPopup) {
                             <p class="text-gray-400 text-sm">Loading...</p>
                         </div>
                     </section>
-    
+
                     <!-- CONTINUE LEARNING -->
                     <section id="continueCard" class="hidden min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-5">
                         <div class="mb-4">
@@ -115,20 +140,6 @@ if ($triggerBonusPopup) {
                         </div>
                         <div id="continueList" class="space-y-2.5"></div>
                     </section>
-                </div>
-    
-                <div class="space-y-5 min-w-0">
-                    <!-- UPCOMING -->
-                    <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-5">
-                        <div class="flex items-center justify-between gap-3 mb-4">
-                            <h3 class="text-lg font-eurostile-bold text-[#234CA1]">Upcoming Schedule</h3>
-                            <a href="calendar.php" class="text-xs font-bold text-[#234CA1] hover:underline shrink-0">Calendar <i class="fa-solid fa-arrow-right ml-1"></i></a>
-                        </div>
-                        <div id="upcomingList" class="space-y-2.5">
-                            <p class="text-gray-400 text-sm">Loading...</p>
-                        </div>
-                    </section>
-    
                     <!-- LEADERBOARD -->
                     <section class="min-w-0 bg-white rounded-2xl shadow-md border border-gray-200 p-5">
                         <div class="flex items-center justify-between gap-3 mb-4">
@@ -141,7 +152,8 @@ if ($triggerBonusPopup) {
                     </section>
                 </div>
             </div>
-    
+
+            <?php include '../announcement-format.php'; ?>
             <?php include '../feedback-button.php'; ?>
             <?php include '../bonus-question-modal.php'; ?>
         </div>
@@ -267,7 +279,7 @@ if ($triggerBonusPopup) {
                 const part = h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
                 const name = el("greeting").dataset.name;
 
-                el("greeting").innerHTML = `${part}${name ? `, <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-300">${esc(name)}</span>` : ""}`;
+                el("greeting").innerHTML = `${part}${name ? `, <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-300 font-eurostile-black">${esc(name)}</span>` : ""}`;
                 el("todayLabel").textContent = new Date().toLocaleDateString(undefined, {
                     weekday: "long",
                     month: "long",
@@ -596,6 +608,62 @@ if ($triggerBonusPopup) {
 
             }
 
+            // ---------- announcements ----------
+            async function loadAnnouncements() {
+
+                const list = el("annList");
+
+                try {
+
+                    const data = await getJson("../php/announcements/get-announcements-summary.php?latest=3");
+
+                    if (data.status !== "success") throw new Error(data.message);
+
+                    const UI = window.AnnouncementUI;
+                    const chip = el("annUnreadChip");
+
+                    chip.classList.toggle("hidden", !data.unread_count);
+                    chip.textContent = `${data.unread_count} new`;
+
+                    if (!data.latest.length) {
+                        list.innerHTML = `
+                            <div class="text-center py-6">
+                                <span class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 inline-flex items-center justify-center mb-2"><i class="fa-solid fa-bullhorn"></i></span>
+                                <p class="text-sm text-gray-400">No announcements right now.</p>
+                            </div>`;
+                        return;
+                    }
+
+                    list.innerHTML = data.latest.map(a => {
+
+                        const p = UI.PRIORITY[a.priority];
+                        const unread = !a.is_read;
+
+                        return `
+                            <a href="announcements.php?open=${Number(a.announcement_id)}"
+                               class="group flex gap-3 rounded-xl border ${unread ? "border-blue-200" : "border-gray-200"} p-3 hover:bg-slate-50 transition"
+                               style="border-left:4px solid ${p.color}; ${unread ? "background:#f7faff;" : ""}">
+                                <span class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background:${p.bg}; color:${p.color}"><i class="fa-solid ${UI.CATEGORY_ICON[a.category] || p.icon}"></i></span>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-sm ${unread ? "font-extrabold" : "font-semibold"} text-slate-800 truncate">${UI.esc(a.title)}</p>
+                                        ${unread ? '<span class="w-2 h-2 rounded-full bg-[#D02027] shrink-0"></span>' : ""}
+                                        ${a.is_pinned ? '<i class="fa-solid fa-thumbtack text-amber-500 text-[10px] shrink-0"></i>' : ""}
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-0.5 line-clamp-2 break-words">${UI.esc(UI.plain(a.body))}</p>
+                                    <p class="text-[11px] text-gray-400 mt-1">${UI.esc(UI.timeAgo(a.published_at))}${a.priority !== "Normal" ? ` · <span style="color:${p.color}" class="font-bold">${UI.esc(a.priority)}</span>` : ""}</p>
+                                </div>
+                            </a>`;
+
+                    }).join("");
+
+                } catch (err) {
+                    console.error(err);
+                    list.innerHTML = `<p class="text-red-500 text-sm">Couldn't load announcements.</p>`;
+                }
+
+            }
+
             // ---------- go ----------
             async function init() {
 
@@ -623,6 +691,9 @@ if ($triggerBonusPopup) {
                 renderUpcoming();
                 renderLeaderboard();
                 renderNextAction();
+                loadAnnouncements();
+
+                window.addEventListener("announcement:acknowledged", loadAnnouncements);
 
                 // A live or "starting soon" schedule changes as time passes
                 setInterval(() => {

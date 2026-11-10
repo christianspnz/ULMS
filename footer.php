@@ -1,5 +1,5 @@
 <div class="footer-marquee">
-    <div class="relative w-full overflow-hidden py-5">
+    <div class="relative w-full overflow-hidden py-3">
         <div id="marquee" class="marquee-track flex w-max" style="--duration: 30s;">
             <!-- Group 1 -->
             <div class="flex shrink-0 items-center gap-x-20 pr-20">

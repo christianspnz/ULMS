@@ -47,7 +47,7 @@ $allBrands = $brandsResult ? $brandsResult->fetch_all(MYSQLI_ASSOC) : [];
                             <span>Learner Rankings</span>
                         </div>
                         <h1 class="text-xl sm:text-2xl md:text-4xl font-extrabold tracking-tight">
-                            Your Progress <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Matters.</span>
+                            Your Progress <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 font-eurostile-black">Matters.</span>
                         </h1>
                         <p class="text-slate-300 text-sm max-w-md pb-5">
                             Compete with peers, track your weekly momentum, and earn top positions.

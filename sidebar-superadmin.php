@@ -45,11 +45,16 @@ function isActive(array|string $pages, string $current): bool
             <i data-lucide="layers-plus" class="sidebar-icon"></i>
             Add Courses
         </a>
-    
+
         <!-- Library -->
         <a href="library.php" class="sidebar-text <?= isActive('library.php', $currentPage) ? $activeClass : $inactiveClass ?>">
             <i data-lucide="library" class="sidebar-icon"></i>
             Library
+        </a>
+
+        <a href="announcements.php" class="sidebar-text <?= isActive('announcements.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="megaphone" class="sidebar-icon"></i>
+            Announcements
         </a>
 
         <!-- Schedules -->
@@ -65,7 +70,7 @@ function isActive(array|string $pages, string $current): bool
         <a href="users.php" class="sidebar-text <?= isActive(['users.php'], $currentPage) ? $activeClass : $inactiveClass ?>">
             <i data-lucide="square-user" class="sidebar-icon"></i>
             Users
-            <span id="sidebarPendingBadge" class="hidden users-badge">0</span>
+            <div id="sidebarPendingBadge" class="hidden users-badge">0</div>
         </a>
 
         <div class="sidebar-divider"></div>

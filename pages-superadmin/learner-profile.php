@@ -34,7 +34,7 @@ requireRole(4);
     <?php include('../sidebar-superadmin.php') ?>
     <main>
 
-        <div class="flex justify-between items-center w-full">
+        <div class="main-header">
             <span class="page-breadcrumbs">
                 <a href="reports.php">Reports</a>
                 <svg class="breadcrumbs-icon" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
@@ -45,7 +45,7 @@ requireRole(4);
             <?php include '../notification-bell.php'; ?>
         </div>
 
-        <div id="profileRoot" class="flex flex-col gap-5 mt-5">
+        <div id="profileRoot" class="main-container">
             <div class="text-center text-gray-400 py-16"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading profile...</div>
         </div>
 

@@ -22,52 +22,75 @@ requireRole(2)
 <body class="h-auto lg:h-screen">
     <?php include '../sidebar-manager.php'; ?>
     <main>
-        <div class="flex justify-between items-center w-full">
-            <span class="page-breadcrumbs" >
+        <div class="main-header">
+            <span class="page-breadcrumbs">
                 Contact Us
             </span>
             <?php include '../notification-bell.php'; ?>
         </div>
-        <div class="contacts-container">
-            <span class="contacts-card-subtext" >Message us if you have any concerns</span>
+        <div class="main-container">
+            <!-- HERO -->
+            <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg">
+                <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+                <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+                <div class="hero-grid absolute inset-0 pointer-events-none"></div>
+
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                    <div class="space-y-2 min-w-0">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                            <i class="fa-solid fa-phone"></i> Email & Phone Call
+                        </span>
+                        <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">You need an assistance?</h1>
+                        <p class="text-slate-300 text-sm max-w-xl">Reach out to us if you have any concerns</p>
+                    </div>
+                    <button onclick="openGmail()"
+                        class="shrink-0 w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 h-12 rounded-xl bg-white text-[#234CA1] hover:bg-gray-100 font-eurostile-bold text-sm transition-colors">
+                        Notify us via Gmail
+                    </button>
+                </div>
+            </section>
             <div class="contacts-row">
                 <div class="contacts-row-card">
                     <span class="card-name">Karla Grace A. Malate</span>
                     <span class="card-position">Sales Training Supervisor</span>
-                    <span class="card-viber-email"><b>Viber -</b>
+
+                    <div class="card-viber-email">
+                        <b>Viber</b>
                         <p class="copy-text">09766445725</p>
                         <svg height="14" width="14" class="copy-icon" viewBox="0 0 408 480" xmlns="http://www.w3.org/2000/svg">
                             <path d="M299 5v43H43v299H0V48q0-18 12.5-30.5T43 5h256zm64 86q17 0 29.5 12.5T405 133v299q0 18-12.5 30.5T363 475H128q-18 0-30.5-12.5T85 432V133q0-17 12.5-29.5T128 91h235zm0 341V133H128v299h235z" fill="currentColor" />
                         </svg>
-                    </span>
-                    <span class="card-viber-email"><b>Email -</b>
+                    </div>
+
+                    <div class="card-viber-email">
+                        <b>Email</b>
                         <p class="copy-text">kgmalate@uaagi.com</p>
                         <svg height="14" width="14" class="copy-icon" viewBox="0 0 408 480" xmlns="http://www.w3.org/2000/svg">
                             <path d="M299 5v43H43v299H0V48q0-18 12.5-30.5T43 5h256zm64 86q17 0 29.5 12.5T405 133v299q0 18-12.5 30.5T363 475H128q-18 0-30.5-12.5T85 432V133q0-17 12.5-29.5T128 91h235zm0 341V133H128v299h235z" fill="currentColor" />
                         </svg>
-                    </span>
+                    </div>
                 </div>
+
                 <div class="contacts-row-card">
                     <span class="card-name">Christian B. Espinoza</span>
                     <span class="card-position">Sales Training Admin Assistant</span>
-                    <span class="card-viber-email"><b>Viber -</b>
+
+                    <div class="card-viber-email">
+                        <b>Viber</b>
                         <p class="copy-text">09926870934</p>
                         <svg height="14" width="14" class="copy-icon" viewBox="0 0 408 480" xmlns="http://www.w3.org/2000/svg">
                             <path d="M299 5v43H43v299H0V48q0-18 12.5-30.5T43 5h256zm64 86q17 0 29.5 12.5T405 133v299q0 18-12.5 30.5T363 475H128q-18 0-30.5-12.5T85 432V133q0-17 12.5-29.5T128 91h235zm0 341V133H128v299h235z" fill="currentColor" />
                         </svg>
-                    </span>
-                    <span class="card-viber-email"><b>Email -</b>
+                    </div>
+
+                    <div class="card-viber-email">
+                        <b>Email</b>
                         <p class="copy-text">cespinoza@uaagi.com</p>
                         <svg height="14" width="14" class="copy-icon" viewBox="0 0 408 480" xmlns="http://www.w3.org/2000/svg">
                             <path d="M299 5v43H43v299H0V48q0-18 12.5-30.5T43 5h256zm64 86q17 0 29.5 12.5T405 133v299q0 18-12.5 30.5T363 475H128q-18 0-30.5-12.5T85 432V133q0-17 12.5-29.5T128 91h235zm0 341V133H128v299h235z" fill="currentColor" />
                         </svg>
-                    </span>
+                    </div>
                 </div>
-            </div>
-            <div class="contacts-row">
-                <button class="contacts-btn group" onclick="openGmail()">
-                    <span class="contacts-card-text">Notify us via Gmail</span>
-                </button>
             </div>
         </div>
         <?php include '../feedback-button.php'; ?>

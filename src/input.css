@@ -8,6 +8,7 @@
     display: none;
 }
 
+
 /* Firefox */
 html {
     scrollbar-width: none;
@@ -283,6 +284,8 @@ body {
   src: url("../fonts/fonnts.com-Eurostile-MN-Extended-Bold.ttf") format("truetype");
 }
 
+
+
 @layer base{
     
     body{
@@ -290,7 +293,7 @@ body {
     }
     
     header{
-        @apply py-5 w-full h-auto;
+        @apply p-0;
     }
     
     main{
@@ -300,10 +303,30 @@ body {
     footer{
         @apply w-full h-auto overflow-hidden z-10 ;
     }
+    
 
 }
 
 @layer components{
+
+    /* Hero */
+    
+    .hero-car {
+        @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full object-contain opacity-0 transition-opacity duration-700 ease-in-out pointer-events-none;
+    }
+
+    .hero-car.active {
+        @apply opacity-100;
+    }
+
+    .car-dot {
+        @apply w-2.5 h-2.5 rounded-full bg-gray-300 transition-all duration-300;
+    }
+
+    .car-dot.active-dot {
+        @apply w-7 bg-[#234CA1] rounded-full;
+    }
+
 
     /* Main Header - Notif / Breadcrumbs */
     .main-header {
@@ -323,7 +346,7 @@ body {
     }
 
     .page-breadcrumbs{
-        @apply text-[12px] lg:text-[20px] text-[#234CA1] font-eurostile-bold uppercase flex flex-wrap gap-x-3 items-center w-full;
+        @apply text-[16px] text-[#234CA1] font-eurostile-bold uppercase flex flex-wrap gap-x-3 items-center w-full;
     }
 
     .breadcrumbs-icon{
@@ -408,8 +431,8 @@ body {
         @apply w-full h-full object-cover rounded-full;
     }
 
-    users-badge{
-        @apply bg-[#D02027] text-white text-xs rounded-full min-w-5 h-5 px-1.5 flex items-center justify-center ml-auto;
+    .users-badge{
+        @apply bg-[#D02027] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center ml-auto;
     }
 
     .user-info-name{
@@ -568,14 +591,32 @@ body {
         @apply text-[#D02027];
     }
 
-    /* Contact Us */
+    /* Stepper */
+    .steps .step:before {
+        @apply h-1 bg-[#FFF];
+    }
+
+    .steps .step:after {
+        @apply border-2 border-white bg-white text-black font-bold;
+    }
+
+    .steps .step.step-primary::before {
+        @apply bg-amber-400;
+    }
+
+    .steps .step-primary:after {
+        @apply border-amber-400 bg-amber-400 text-[#234CA1];
+    }
+
+  /* Contact Us - Design Alternative 2 */
 
     .contacts-btn{
         @apply flex flex-col items-center justify-center px-5 py-2 rounded-md border border-[#234CA1] hover:bg-[#234CA1] transition-colors transition-transform duration-300 hover:scale-105 hover:border-[#234CA1];
     }
 
+
     .contacts-card-text{
-        @apply text-[20px] font-eurostile-bold text-[#234CA1] group-hover:text-white ;
+        @apply text-[20px] font-eurostile-bold text-[#234CA1] group-hover:text-white;
     }
 
     .contacts-card-subtext{
@@ -583,36 +624,47 @@ body {
     }
 
     .contacts-container{
-        @apply bg-white flex flex-col items-center lg:items-start justify-center px-10 py-7 rounded-md border border-gray-200 w-[100%] gap-y-5; 
+        @apply bg-white flex flex-col items-center lg:items-start justify-center px-6 md:px-10 py-8 rounded-2xl border border-slate-100 w-full gap-y-6 shadow-sm; 
     }
 
     .contacts-row{
-        @apply flex flex-col lg:flex-row justify-center items-center w-full gap-y-5 gap-x-5;
+        @apply flex flex-col lg:flex-row justify-center items-stretch w-full gap-6;
     }
 
     .contacts-row-card{
-        @apply flex flex-col gap-y-3 w-full lg:w-[50%] h-auto p-10 rounded-xl justify-center items-center shadow-md shadow-gray-500;
+        @apply flex flex-col gap-y-4 w-full lg:w-[50%] h-auto p-8 rounded-2xl justify-start items-start bg-gradient-to-br from-white to-slate-50 border border-slate-200/80 shadow-md hover:shadow-xl transition-all duration-300 relative pl-8 lg:pl-10;
+    }
+
+    /* Elegant left accent indicator bar */
+    .contacts-row-card::before {
+        content: '';
+        @apply absolute left-0 top-6 bottom-6 w-1.5 bg-[#234CA1] rounded-r-full;
     }
 
     .card-name{
-        @apply text-center text-[#234CA1] text-xl font-eurostile-bold uppercase;
+        @apply text-left text-[#234CA1] text-xl font-eurostile-bold uppercase tracking-wide;
     }
 
     .card-position{
-        @apply text-center text-[#D02027] text-xs -mt-4 font-eurostile uppercase;
+        @apply text-left text-[#D02027] text-xs font-eurostile uppercase tracking-wider font-semibold;
     }
 
     .card-viber-email{
-        @apply text-center text-[#234CA1] text-lg font-eurostile flex flex-wrap gap-x-1 justify-center items-center;
+        @apply w-full bg-white border border-slate-200/70 px-4 py-3 rounded-xl text-slate-700 text-base font-eurostile flex flex-wrap gap-x-2 justify-between items-center shadow-sm hover:border-[#234CA1]/40 transition-all duration-200;
+    }
+
+    .card-viber-email b {
+        @apply text-[#234CA1] text-xs uppercase tracking-wider font-semibold;
     }
 
     .copy-text{
-        @apply cursor-pointer select-none hover:underline hover:text-[#234CA1] transition-colors transition-transform duration-300;
+        @apply cursor-pointer select-none text-slate-800 font-medium hover:text-[#234CA1] hover:underline transition-colors ml-auto;
     }
 
     .copy-icon{
-        @apply text-[#787878] ml-2;
+        @apply text-slate-400 ml-2 hover:text-[#234CA1] transition-colors;
     }
+
     
     /* Add Course */
 

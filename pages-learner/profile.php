@@ -36,17 +36,15 @@ $sidebarFile = match ($designationId) {
     ?>
 
     <main class="min-h-screen">
-        <div class="main-container">
-            <!-- PAGE HEADER -->
-            <div class="">
-                <div class="flex items-center gap-3 mb-2">
-                    <div>
-                        <h1 class="text-2xl uppercase font-eurostile-bold text-[#234CA1]">My Profile</h1>
-                        <p class="text-sm text-gray-500">Manage your personal information and account settings</p>
-                    </div>
-                </div>
+        <div class="main-header">
+            <div class="flex flex-col items-center">
+                <span class="page-breadcrumbs">Profile</span>
+                <p class="text-sm text-gray-500 font-eurostile">Manage your personal information and account settings</p>
             </div>
-    
+            <?php include '../notification-bell.php'; ?>
+        </div>
+        <div class="main-container">
+           
             <!-- MAIN GRID -->
             <div class="grid grid-cols-1 gap-4 items-start">
                 <!--PROFILE SUMMARY -->

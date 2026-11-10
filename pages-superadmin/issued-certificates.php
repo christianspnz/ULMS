@@ -150,7 +150,7 @@ $allBrands = $brandsResult ? $brandsResult->fetch_all(MYSQLI_ASSOC) : [];
             once: false
         });
 
-        const PAGE_SIZE = 20;
+        const PAGE_SIZE = 10;
         const ZIP_LIMIT = 50; // PDFs are built in the browser, so a ZIP is capped to keep it from running out of memory
 
         const el = id => document.getElementById(id);

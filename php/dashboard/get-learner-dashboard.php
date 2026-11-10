@@ -2,7 +2,7 @@
 
 require "../../config/config.php";
 require "../auth-logout/auth.php";
-requireRole(1);
+requireRole([1,2]);
 
 header("Content-Type: application/json");
 

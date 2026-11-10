@@ -73,7 +73,7 @@ switch ($user["designation_id"]) {
         $redirect = "./pages-learner/dashboard.php";
         break;
     case 2:
-        $redirect = "./pages-manager/courses.php";
+        $redirect = "./pages-manager/dashboard.php";
         break;
     case 3:
         $redirect = "./pages-admin/courses.php";

@@ -194,29 +194,47 @@ if (isset($_SESSION["user_id"])) {
         // ==========================================
         // LOGIN
         // ==========================================
+
         function showLoginError(title, message) {
+
+            const isInactive = message.toLowerCase().includes("deactivated");
 
             Swal.fire({
                 html: `
-                    <div class="flex flex-col justify-center items-center lg:items-start gap-y-3">
+                    <div class="flex flex-col justify-center items-start gap-y-3">
+
                         <div class="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-x-5 p-5">
+
                             <i class="fa-solid fa-circle-xmark text-[#D02027] text-6xl"></i>
 
-                            <div class="flex flex-col justify-center items-start">
+                            <div class="flex flex-col justify-center items-center lg:items-start">
                                 <h2 class="text-2xl font-bold text-[#D02027] uppercase">
                                     ${escapeHtml(title)}
                                 </h2>
 
-                                <p class="text-sm text-start text-gray-500">
+                                <p class="text-sm text-center lg:text-start text-gray-500">
                                     ${escapeHtml(message)}
                                 </p>
                             </div>
+
                         </div>
-                        <button
-                            id="retryBtn"
-                            class="w-full h-12 bg-[#D02027] text-white rounded-xl font-bold focus:outline-none focus:ring-0 focus:ring-offset-0">
-                            Try Again
-                        </button>
+
+                        <div class="flex flex-col lg:flex-row gap-2 w-full">
+                            ${isInactive ? `
+                                    <button
+                                        id="contactAdminBtn"
+                                        class="w-full h-12 inline-flex justify-center items-center gap-2 bg-[#234CA1] hover:bg-[#1a3a80] text-white rounded-xl font-bold transition">
+                                        <i class="fa-solid fa-envelope"></i>
+                                        Contact Administrator
+                                    </button>
+                            ` : ''}
+
+                            <button
+                                id="retryBtn"
+                                class="w-full h-12 bg-[#D02027] hover:bg-[#a91920] text-white rounded-xl font-bold transition">
+                                Try Again
+                            </button>
+                        </div>
                     </div>
                 `,
                 customClass: {
@@ -224,10 +242,59 @@ if (isset($_SESSION["user_id"])) {
                     htmlContainer: "!p-0 !m-0"
                 },
                 showConfirmButton: false,
+
                 didOpen: () => {
+
                     document.getElementById("retryBtn").onclick = () => Swal.close();
+
+                    if (isInactive) {
+                        document.getElementById("contactAdminBtn").onclick = () => {
+                            openGmail();
+                        };
+                        document.getElementById("contactViberBtn").onclick = () => {
+                            openViber();
+                        };
+                    }
+
                 }
             });
+
+        }
+
+        function openGmail() {
+
+            const to = "UAAGITrainingDepartment@gmail.com";
+
+            const cc = "kgmalate@uaagi.com, cespinoza@uaagi.com, ulmssuperadmin@gmail.com";
+
+            const subject = "Inquiry Regarding UAAGI Training Hub Account Deactivation";
+
+            const body = `Dear UAAGI Training Hub Administrator,
+
+            I would like to request assistance regarding my deactivated account.
+
+            Concern:
+
+
+            Additional Information:
+
+            Name:
+            Employee ID:
+            Dealership:
+            Brand:
+
+            Thank you for your assistance.
+
+            Regards,`;
+
+            const gmailURL =
+                "https://mail.google.com/mail/?view=cm&fs=1" +
+                "&to=" + encodeURIComponent(to) +
+                "&cc=" + encodeURIComponent(cc) +
+                "&su=" + encodeURIComponent(subject) +
+                "&body=" + encodeURIComponent(body);
+
+            window.open(gmailURL, "_blank");
 
         }
 
