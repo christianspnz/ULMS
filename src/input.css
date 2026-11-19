@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 @plugin "daisyui";
-
 /* Chrome, Edge, Safari */
 ::-webkit-scrollbar {
     display: none;
@@ -297,7 +296,7 @@ body {
     }
     
     main{
-        @apply flex flex-col gap-y-0 w-[85%] h-auto min-h-screen;
+        @apply flex flex-col gap-y-0 w-[85%] h-auto min-h-screen ;
     }
     
     footer{
@@ -305,9 +304,82 @@ body {
     }
     
 
+    /* Dark Mode */
+    :root {
+        color-scheme: light;
+        --bg-main: #F6F8FC;
+        --bg-card: #FFFFFF;
+        --bg-sidebar: #FFFFFF;
+        --bg-hover: #EEF3FF;
+        --text-main: #1F2937;
+        --text-muted: #6B7280;
+        --border-main: #E5E7EB;
+    }
+
+    html.dark {
+        color-scheme: dark;
+        --bg-main: #111827;
+        --bg-card: #1F2937;
+        --bg-sidebar: #111827;
+        --bg-hover: #374151;
+        --text-main: #F9FAFB;
+        --text-muted: #9CA3AF;
+        --border-main: #374151;
+    }
 }
 
 @layer components{
+
+    /* Dark Mode */
+
+    .theme-main {
+        @apply bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-300;
+    }
+
+    .theme-card {
+        @apply bg-[var(--bg-card)] text-[var(--text-main)] border border-[var(--border-main)] transition-colors duration-300;
+    }
+
+    .theme-sidebar {
+        @apply bg-[var(--bg-sidebar)] text-[var(--text-main)] border-r border-[var(--border-main)];
+    }
+
+    .theme-text-muted {
+        @apply text-[var(--text-muted)];
+    }
+
+    .theme-hover {
+        @apply hover:bg-[var(--bg-hover)];
+    }
+
+    /* Live Training Carousel */
+    .live-training-slide {
+        @apply hidden w-full;
+    }
+
+    .live-training-slide.active {
+        @apply block;
+        animation: liveTrainingFade 0.5s ease-in-out;
+    }
+
+    .live-training-dot {
+        @apply w-2 h-2 rounded-full bg-gray-300 transition-all duration-300;
+    }
+
+    .live-training-dot.active-dot {
+        @apply w-5 bg-[#234CA1] rounded-full;
+    }
+
+    @keyframes liveTrainingFade {
+        from {
+            opacity: 0;
+            transform: translateX(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
 
     /* Hero */
     
@@ -334,7 +406,7 @@ body {
     }
 
     .main-container {
-        @apply  p-3 flex flex-col justify-between gap-y-3;
+        @apply  p-3 flex flex-col justify-between gap-y-3 bg-[#faf5ef];
     }
 
     button{

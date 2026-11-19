@@ -120,6 +120,15 @@ function isActive(array|string $pages, string $current): bool
             Bonus Questions
         </a>
 
+        <div class="sidebar-divider"></div>
+
+        <span class="sidebar-section-label">Others</span>
+        <!-- Contact Information -->
+        <a href="contact-information.php" class="sidebar-text <?= isActive('contact-information.php', $currentPage) ? $activeClass : $inactiveClass ?>">
+            <i data-lucide="user-round-plus" class="sidebar-icon"></i>
+            Contact Information
+        </a>
+
 
     </nav>
     <div class="logout-container">

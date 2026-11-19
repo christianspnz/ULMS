@@ -1,7 +1,29 @@
 <?php
 
+// Only learners (role 1) earn points. Managers, distributors and admins never do.
+function pointsEligible($conn, int $userId): bool
+{
+    static $cache = [];
+
+    if (!isset($cache[$userId])) {
+
+        $stmt = mysqli_prepare($conn, "SELECT designation_id FROM users WHERE user_id = ?");
+        mysqli_stmt_bind_param($stmt, "i", $userId);
+        mysqli_stmt_execute($stmt);
+        $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+        mysqli_stmt_close($stmt);
+
+        $cache[$userId] = $row && (int) $row['designation_id'] === 1;
+    }
+
+    return $cache[$userId];
+}
+
 function awardPoints($conn, $userId, $points, $source, $referenceId = null)
 {
+    if (!pointsEligible($conn, (int) $userId)) {
+        return; // if the function declares a return type, use "return false;" (or the matching value) instead
+    }
 
     $stmt = mysqli_prepare(
         $conn,
@@ -285,6 +307,10 @@ define('COURSE_COMPLETION_POINTS', 50);
 function awardCourseCompletionPoints($conn, $userId, $courseId)
 {
 
+    if (!pointsEligible($conn, (int) $userId)) {
+        return 0;
+    }
+
     $stmt = mysqli_prepare(
         $conn,
         "SELECT 1 FROM points_ledger WHERE user_id = ? AND source = 'Course Completion' AND reference_id = ? LIMIT 1"
@@ -309,6 +335,9 @@ define('ATTENDANCE_POINTS', 50); // placeholder: set whatever you like
 // Awards attendance points once per learner per schedule. Returns the points given (0 if already awarded).
 function awardAttendancePoints($conn, $userId, $scheduleId)
 {
+    if (!pointsEligible($conn, (int) $userId)) {
+        return 0;
+    }
 
     $stmt = mysqli_prepare(
         $conn,

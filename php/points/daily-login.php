@@ -3,6 +3,12 @@ require "../../config/config.php";
 require "../auth-logout/auth.php";
 requireRole(1);
 
+// Only learners earn login points and keep a streak
+if ((int) ($_SESSION['designation_id'] ?? 0) !== 1) {
+    echo json_encode(["status" => "success", "already_claimed" => true]);
+    exit;
+}
+
 header("Content-Type: application/json");
 
 try {
@@ -88,7 +94,6 @@ try {
         "streak" => $newStreak,
         "bonus_awarded" => $bonusAwarded
     ]);
-
 } catch (Exception $e) {
     mysqli_rollback($conn);
     http_response_code(500);

@@ -95,7 +95,7 @@ if (!in_array($activeTab, ['Published', 'Scheduled', 'Draft', 'Archived'], true)
 
             <!-- EDITOR -->
             <div id="editorOverlay" class="hidden fixed inset-0 z-50 bg-black/50 p-3 sm:p-6 overflow-y-auto">
-                <div class="bg-white rounded-2xl shadow-xl max-w-5xl mx-auto p-5 sm:p-6">
+                <div class="bg-white rounded-2xl shadow-xl max-w-5xl mx-auto p-5 sm:p-6 max-h-[calc(100vh-1.5rem)] overflow-y-auto">
 
                     <div class="flex items-start justify-between gap-3">
                         <h2 id="e_heading" class="text-xl sm:text-2xl font-eurostile-bold text-[#234CA1]">New Announcement</h2>
@@ -104,146 +104,174 @@ if (!in_array($activeTab, ['Published', 'Scheduled', 'Draft', 'Archived'], true)
 
                     <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px] gap-6 mt-4">
 
-                        <!-- FORM -->
-                        <div class="space-y-6 min-w-0">
-
-                            <!-- Message -->
-                            <section class="space-y-3">
-                                <p class="text-sm font-bold text-[#234CA1] uppercase tracking-wide">Message</p>
-
-                                <div>
-                                    <label class="text-xs font-bold text-gray-500 block mb-1">Title</label>
-                                    <input type="text" id="e_title" maxlength="150" class="text-inputs" placeholder="e.g. New BAIC product training on Nov 12">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2 mb-6">
+                                <div class="flex items-center gap-2">
+                                    <span id="stepDot1" class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-[#234CA1] text-white">1</span>
+                                    <span class="text-xs font-bold text-[#234CA1] hidden sm:block">Message</span>
                                 </div>
-
-                                <div>
-                                    <div class="flex items-center justify-between mb-1">
-                                        <label for="e_body" class="text-xs font-bold text-gray-500">Message</label>
-                                        <button type="button" id="e_bold" class="px-2.5 h-7 rounded-md border border-gray-200 text-xs font-bold text-gray-600 hover:border-[#234CA1] hover:text-[#234CA1]" title="Make the selected text bold"><i class="fa-solid fa-bold"></i></button>
-                                    </div>
-                                    <textarea id="e_body" rows="7" maxlength="5000" class="text-inputs p-3 w-full" placeholder="Write your announcement..."></textarea>
-                                    <div class="flex justify-between text-[11px] text-gray-400 mt-1">
-                                        <span>Use **text** for bold. Links become clickable on their own.</span>
-                                        <span><span id="e_count">0</span>/5000</span>
-                                    </div>
+                                <div class="h-px flex-1 bg-gray-200"></div>
+                                <div class="flex items-center gap-2">
+                                    <span id="stepDot2" class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-gray-100 text-gray-400">2</span>
+                                    <span class="text-xs font-bold text-gray-400 hidden sm:block">Audience</span>
                                 </div>
+                                <div class="h-px flex-1 bg-gray-200"></div>
+                                <div class="flex items-center gap-2">
+                                    <span id="stepDot3" class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-gray-100 text-gray-400">3</span>
+                                    <span class="text-xs font-bold text-gray-400 hidden sm:block">Schedule</span>
+                                </div>
+                            </div>
+                            <div id="editorStep1" class="space-y-6">
+                                <!-- Message -->
+                                <section class="space-y-3">
+                                    <p class="text-sm font-bold text-[#234CA1] uppercase tracking-wide">Message</p>
 
-                                <div class="grid grid-cols-2 gap-3">
                                     <div>
-                                        <label class="text-xs font-bold text-gray-500 block mb-1">Category</label>
-                                        <select id="e_category" class="text-inputs"></select>
+                                        <label class="text-xs font-bold text-gray-500 block mb-1">Title</label>
+                                        <input type="text" id="e_title" maxlength="150" class="text-inputs" placeholder="e.g. New BAIC product training on Nov 12">
                                     </div>
+
                                     <div>
-                                        <label class="text-xs font-bold text-gray-500 block mb-1">Priority</label>
-                                        <select id="e_priority" class="text-inputs">
-                                            <option value="Normal">Normal</option>
-                                            <option value="Important">Important</option>
-                                            <option value="Urgent">Urgent</option>
-                                        </select>
+                                        <div class="flex items-center justify-between mb-1">
+                                            <label for="e_body" class="text-xs font-bold text-gray-500">Message</label>
+                                            <button type="button" id="e_bold" class="px-2.5 h-7 rounded-md border border-gray-200 text-xs font-bold text-gray-600 hover:border-[#234CA1] hover:text-[#234CA1]" title="Make the selected text bold"><i class="fa-solid fa-bold"></i></button>
+                                        </div>
+                                        <textarea id="e_body" rows="7" maxlength="5000" class="text-inputs p-3 w-full" placeholder="Write your announcement..."></textarea>
+                                        <div class="flex justify-between text-[11px] text-gray-400 mt-1">
+                                            <span>Use **text** for bold. Links become clickable on their own.</span>
+                                            <span><span id="e_count">0</span>/5000</span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <label class="flex items-start gap-2 text-sm text-gray-600 cursor-pointer">
-                                    <input type="checkbox" id="e_pinned" class="mt-1">
-                                    <span>Pin to the top
-                                        <span id="e_pinHint" class="block text-xs text-gray-400"></span></span>
-                                </label>
-                            </section>
-
-                            <!-- Banner -->
-                            <section class="space-y-2">
-                                <p class="text-sm font-bold text-[#234CA1] uppercase tracking-wide">Banner image <span class="font-normal normal-case text-gray-400">(optional)</span></p>
-                                <div class="flex items-center gap-3">
-                                    <div id="e_bannerBox" class="w-32 h-16 rounded-lg bg-gray-100 text-gray-300 flex items-center justify-center overflow-hidden shrink-0"><i class="fa-solid fa-image"></i></div>
-                                    <input type="file" id="e_banner" accept="image/png,image/jpeg,image/webp" class="text-inputs">
-                                    <button type="button" id="e_bannerRemove" class="hidden shrink-0 text-xs font-bold text-[#D02027] hover:underline">Remove</button>
-                                </div>
-                                <p class="text-[11px] text-gray-400">A wide picture works best (about 1200 x 400 px, JPG, PNG or WEBP, up to 5 MB).</p>
-                            </section>
-
-                            <!-- Button -->
-                            <section class="space-y-3">
-                                <p class="text-sm font-bold text-[#234CA1] uppercase tracking-wide">Button <span class="font-normal normal-case text-gray-400">(optional)</span></p>
-                                <select id="e_ctaType" class="text-inputs">
-                                    <option value="None">No button</option>
-                                    <option value="Course">Open a course</option>
-                                    <option value="Schedule">Open a training schedule</option>
-                                    <option value="Library">Open a Library item</option>
-                                    <option value="Link">Open a link</option>
-                                </select>
-                                <div id="e_ctaFields"></div>
-                            </section>
-
-                            <!-- Audience -->
-                            <section class="space-y-3">
-                                <p class="text-sm font-bold text-[#234CA1] uppercase tracking-wide">Who sees it</p>
-                                <p class="text-xs text-gray-400 -mt-2">Leave a list empty to include everyone in it. People must match every list that has something selected.</p>
-
-                                <div>
-                                    <label class="text-xs font-bold text-gray-500 block mb-1">Roles</label>
-                                    <div id="e_roles" class="flex flex-wrap gap-2"></div>
-                                </div>
-
-                                <div>
-                                    <label class="text-xs font-bold text-gray-500 block mb-1">Brands</label>
-                                    <div id="e_brands" class="flex flex-wrap gap-2"></div>
-                                </div>
-
-                                <div>
-                                    <div class="flex items-center justify-between mb-1">
-                                        <label class="text-xs font-bold text-gray-500">Dealerships <span id="e_dealerCount" class="font-normal text-gray-400"></span></label>
-                                        <span class="text-[11px]">
-                                            <button type="button" id="e_dealerAll" class="font-bold text-[#234CA1] hover:underline">Select shown</button>
-                                            <span class="text-gray-300 mx-1">·</span>
-                                            <button type="button" id="e_dealerNone" class="font-bold text-gray-500 hover:underline">Clear</button>
-                                        </span>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="text-xs font-bold text-gray-500 block mb-1">Category</label>
+                                            <select id="e_category" class="text-inputs"></select>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-gray-500 block mb-1">Priority</label>
+                                            <select id="e_priority" class="text-inputs">
+                                                <option value="Normal">Normal</option>
+                                                <option value="Important">Important</option>
+                                                <option value="Urgent">Urgent</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <input type="search" id="e_dealerSearch" placeholder="Search dealerships" class="text-inputs mb-2">
-                                    <div id="e_dealers" class="max-h-44 overflow-y-auto rounded-xl border border-gray-200 p-2 space-y-0.5"></div>
-                                </div>
 
-                                <div id="e_reach" class="rounded-xl bg-slate-50 border border-gray-200 px-4 py-3 text-sm text-gray-600"></div>
-                            </section>
+                                    <label class="flex items-start gap-2 text-sm text-gray-600 cursor-pointer">
+                                        <input type="checkbox" id="e_pinned" class="mt-1">
+                                        <span>Pin to the top
+                                            <span id="e_pinHint" class="block text-xs text-gray-400"></span></span>
+                                    </label>
+                                </section>
 
-                            <!-- When -->
-                            <section class="space-y-3">
-                                <p class="text-sm font-bold text-[#234CA1] uppercase tracking-wide">When</p>
-                                <div id="e_modes" class="space-y-2"></div>
-
-                                <div id="e_laterBox" class="hidden">
-                                    <label class="text-xs font-bold text-gray-500 block mb-1">Goes live on</label>
-                                    <input type="datetime-local" id="e_publishAt" class="text-inputs">
-                                </div>
-
-                                <div id="e_untilBox">
-                                    <label class="text-xs font-bold text-gray-500 block mb-1">Show until <span class="font-normal text-gray-400">(optional; it moves to Archived after this)</span></label>
-                                    <input type="datetime-local" id="e_expiresAt" class="text-inputs">
-                                    <div class="flex flex-wrap gap-2 mt-2">
-                                        <button type="button" data-preset="1" class="e-preset px-3 py-1 rounded-full border border-gray-200 text-xs font-semibold text-gray-600 hover:border-[#234CA1]">1 day</button>
-                                        <button type="button" data-preset="7" class="e-preset px-3 py-1 rounded-full border border-gray-200 text-xs font-semibold text-gray-600 hover:border-[#234CA1]">1 week</button>
-                                        <button type="button" data-preset="30" class="e-preset px-3 py-1 rounded-full border border-gray-200 text-xs font-semibold text-gray-600 hover:border-[#234CA1]">1 month</button>
-                                        <button type="button" data-preset="0" class="e-preset px-3 py-1 rounded-full border border-gray-200 text-xs font-semibold text-gray-600 hover:border-[#234CA1]">No end</button>
+                                <!-- Banner -->
+                                <section class="space-y-2">
+                                    <p class="text-sm font-bold text-[#234CA1] uppercase tracking-wide">Banner image <span class="font-normal normal-case text-gray-400">(optional)</span></p>
+                                    <div class="flex items-center gap-3">
+                                        <div id="e_bannerBox" class="w-32 h-16 rounded-lg bg-gray-100 text-gray-300 flex items-center justify-center overflow-hidden shrink-0"><i class="fa-solid fa-image"></i></div>
+                                        <input type="file" id="e_banner" accept="image/png,image/jpeg,image/webp" class="text-inputs">
+                                        <button type="button" id="e_bannerRemove" class="hidden shrink-0 text-xs font-bold text-[#D02027] hover:underline">Remove</button>
                                     </div>
-                                </div>
-                            </section>
+                                    <p class="text-[11px] text-gray-400">A wide picture works best (about 1200 x 400 px, JPG, PNG or WEBP, up to 5 MB).</p>
+                                </section>
 
-                            <p id="e_error" class="hidden text-sm text-[#D02027]"></p>
+                                <!-- Button -->
+                                <section class="space-y-3">
+                                    <p class="text-sm font-bold text-[#234CA1] uppercase tracking-wide">Button <span class="font-normal normal-case text-gray-400">(optional)</span></p>
+                                    <select id="e_ctaType" class="text-inputs">
+                                        <option value="None">No button</option>
+                                        <option value="Course">Open a course</option>
+                                        <option value="Schedule">Open a training schedule</option>
+                                        <option value="Library">Open a Library item</option>
+                                        <option value="Link">Open a link</option>
+                                    </select>
+                                    <div id="e_ctaFields"></div>
+                                </section>
+
+                            </div>
+                            <div id="editorStep2" class="hidden space-y-6">
+                                <!-- Audience -->
+                                <section class="space-y-3">
+                                    <p class="text-sm font-bold text-[#234CA1] uppercase tracking-wide">Who sees it</p>
+                                    <p class="text-xs text-gray-400 -mt-2">Leave a list empty to include everyone in it. People must match every list that has something selected.</p>
+
+                                    <div>
+                                        <label class="text-xs font-bold text-gray-500 block mb-1">Roles</label>
+                                        <div id="e_roles" class="flex flex-wrap gap-2"></div>
+                                    </div>
+
+                                    <div>
+                                        <label class="text-xs font-bold text-gray-500 block mb-1">Brands</label>
+                                        <div id="e_brands" class="flex flex-wrap gap-2"></div>
+                                    </div>
+
+                                    <div>
+                                        <div class="flex items-center justify-between mb-1">
+                                            <label class="text-xs font-bold text-gray-500">Dealerships <span id="e_dealerCount" class="font-normal text-gray-400"></span></label>
+                                            <span class="text-[11px]">
+                                                <button type="button" id="e_dealerAll" class="font-bold text-[#234CA1] hover:underline">Select shown</button>
+                                                <span class="text-gray-300 mx-1">·</span>
+                                                <button type="button" id="e_dealerNone" class="font-bold text-gray-500 hover:underline">Clear</button>
+                                            </span>
+                                        </div>
+                                        <input type="search" id="e_dealerSearch" placeholder="Search dealerships" class="text-inputs mb-2">
+                                        <div id="e_dealers" class="max-h-44 overflow-y-auto rounded-xl border border-gray-200 p-2 space-y-0.5"></div>
+                                    </div>
+
+                                    <div id="e_reach" class="rounded-xl bg-slate-50 border border-gray-200 px-4 py-3 text-sm text-gray-600"></div>
+                                </section>
+                            </div>
+                            <div id="editorStep3" class="hidden space-y-6">
+                                <!-- When -->
+                                <section class="space-y-3">
+                                    <p class="text-sm font-bold text-[#234CA1] uppercase tracking-wide">When</p>
+                                    <div id="e_modes" class="space-y-2"></div>
+
+                                    <div id="e_laterBox" class="hidden">
+                                        <label class="text-xs font-bold text-gray-500 block mb-1">Goes live on</label>
+                                        <input type="datetime-local" id="e_publishAt" class="text-inputs">
+                                    </div>
+
+                                    <div id="e_untilBox">
+                                        <label class="text-xs font-bold text-gray-500 block mb-1">Show until <span class="font-normal text-gray-400">(optional; it moves to Archived after this)</span></label>
+                                        <input type="datetime-local" id="e_expiresAt" class="text-inputs">
+                                        <div class="flex flex-wrap gap-2 mt-2">
+                                            <button type="button" data-preset="1" class="e-preset px-3 py-1 rounded-full border border-gray-200 text-xs font-semibold text-gray-600 hover:border-[#234CA1]">1 day</button>
+                                            <button type="button" data-preset="7" class="e-preset px-3 py-1 rounded-full border border-gray-200 text-xs font-semibold text-gray-600 hover:border-[#234CA1]">1 week</button>
+                                            <button type="button" data-preset="30" class="e-preset px-3 py-1 rounded-full border border-gray-200 text-xs font-semibold text-gray-600 hover:border-[#234CA1]">1 month</button>
+                                            <button type="button" data-preset="0" class="e-preset px-3 py-1 rounded-full border border-gray-200 text-xs font-semibold text-gray-600 hover:border-[#234CA1]">No end</button>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <p id="e_error" class="hidden text-sm text-[#D02027] mt-4"></p>
+                            <div class="flex items-center justify-between gap-3 pt-5 border-t border-gray-100">
+                                <button type="button" id="editorPrev" class="hidden h-11 px-6 rounded-xl bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 transition-colors">
+                                    <i class="fa-solid fa-arrow-left mr-2"></i> Previous
+                                </button>
+                                <span id="stepCounter" class="text-xs text-gray-400">Step 1 of 3</span>
+                                <button type="button" id="editorNext" class="h-11 px-7 rounded-xl bg-[#234CA1] text-white font-bold hover:bg-[#193B82] transition-colors ml-auto">
+                                    Next <i class="fa-solid fa-arrow-right ml-2"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <!-- PREVIEW -->
-                        <aside class="min-w-0">
+                        <aside class="min-w-0 flex flex-col justify-between ">
                             <div class="lg:sticky lg:top-4">
                                 <p class="text-sm font-bold text-[#234CA1] uppercase tracking-wide mb-2">Preview</p>
                                 <div id="e_preview"></div>
                                 <p class="text-[11px] text-gray-400 mt-2">This is how it looks on a learner's feed.</p>
                             </div>
+                            <div class="flex flex-col sm:flex-row justify-end gap-3 mt-6 pt-4 border-t border-gray-100">
+                                <button type="button" id="editorCancel" class="h-12 px-8 rounded-xl bg-gray-100 text-gray-600 font-eurostile-bold">Cancel</button>
+                                <button type="button" id="editorSave" class="h-12 px-8 rounded-xl bg-[#234CA1] text-white font-eurostile-bold hover:bg-[#193B82] transition-colors">Save</button>
+                            </div>
                         </aside>
                     </div>
 
-                    <div class="flex flex-col sm:flex-row justify-end gap-3 mt-6 pt-4 border-t border-gray-100">
-                        <button type="button" id="editorCancel" class="h-12 px-8 rounded-xl bg-gray-100 text-gray-600 font-eurostile-bold">Cancel</button>
-                        <button type="button" id="editorSave" class="h-12 px-8 rounded-xl bg-[#234CA1] text-white font-eurostile-bold hover:bg-[#193B82] transition-colors">Save</button>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -255,6 +283,60 @@ if (!in_array($activeTab, ['Published', 'Scheduled', 'Draft', 'Archived'], true)
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
         lucide.createIcons();
+
+        // ANNOUNCEMENT EDITOR STEPPER
+
+        let currentEditorStep = 1;
+
+        function showEditorStep(step) {
+
+            currentEditorStep = Math.max(1, Math.min(3, step));
+
+            // Show active step
+            document.getElementById('editorStep1').classList.toggle('hidden', currentEditorStep !== 1);
+            document.getElementById('editorStep2').classList.toggle('hidden', currentEditorStep !== 2);
+            document.getElementById('editorStep3').classList.toggle('hidden', currentEditorStep !== 3);
+
+            // Update step indicators
+            for (let i = 1; i <= 3; i++) {
+
+                const dot = document.getElementById(`stepDot${i}`);
+
+                if (i <= currentEditorStep) {
+                    dot.className = 'w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-[#234CA1] text-white';
+                } else {
+                    dot.className = 'w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold bg-gray-100 text-gray-400';
+                }
+            }
+
+            // Previous button
+            const prev = document.getElementById('editorPrev');
+            prev.classList.toggle('hidden', currentEditorStep === 1);
+
+            // Next button
+            const next = document.getElementById('editorNext');
+
+            if (currentEditorStep === 3) {
+                next.classList.add('hidden');
+            } else {
+                next.classList.remove('hidden');
+            }
+
+            // Step counter
+            document.getElementById('stepCounter').textContent =
+                `Step ${currentEditorStep} of 3`;
+
+            // Clear old errors
+            document.getElementById('e_error').classList.add('hidden');
+        }
+
+        document.getElementById('editorNext').addEventListener('click', () => {
+            showEditorStep(currentEditorStep + 1);
+        });
+
+        document.getElementById('editorPrev').addEventListener('click', () => {
+            showEditorStep(currentEditorStep - 1);
+        });
 
         (function() {
 

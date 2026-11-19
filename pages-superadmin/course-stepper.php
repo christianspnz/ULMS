@@ -1,4 +1,4 @@
-<div class="sticky top-16 z-10 bg-white pb-3 w-full">
+<div class="sticky top-16 z-10 w-full">
     <!-- HERO -->
     <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg">
         <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>

@@ -6,11 +6,13 @@ $tiers = getAllTiers();
 // Keep these in sync with the values your code awards.
 // The attendance value is my placeholder, so change it or delete that row.
 $pointWays = [
-    ['icon' => 'fa-fire',           'label' => 'Log in daily',         'note' => 'Every day you visit',                       'points' => 5],
-    ['icon' => 'fa-bolt',           'label' => '5-day login streak',   'note' => 'Miss a day and the streak restarts',       'points' => 50],
-    ['icon' => 'fa-circle-question', 'label' => 'Daily bonus question', 'note' => 'A new question every day, 3 attempts',     'points' => 10],
-    ['icon' => 'fa-graduation-cap', 'label' => 'Complete a course',    'note' => 'Finish the modules and the post-test',      'points' => 50],
-    ['icon' => 'fa-calendar-check', 'label' => 'Attend live training', 'note' => 'Time in and out of the session',            'points' => 20],
+    ['icon' => 'fa-comment-dots',      'label' => 'Library Feedback',      'note' => 'Leaving feedback on every courses',              'points' => 2],
+    ['icon' => 'fa-comment-dots',      'label' => 'Course Feedback',       'note' => 'Leaving feedback on short videos in Library',    'points' => 5],
+    ['icon' => 'fa-fire',              'label' => 'Log in daily',          'note' => 'Every day you visit',                            'points' => 5],
+    ['icon' => 'fa-circle-question',   'label' => 'Daily bonus question',  'note' => 'A new question every day, 3 attempts',           'points' => 10],
+    ['icon' => 'fa-bolt',              'label' => '5-day login streak',    'note' => 'Miss a day and the streak restarts',             'points' => 50],
+    ['icon' => 'fa-graduation-cap',    'label' => 'Complete a course',     'note' => 'Finish the modules and the post-test',           'points' => 50],
+    ['icon' => 'fa-calendar-check',    'label' => 'Attend live training',  'note' => 'Time in and out of the session',                 'points' => 20],
 ];
 
 // Published courses count
@@ -26,7 +28,6 @@ $moduleCountResult = mysqli_query(
      WHERE c.status = 'Published'"
 );
 $moduleCount = $moduleCountResult ? mysqli_fetch_assoc($moduleCountResult)['total'] : 0;
-
 // Active users count
 $userCountResult = mysqli_query($conn, "SELECT COUNT(*) as total FROM users WHERE status = 'Active'");
 $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 0;
@@ -87,16 +88,16 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
             </div>
         </div>
         <!-- Carousel Cars -->
-        <div data-aos="fade-left" data-aos-delay="200" class="relative w-full lg:w-[40%] h-[300px] sm:h-[380px] lg:h-[480px] flex items-center justify-center overflow-hidden"
+        <div data-aos="fade-left" data-aos-delay="200" class="relative w-full lg:w-[40%] h-[300px] sm:h-[380px] lg:h-[480px] flex items-center justify-center "
             id="carCarousel">
             <!-- B30 -->
-            <img src="./assets/wagon.png" alt="BAIC B60 Wagon" class="hero-car active w-[80%]">
+            <img src="./assets/wagon.png" alt="BAIC B60 Wagon" class="hero-car active w-[80%] lg:w-full">
             <!-- REV -->
-            <img src="./assets/grandtour.png" alt="Chery Tiggo rEV" class="hero-car">
+            <img src="./assets/grandtour.png" alt="Chery Tiggo rEV" class="hero-car lg:w-[140%] lg:max-w-none lg:h-auto">
             <!-- Tunland -->
-            <img src="./assets/transvan.png" alt="Foton Tunland" class="hero-car w-[70%]">
+            <img src="./assets/transvan.png" alt="Foton Tunland" class="hero-car w-[70%] lg:w-full">
             <!-- RD6 -->
-            <img src="./assets/ECON.png" alt="Riddara RD6" class="hero-car w-[90%]">
+            <img src="./assets/ECON.png" alt="Riddara RD6" class="hero-car lg:w-[120%] lg:max-w-none lg:h-auto">
 
             <!-- Indicators -->
             <div id="carIndicators" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
@@ -108,7 +109,6 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
         </div>
     </section>
     <div class="flex flex-col gap-y-20">
-
         <!-- Feedbacks -->
         <section id="feedback" class="lg:px-16 mb-10 pt-20 lg:pt-0">
             <div data-aos="zoom-in" class="text-center mb-10">
@@ -239,24 +239,58 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
+
                     <!-- Live training -->
                     <div data-aos="fade-up" data-aos-delay="0" class="bg-white rounded-3xl shadow-md border border-gray-100 p-6">
                         <h3 class="font-eurostile-bold text-[#234CA1] text-lg">Live Training</h3>
                         <p class="text-gray-500 text-sm mt-2">Your calendar shows the sessions meant for your brand and dealership, online or face-to-face.</p>
                         <ul class="mt-4 space-y-3 text-sm text-gray-600">
-                            <li class="flex items-start gap-3"><span class="w-6 h-6 rounded-full bg-[#234CA1]/10 text-[#234CA1] text-xs font-bold flex items-center justify-center shrink-0">1</span><span><b>RSVP</b> so organizers know you're coming</span></li>
+                            <li class="flex items-start gap-3"><span class="w-6 h-6 rounded-full bg-[#234CA1]/10 text-[#234CA1] text-xs font-bold flex items-center justify-center shrink-0">1</span><span><b>RSVP</b> so organizers know you're coming <i class="text-xs text-[#D02027]">[Face-to-Face]</i></span></li>
                             <li class="flex items-start gap-3"><span class="w-6 h-6 rounded-full bg-[#234CA1]/10 text-[#234CA1] text-xs font-bold flex items-center justify-center shrink-0">2</span><span><b>Time In</b> when the session starts. It opens 5 minutes early</span></li>
                             <li class="flex items-start gap-3"><span class="w-6 h-6 rounded-full bg-[#234CA1]/10 text-[#234CA1] text-xs font-bold flex items-center justify-center shrink-0">3</span><span><b>Time Out</b> when it ends. Your attendance is recorded automatically</span></li>
                         </ul>
                         <p class="mt-4 text-xs text-gray-400">Online sessions include a join link right in the calendar.</p>
+
+                        <div id="liveTrainingCarousel" class="relative mt-6 w-full overflow-hidden rounded-xl bg-gray-50 border border-gray-100">
+                            <div class="live-training-slide active">
+                                <img src="./assets/RSVP.png" alt="Live Training RSVP interface" class="w-full h-[220px] object-contain">
+                                <p class="text-center text-xs font-semibold text-[#234CA1] py-2">RSVP - Confirm Your Attendance</p>
+                            </div>
+                            <div class="live-training-slide">
+                                <img src="./assets/TimeIn.png" alt="Live Training Time In interface" class="w-full h-[220px] object-contain">
+                                <p class="text-center text-xs font-semibold text-[#234CA1] py-2">Time In - Record Your Arrival</p>
+                            </div>
+                            <div class="live-training-slide">
+                                <img src="./assets/TimeOut.png" alt="Live Training Time Out interface" class="w-full h-[220px] object-contain">
+                                <p class="text-center text-xs font-semibold text-[#234CA1] py-2">Time Out - Complete Your Attendance</p>
+                            </div>
+                            <div class="live-training-slide">
+                                <img src="./assets/Link.png" alt="Live Training Link interface" class="w-full h-[220px] object-contain">
+                                <p class="text-center text-xs font-semibold text-[#234CA1] py-2">Meeting Link - Access Live Training Sessions</p>
+                            </div>
+                            <button type="button" id="liveTrainingPrev" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/90 shadow-md text-[#234CA1] flex items-center justify-center hover:bg-[#234CA1] hover:text-white transition">
+                                <i class="fa-solid fa-chevron-left text-xs"></i>
+                            </button>
+                            <button type="button" id="liveTrainingNext" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white/90 shadow-md text-[#234CA1] flex items-center justify-center hover:bg-[#234CA1] hover:text-white transition">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </button>
+                        </div>
+                        <div id="liveTrainingIndicators" class="flex justify-center items-center gap-2 mt-3">
+                            <button type="button" class="live-training-dot active-dot" aria-label="RSVP"></button>
+                            <button type="button" class="live-training-dot" aria-label="Time In"></button>
+                            <button type="button" class="live-training-dot" aria-label="Time Out"></button>
+                            <button type="button" class="live-training-dot" aria-label="Link"></button>
+                        </div>
                     </div>
+
 
                     <!-- Ways to earn -->
                     <div data-aos="fade-up" data-aos-delay="150" class="bg-white rounded-3xl shadow-md border border-gray-100 p-6">
                         <h3 class="font-eurostile-bold text-[#234CA1] text-lg">Ways to Earn Points</h3>
+                        <p class="text-gray-500 text-sm mt-2">Your chance to earn points by participating in various activities and events.</p>
                         <ul class="mt-3">
                             <?php foreach ($pointWays as $w): ?>
-                                <li class="flex items-center justify-between gap-3 py-2.5 border-b border-gray-100 last:border-0 hover:bg-[#234CA1]/5 transition-all duration-300 hover:px-3">
+                                <li class="flex items-center justify-between gap-3 py-3 border-b border-gray-100 last:border-0 hover:bg-[#234CA1]/5 transition-all duration-300 hover:px-3">
                                     <div class="flex items-center gap-3 min-w-0">
                                         <span class="w-9 h-9 rounded-lg bg-amber-50 text-amber-500 flex items-center justify-center shrink-0"><i class="fa-solid <?= htmlspecialchars($w['icon']) ?>"></i></span>
                                         <div class="min-w-0">
@@ -276,7 +310,7 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
                         <p class="text-gray-500 text-sm mt-2">Your total points decide your tier and your place on the leaderboard.</p>
                         <div class="mt-4 space-y-2">
                             <?php foreach ($tiers as $t): ?>
-                                <div class="flex items-center justify-between gap-3 rounded-xl px-3 py-2 hover:scale-105 duration-300 transition-transform" style="background: <?= htmlspecialchars($t['color']) ?>1a">
+                                <div class="flex items-center justify-between gap-3 rounded-xl px-3 py-5 hover:scale-105 duration-300 transition-transform" style="background: <?= htmlspecialchars($t['color']) ?>1a">
                                     <span class="flex items-center gap-2 text-sm font-bold" style="color: <?= htmlspecialchars($t['color']) ?>">
                                         <i class="fa-solid <?= htmlspecialchars($t['icon']) ?> w-4 text-center"></i><?= htmlspecialchars($t['name']) ?>
                                     </span>
@@ -480,7 +514,7 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
         </section>
         <!-- Contact/Support -->
         <section id="contact" class="flex flex-col justify-center items-center lg:flex-row gap-y-10 gap-x-10 mb-20">
-            <div data-aos="zoom-in" data-aos-delay="200" class="bg-white rounded-3xl shadow-md border border-gray-100 p-10 lg:p-12 text-center">
+            <div data-aos="zoom-in" data-aos-delay="200" class="bg-white rounded-3xl shadow-md border border-gray-100 p-8 lg:p-12 text-center">
 
                 <div class="w-16 h-16 rounded-2xl bg-[#234CA1]/10 flex items-center justify-center mx-auto mb-5">
                     <i class="fa-solid fa-headset text-[#234CA1] text-xl"></i>
@@ -537,6 +571,68 @@ $userCount = $userCountResult ? mysqli_fetch_assoc($userCountResult)['total'] : 
             }
         });
 
+        // Live Training Screenshot Carousel
+        const liveTrainingSlides = document.querySelectorAll(".live-training-slide");
+        const liveTrainingDots = document.querySelectorAll(".live-training-dot");
+
+        const liveTrainingPrev = document.getElementById("liveTrainingPrev");
+        const liveTrainingNext = document.getElementById("liveTrainingNext");
+
+        let liveTrainingIndex = 0;
+        let liveTrainingTimer;
+
+        function showLiveTrainingSlide(index) {
+
+            liveTrainingSlides.forEach((slide, i) => {
+                slide.classList.toggle("active", i === index);
+            });
+
+            liveTrainingDots.forEach((dot, i) => {
+                dot.classList.toggle("active-dot", i === index);
+            });
+
+            liveTrainingIndex = index;
+        }
+
+        function nextLiveTrainingSlide() {
+            let next = (liveTrainingIndex + 1) % liveTrainingSlides.length;
+            showLiveTrainingSlide(next);
+        }
+
+        function prevLiveTrainingSlide() {
+            let prev = (liveTrainingIndex - 1 + liveTrainingSlides.length) % liveTrainingSlides.length;
+            showLiveTrainingSlide(prev);
+        }
+
+        function startLiveTrainingCarousel() {
+            clearInterval(liveTrainingTimer);
+
+            liveTrainingTimer = setInterval(() => {
+                nextLiveTrainingSlide();
+            }, 4000);
+        }
+
+        liveTrainingNext.addEventListener("click", () => {
+            nextLiveTrainingSlide();
+            startLiveTrainingCarousel();
+        });
+
+        liveTrainingPrev.addEventListener("click", () => {
+            prevLiveTrainingSlide();
+            startLiveTrainingCarousel();
+        });
+
+        liveTrainingDots.forEach((dot, index) => {
+            dot.addEventListener("click", () => {
+                showLiveTrainingSlide(index);
+                startLiveTrainingCarousel();
+            });
+        });
+
+        // Start automatic sliding
+        if (liveTrainingSlides.length > 1) {
+            startLiveTrainingCarousel();
+        }
 
         let feedbackCards = [];
         let currentFeedbackIndex = 0;

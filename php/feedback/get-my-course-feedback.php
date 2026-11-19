@@ -60,7 +60,7 @@ try {
         "is_manager" => ((int) ($_SESSION['designation_id'] ?? 0)) === 2,
         "tags" => getFeedbackTags(),
         // Shown in the modal only if they haven't earned it yet
-        "reward_points" => hasFeedbackPointsBeenAwarded($conn, $userId, $courseId) ? 0 : COURSE_FEEDBACK_POINTS
+        "reward_points" => pointsEligible($conn, $userId) ? COURSE_FEEDBACK_POINTS : 0
     ]);
 } catch (Throwable $e) {
 

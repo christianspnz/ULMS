@@ -36,7 +36,7 @@ requireRole(1);
         <div id="viewerRoot" class="main-container">
             <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-10 text-center text-gray-400">Loading...</div>
         </div>
-
+        <?php include '../downloadable-assets.php'; ?>
         <?php include '../feedback-button.php'; ?>
     </main>
 
