@@ -4959,7 +4959,10 @@ button:focus {
 
 @media (min-width: 1024px) {
   .sidebar {
+<<<<<<< Updated upstream
     left: 0px;
+=======
+>>>>>>> Stashed changes
     max-width: 15%;
   }
 }
@@ -6622,6 +6625,7 @@ button:focus {
   max-height: 100%;
 }
 
+<<<<<<< Updated upstream
 .min-h-\[12rem\] {
   min-height: 12rem;
 }
@@ -6636,6 +6640,14 @@ button:focus {
 
 .\!w-auto {
   width: auto !important;
+=======
+.min-h-\[13rem\] {
+  min-height: 13rem;
+>>>>>>> Stashed changes
+}
+
+.min-h-screen {
+  min-height: 100vh;
 }
 
 .w-1\.5 {
@@ -9972,6 +9984,7 @@ body {
   background-color: rgb(25 59 130 / var(--tw-bg-opacity, 1));
 }
 
+<<<<<<< Updated upstream
 .group:hover .group-hover\:bg-black\/25 {
   background-color: rgb(0 0 0 / 0.25);
 }
@@ -9980,6 +9993,8 @@ body {
   background-color: rgb(0 0 0 / 0.3);
 }
 
+=======
+>>>>>>> Stashed changes
 .group:hover .group-hover\:bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
@@ -10254,10 +10269,13 @@ body {
     position: sticky;
   }
 
+<<<<<<< Updated upstream
   .lg\:top-4 {
     top: 1rem;
   }
 
+=======
+>>>>>>> Stashed changes
   .lg\:top-5 {
     top: 1.25rem;
   }
@@ -10366,6 +10384,7 @@ body {
     width: auto;
   }
 
+<<<<<<< Updated upstream
   .lg\:w-full {
     width: 100%;
   }
@@ -10374,6 +10393,8 @@ body {
     max-width: none;
   }
 
+=======
+>>>>>>> Stashed changes
   .lg\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -10523,10 +10544,13 @@ body {
     grid-template-columns: minmax(0,1fr) 340px;
   }
 
+<<<<<<< Updated upstream
   .xl\:grid-cols-\[minmax\(0\2c 1fr\)_360px\] {
     grid-template-columns: minmax(0,1fr) 360px;
   }
 
+=======
+>>>>>>> Stashed changes
   .xl\:grid-cols-\[minmax\(0\2c 1fr\)_380px\] {
     grid-template-columns: minmax(0,1fr) 380px;
   }

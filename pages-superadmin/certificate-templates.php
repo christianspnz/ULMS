@@ -44,6 +44,7 @@ requireRole(4);
             <?php include '../notification-bell.php'; ?>
         </div>
 
+<<<<<<< Updated upstream
         <div class="main-container">
             <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg ">
                 <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
@@ -62,6 +63,176 @@ requireRole(4);
                         <a href="../verify-certificate.php" class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white text-[#234CA1] hover:bg-gray-100 text-sm font-eurostile-bold transition-colors">
                             <i data-lucide="sticky-note-check" class="w-4 h-4"></i> Verify Certificate
                         </a>
+=======
+        <section class="relative overflow-hidden rounded-3xl bg-[#234CA1] p-5 md:p-8 text-white shadow-lg mt-5">
+            <div class="absolute -right-10 -top-10 w-60 h-60 rounded-full bg-blue-600/30 blur-3xl pointer-events-none"></div>
+            <div class="absolute right-1/3 -bottom-10 w-60 h-60 rounded-full bg-cyan-500/20 blur-3xl pointer-events-none"></div>
+            <div class="hero-grid absolute inset-0 pointer-events-none"></div>
+
+            <div class="relative z-10 min-w-0 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="space-y-3 min-w-0">
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-cyan-300">
+                        <i class="fa-solid fa-certificate text-amber-400"></i> Certificate Module
+                    </span>
+                    <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight">Certificates</h1>
+                    <p class="text-slate-300 text-sm max-w-2xl">Design the certificates, add each brand's logo and the signatories, and choose the fonts. When a learner finishes a training and times out, the certificate is filled in automatically.</p>
+                </div>
+                <div class="flex flex-wrap justify-end gap-2 shrink-0">
+                    <a href="../verify-certificate.php" class="inline-flex items-center gap-2 px-4 h-11 rounded-xl bg-white text-[#234CA1] hover:bg-gray-100 text-sm font-eurostile-bold transition-colors">
+                        <i data-lucide="sticky-note-check" class="w-4 h-4"></i> Verify Certificate
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- TABS -->
+        <div id="tabs" class="flex flex-wrap gap-2 mt-5">
+            <button type="button" data-tab="templates" class="tab-btn px-4 h-10 rounded-full border text-sm font-semibold transition-colors"><i class="fa-solid fa-file-lines mr-2"></i>Templates</button>
+            <button type="button" data-tab="logos" class="tab-btn px-4 h-10 rounded-full border text-sm font-semibold transition-colors"><i class="fa-solid fa-image mr-2"></i>Brand Logos</button>
+            <button type="button" data-tab="signatories" class="tab-btn px-4 h-10 rounded-full border text-sm font-semibold transition-colors"><i class="fa-solid fa-signature mr-2"></i>Signatories</button>
+            <button type="button" data-tab="fonts" class="tab-btn px-4 h-10 rounded-full border text-sm font-semibold transition-colors"><i class="fa-solid fa-font mr-2"></i>Fonts</button>
+            <button type="button" data-tab="courses" class="tab-btn px-4 h-10 rounded-full border text-sm font-semibold transition-colors"><i class="fa-solid fa-graduation-cap mr-2"></i>Course Certificates</button>
+        </div>
+
+        <!-- TEMPLATES -->
+        <section id="tab-templates" class="tab-panel mt-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <p class="text-sm text-gray-500">A schedule uses the template you pick for it. If it picks none, the brand's default template is used.</p>
+                <button type="button" id="newTemplateBtn" class="shrink-0 h-11 px-6 rounded-xl bg-[#234CA1] hover:bg-[#193B82] text-white text-sm font-eurostile-bold transition-colors"><i class="fa-solid fa-plus mr-2"></i>New Template</button>
+            </div>
+            <div id="templateGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+        </section>
+
+        <!-- LOGOS -->
+        <section id="tab-logos" class="tab-panel hidden mt-5">
+            <p class="text-sm text-gray-500 mb-4 max-w-3xl">Add as many logos as you need for each brand (for example an old and a new one). The one marked <b>Main</b> is used on that brand's certificates. A template can also show any logo, including the <b>General logos</b> group, with its "Extra logo" element. A PNG with a transparent background looks best.</p>
+            <div id="logoGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-5"></div>
+        </section>
+
+        <!-- SIGNATORIES -->
+        <section id="tab-signatories" class="tab-panel hidden mt-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <p class="text-sm text-gray-500">Add each person once, then choose them in the template's "Signatures" element. Use a PNG of the signature with a transparent background.</p>
+                <button type="button" id="newSignatoryBtn" class="shrink-0 h-11 px-6 rounded-xl bg-[#234CA1] hover:bg-[#193B82] text-white text-sm font-eurostile-bold transition-colors"><i class="fa-solid fa-plus mr-2"></i>Add Signatory</button>
+            </div>
+            <div id="signatoryGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+        </section>
+
+        <!-- FONTS -->
+        <section id="tab-fonts" class="tab-panel hidden mt-5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <p class="text-sm text-gray-500 max-w-3xl">Upload fonts from your computer (.ttf, .otf, .woff, .woff2). They're stored on the server, so every learner's certificate uses them, not only your PC. Only upload fonts you're licensed to use.</p>
+                <button type="button" id="newFontBtn" class="shrink-0 h-11 px-6 rounded-xl bg-[#234CA1] hover:bg-[#193B82] text-white text-sm font-eurostile-bold transition-colors"><i class="fa-solid fa-upload mr-2"></i>Upload Font</button>
+            </div>
+            <div id="fontGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+        </section>
+
+        <!-- COURSE CERTIFICATES -->
+        <section id="tab-courses" class="tab-panel hidden mt-5">
+            <p class="text-sm text-gray-500 mb-4 max-w-3xl">When a learner finishes a course, they get a certificate with the course title on it. Choose the design each course uses and whether passing the Post-Test is required. <b>Automatic</b> uses the default template of the learner's brand.</p>
+
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 p-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                    <input type="search" id="courseCertSearch" placeholder="Search courses" class="text-inputs sm:w-72">
+                    <p id="courseCertMeta" class="text-xs text-gray-400"></p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-200 text-left text-xs uppercase text-gray-400">
+                                <th class="py-3 px-3">Course</th>
+                                <th class="py-3 px-3 text-center">Certificate</th>
+                                <th class="py-3 px-3">Template</th>
+                                <th class="py-3 px-3">Requirement</th>
+                                <th class="py-3 px-3 text-center">Completed / Issued</th>
+                                <th class="py-3 px-3 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="courseCertBody">
+                            <tr>
+                                <td colspan="6" class="text-center text-gray-400 py-10">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- EDITOR -->
+        <div id="editorOverlay" class="hidden fixed inset-0 z-50 bg-black/50 p-3 sm:p-6 overflow-y-auto">
+            <div class="bg-white rounded-2xl shadow-xl max-w-6xl mx-auto p-4 sm:p-6">
+
+                <div class="flex items-start justify-between gap-3">
+                    <h2 id="e_title" class="text-xl sm:text-2xl font-eurostile-bold text-[#234CA1]">Template</h2>
+                    <button type="button" id="editorClose" class="w-9 h-9 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 shrink-0" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] gap-5 mt-4">
+
+                    <div class="min-w-0">
+                        <div class="bg-slate-100 rounded-xl p-3">
+                            <canvas id="editorCanvas" class="w-full h-auto rounded-md shadow bg-white"></canvas>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-2"><i class="fa-solid fa-hand-pointer mr-1"></i>Click and drag on the preview to move the nearest element. The brand logo and signatures show once you've added them in their tabs.</p>
+
+                        <div class="rounded-xl bg-slate-50 border border-gray-200 p-3 mt-3 grid grid-cols-1 sm:grid-cols-4 gap-2">
+                            <p class="sm:col-span-4 text-xs font-bold text-gray-500 uppercase">Preview text (not saved)</p>
+                            <input type="text" id="s_name" class="text-inputs sm:col-span-2" placeholder="Name">
+                            <input type="text" id="s_title" class="text-inputs sm:col-span-2" placeholder="Training title">
+                            <input type="date" id="s_date" class="text-inputs sm:col-span-2">
+                            <select id="s_brand" class="text-inputs sm:col-span-2"></select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 min-w-0">
+
+                        <div class="grid grid-cols-1 gap-3">
+                            <div>
+                                <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Template name</label>
+                                <input type="text" id="t_name" maxlength="120" class="text-inputs">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">For brand</label>
+                                    <select id="t_brand" class="text-inputs"></select>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Valid for (months)</label>
+                                    <input type="number" id="t_valid" min="1" max="120" placeholder="No expiry" class="text-inputs">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Used for</label>
+                                <select id="t_applies" class="text-inputs">
+                                    <option value="Both">Trainings and courses</option>
+                                    <option value="Training">Trainings only</option>
+                                    <option value="Course">Course completions only</option>
+                                </select>
+                            </div>
+                            <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"><input type="checkbox" id="t_default"> Use as the default for this brand</label>
+                            <div>
+                                <label class="text-xs font-bold text-[#234CA1] uppercase block mb-1">Background image <span class="font-normal normal-case text-gray-400">(JPG/PNG, 1200 px+ wide)</span></label>
+                                <div class="input-wrapper">
+                                    <input type="file" id="t_file" accept="image/png,image/jpeg" class="text-inputs">
+                                </div>
+                                <p class="text-[11px] text-gray-400 mt-1">Your design with the heading, curves and the UAAGI logo already on it. The name, body text, brand logo and signatures are placed on top.</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-xs font-bold text-[#234CA1] uppercase mb-2">Element</p>
+                            <div id="elementTabs" class="flex flex-wrap gap-2"></div>
+                        </div>
+
+                        <div id="controls" class="rounded-xl border border-gray-200 p-3 space-y-3"></div>
+
+                        <label id="t_restyle_wrap" class="hidden flex items-start gap-2 text-sm text-gray-600 cursor-pointer">
+                            <input type="checkbox" id="t_restyle" class="mt-1">
+                            <span>Also restyle certificates already issued with this template
+                                <span class="block text-xs text-gray-400">Leave this off to keep old certificates exactly as they were issued.</span></span>
+                        </label>
+>>>>>>> Stashed changes
                     </div>
                 </div>
             </section>

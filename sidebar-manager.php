@@ -21,7 +21,11 @@ function isActive(array|string $pages, string $current): bool
     return $current === $pages;
 }
 ?>
+<<<<<<< Updated upstream
 <aside id="sidebar" class="sidebar hidden lg:flex z-40">
+=======
+<aside id="sidebar" class="sidebar hidden flex z-40 lg:m-5">
+>>>>>>> Stashed changes
     <div class="flex flex-col lg:flex-row w-full justify-center items-center gap-x-1 gap-y-1">
         <img src="../assets/ulh-logo.png" alt="UAAGI LMS Logo" class="w-14 lg:w-10">
         <img src="../assets/Logo.png" alt="UAAGI LMS Logo" class="w-auto lg:w-32">

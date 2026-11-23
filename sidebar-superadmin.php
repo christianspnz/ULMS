@@ -22,6 +22,7 @@ function isActive(array|string $pages, string $current): bool
 }
 ?>
 
+<<<<<<< Updated upstream
 <aside id="sidebar" class="sidebar hidden lg:flex z-40 overflow-hidden">
     <div class="sidebar-head flex w-full items-center justify-center shrink-0">
         <div class="flex flex-col lg:flex-row justify-center items-center gap-x-1 gap-y-1">
@@ -31,6 +32,12 @@ function isActive(array|string $pages, string $current): bool
         <button type="button" id="sidebarClose" aria-label="Close menu">
             <i class="fa-solid fa-xmark"></i>
         </button>
+=======
+<aside id="sidebar" class="sidebar hidden flex z-40 lg:m-5 overflow-hidden">
+    <div class="flex flex-wrap w-full justify-center items-center gap-x-1 gap-y-2 shrink-0">
+        <img src="../assets/ulh-logo.png" alt="UAAGI LMS Logo" class="w-14 lg:w-10">
+        <img src="../assets/Logo.png" alt="UAAGI LMS Logo" class="w-40 lg:w-32">
+>>>>>>> Stashed changes
     </div>
     <nav class="sidebar-nav no-scrollbar">
         <span class="sidebar-section-label">Learning Management</span>
